@@ -1,7 +1,4 @@
 // src/js/member-dashboard.js
-import { cartManager } from './modules/cart.js';
-import { updateCartUI } from './modules/ui.js';
-import { toggle } from './utils/dom.js';
 import { STORAGE_KEYS } from './utils/constants.js';
 
 // ============================================
@@ -15,13 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeDashboard() {
     // Загрузить данные пользователя
     loadUserData();
-    
-    // Обновить корзину
-    updateCartUI({
-        count: cartManager.getCount(),
-        total: cartManager.getTotalPrice(),
-        items: cartManager.getCart()
-    });
     
     // Прикрепить обработчики
     attachEventListeners();
@@ -96,24 +86,6 @@ function attachEventListeners() {
         });
     });
     
-    // Обработчик корзины
-    window.toggleCart = function() {
-        const cartSidebar = document.getElementById('cart-sidebar');
-        const overlay = document.getElementById('overlay');
-        const isClosed = cartSidebar?.classList.contains('translate-x-full');
-        
-        toggle(cartSidebar, 'translate-x-full');
-        toggle(overlay, 'hidden');
-        
-        if (isClosed) {
-            updateCartUI({
-                count: cartManager.getCount(),
-                total: cartManager.getTotalPrice(),
-                items: cartManager.getCart()
-            });
-        }
-    };
-    
     // Обработчик выхода
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('logout-btn') || e.target.closest('.logout-btn')) {
@@ -124,53 +96,3 @@ function attachEventListeners() {
         }
     });
 }
-
-// ============================================
-// ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ КОРЗИНЫ
-// ============================================
-
-window.addToCart = function(button) {
-    // Импортируем productManager динамически
-    import('./modules/products.js').then(({ productManager }) => {
-        const productId = parseInt(button.dataset.productId);
-        const product = productManager.getProductById(productId);
-        
-        if (product && cartManager.addItem(product)) {
-            updateCartUI({
-                count: cartManager.getCount(),
-                total: cartManager.getTotalPrice(),
-                items: cartManager.getCart()
-            });
-            
-            const originalText = button.innerHTML;
-            button.innerHTML = '<span>✓</span><span>Добавлено</span>';
-            setTimeout(() => {
-                button.innerHTML = originalText;
-            }, 1500);
-        }
-    });
-};
-
-window.updateCartQuantity = function(productId, change) {
-    const item = cartManager.getCart().find(i => i.id === productId);
-    if (!item) return;
-    
-    const newQuantity = item.quantity + change;
-    cartManager.updateQuantity(productId, newQuantity);
-    
-    updateCartUI({
-        count: cartManager.getCount(),
-        total: cartManager.getTotalPrice(),
-        items: cartManager.getCart()
-    });
-};
-
-window.removeFromCart = function(productId) {
-    cartManager.removeItem(productId);
-    
-    updateCartUI({
-        count: cartManager.getCount(),
-        total: cartManager.getTotalPrice(),
-        items: cartManager.getCart()
-    });
-};

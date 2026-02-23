@@ -435,35 +435,11 @@
                 </div>
 
                 <div class="hidden md:flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                    <button onclick="toggleCart()" class="relative p-2 text-gray-600 hover:text-[var(--olive)] transition-all duration-300 flex-shrink-0" aria-label="Открыть корзину">
-                        <span class="text-2xl" aria-hidden="true">🛒</span>
-                        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold">0</span>
-                    </button>
                     <div id="auth-buttons" class="flex-shrink-0"></div>
                 </div>
             </div>
         </div>
     </nav>
-
-    <!-- Cart Sidebar -->
-    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-[#FDFBF7] transform translate-x-full transition-transform duration-300 z-[200]" role="dialog" aria-label="Корзина покупок" aria-modal="true" style="box-shadow: -4px 0 24px rgba(128, 153, 79, 0.08);">
-        <div class="h-full flex flex-col">
-            <div class="p-5 sm:p-6 border-b border-[var(--olive)]/10 flex justify-between items-center bg-white/50">
-                <h2 class="text-xl font-bold text-gray-900 tracking-tight"><span aria-hidden="true" class="opacity-90">🛒</span> Корзина</h2>
-                <button onclick="toggleCart()" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-[var(--olive)] hover:bg-[var(--olive)]/05 transition-all duration-200 text-xl font-light" aria-label="Закрыть корзину">×</button>
-            </div>
-            <div id="cart-items" class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4"></div>
-            <div class="p-5 sm:p-6 border-t border-[var(--olive)]/10 bg-white/30">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-gray-600 font-medium">Итого</span>
-                    <span id="cart-total" class="text-xl font-bold text-[var(--olive)]">0 Kč</span>
-                </div>
-                <button class="w-full btn-accent py-3.5 text-base font-semibold">Оформить заказ</button>
-                <p class="text-xs text-gray-500 text-center mt-3">🚚 Доставка каждую пятницу</p>
-            </div>
-        </div>
-    </div>
-    <div id="overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 hidden z-[150]" aria-hidden="true"></div>
 
     <!-- Main Dashboard -->
     <div class="dashboard-container">

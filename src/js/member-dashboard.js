@@ -93,92 +93,18 @@ function attachEventListeners() {
             e.preventDefault();
             e.stopPropagation();
             const sectionId = this.dataset.section;
-            
-            // Скрыть все секции
-            document.querySelectorAll('.dashboard-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Показать нужную секцию с небольшой задержкой
-            setTimeout(() => {
-                const targetSection = document.getElementById(sectionId);
-                if (targetSection) {
-                    targetSection.classList.add('active');
-                }
-                
-                // Обновить активный пункт меню
-                document.querySelectorAll('.nav-item').forEach(navItem => {
-                    navItem.classList.remove('active');
-                    if (navItem.dataset.section === sectionId) {
-                        navItem.classList.add('active');
-                    }
-                });
-                
-                // Обновить URL
-                window.history.pushState({ section: sectionId }, '', `#${sectionId}`);
-                
-                // Обновить заголовок
-                updatePageTitle(sectionId);
-                
-                // Прокрутка вверх
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 10);
+            showSection(sectionId);
         });
     });
     
     // Обработка кнопок назад/вперёд в браузере
     window.addEventListener('popstate', (e) => {
         if (e.state && e.state.section) {
-            // Скрыть все секции
-            document.querySelectorAll('.dashboard-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Показать нужную секцию
-            const targetSection = document.getElementById(e.state.section);
-            if (targetSection) {
-                targetSection.classList.add('active');
-            }
-            
-            // Обновить активный пункт меню
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.section === e.state.section) {
-                    item.classList.add('active');
-                }
-            });
-            
-            updatePageTitle(e.state.section);
+            showSection(e.state.section);
         } else {
             const hash = window.location.hash.slice(1) || 'overview';
-            // Скрыть все секции
-            document.querySelectorAll('.dashboard-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Показать нужную секцию
-            const targetSection = document.getElementById(hash);
-            if (targetSection) {
-                targetSection.classList.add('active');
-            }
-            
-            // Обновить активный пункт меню
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.section === hash) {
-                    item.classList.add('active');
-                }
-            });
-            
-            updatePageTitle(hash);
+            showSection(hash);
         }
-    });
-    
-    // Форма настроек - предотвращаем отправку
-    document.getElementById('settings-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        saveSettings();
     });
     
     // Обработчик выхода
@@ -188,6 +114,36 @@ function attachEventListeners() {
             logout();
         }
     });
+}
+
+function showSection(sectionId) {
+    // Скрыть все секции
+    document.querySelectorAll('.dashboard-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Показать нужную секцию
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
+    
+    // Обновить активный пункт меню
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.section === sectionId) {
+            item.classList.add('active');
+        }
+    });
+    
+    // Обновить URL
+    window.history.pushState({ section: sectionId }, '', `#${sectionId}`);
+    
+    // Обновить заголовок
+    updatePageTitle(sectionId);
+    
+    // Прокрутка вверх
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ============================================
@@ -231,6 +187,7 @@ function logout() {
 }
 
 // Экспортировать для глобального доступа
-window.navigateTo = navigateTo;
+window.navigateTo = showSection;
+window.saveSettings = saveSettings;
 window.toggleSwitch = toggleSwitch;
 window.logout = logout;

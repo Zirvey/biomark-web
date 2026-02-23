@@ -890,12 +890,12 @@
                         </h2>
                     </div>
                     
-                    <form id="settings-form">
+                    <div id="settings-form">
                         <div class="form-group">
                             <label class="form-label" for="settings-name">ФИО</label>
                             <input type="text" id="settings-name" class="form-input" placeholder="Иванов Иван Иванович">
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="settings-email">Email</label>
@@ -906,17 +906,17 @@
                                 <input type="tel" id="settings-phone" class="form-input" placeholder="+420 XXX XXX XXX">
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label class="form-label" for="settings-address">Адрес доставки</label>
                             <input type="text" id="settings-address" class="form-input" placeholder="Улица, дом, квартира, город">
                         </div>
-                        
-                        <button type="submit" class="btn-save">
+
+                        <button type="button" class="btn-save" onclick="saveSettings()">
                             <span aria-hidden="true">✓</span>
                             <span>Сохранить изменения</span>
                         </button>
-                    </form>
+                    </div>
                 </div>
 
                 <div class="content-card">

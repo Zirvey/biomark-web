@@ -6,239 +6,620 @@
     <title>Личный кабинет — BioMarket</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Dashboard specific styles */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+        }
+
+        /* Sidebar Navigation */
+        .dashboard-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 24px rgba(132, 169, 60, 0.08);
+            border: 1px solid rgba(132, 169, 60, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 6rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-sidebar {
+                position: static;
+                display: flex;
+                gap: 1rem;
+                overflow-x: auto;
+                padding: 1rem;
+            }
+        }
+
+        .sidebar-user {
+            text-align: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(132, 169, 60, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-user {
+                display: none;
+            }
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 16px rgba(132, 169, 60, 0.3);
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1.125rem;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-email {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .user-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(132, 169, 60, 0.1);
+            color: #84A93C;
+            padding: 0.375rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+        }
+
+        .user-status::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #84A93C;
+            border-radius: 50%;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-nav {
+                flex-direction: row;
+            }
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 1rem;
+            color: #6b7280;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(132, 169, 60, 0.08);
+            color: #84A93C;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(132, 169, 60, 0.3);
+        }
+
+        .nav-item-icon {
+            font-size: 1.25rem;
+        }
+
+        /* Main Content */
+        .dashboard-main {
+            min-width: 0;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-subtitle {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 16px rgba(132, 169, 60, 0.08);
+            border: 1px solid rgba(132, 169, 60, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(132, 169, 60, 0.12);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.green { background: rgba(132, 169, 60, 0.1); }
+        .stat-icon.blue { background: rgba(59, 130, 246, 0.1); }
+        .stat-icon.purple { background: rgba(147, 51, 234, 0.1); }
+        .stat-icon.orange { background: rgba(249, 115, 22, 0.1); }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 24px rgba(132, 169, 60, 0.08);
+            border: 1px solid rgba(132, 169, 60, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-action {
+            color: #84A93C;
+            font-weight: 500;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .card-action:hover {
+            color: #6B8A31;
+        }
+
+        /* Order Item */
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            background: rgba(132, 169, 60, 0.05);
+            margin-bottom: 0.75rem;
+            transition: background 0.2s ease;
+        }
+
+        .order-item:hover {
+            background: rgba(132, 169, 60, 0.08);
+        }
+
+        .order-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .order-icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .order-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .order-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .order-meta {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .order-price {
+            font-weight: 700;
+            color: #84A93C;
+            font-size: 1.125rem;
+        }
+
+        /* Delivery Timeline */
+        .delivery-timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 1rem 0;
+        }
+
+        .delivery-timeline::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: rgba(132, 169, 60, 0.2);
+        }
+
+        .timeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #84A93C;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #84A93C;
+        }
+
+        .timeline-dot.pending {
+            background: #e5e7eb;
+            box-shadow: none;
+        }
+
+        .timeline-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-text {
+            color: #6b7280;
+            font-size: 0.9375rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .quick-action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.25rem;
+            background: rgba(132, 169, 60, 0.05);
+            border-radius: 1rem;
+            text-decoration: none;
+            color: #1a1a1a;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-btn:hover {
+            background: rgba(132, 169, 60, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .quick-action-icon {
+            font-size: 2rem;
+        }
+    </style>
 </head>
 <body class="min-h-screen">
-    <!-- Background Fruits -->
-    <div class="page-fruits" aria-hidden="true">
-        <span class="page-fruit" style="top: 5%; left: 3%; font-size: 4rem; animation-delay: 0s; animation-duration: 9s">🥕</span>
-        <span class="page-fruit" style="top: 10%; right: 5%; font-size: 5rem; animation-delay: 1.5s; animation-duration: 11s">🍎</span>
-        <span class="page-fruit" style="top: 20%; left: 8%; font-size: 3rem; animation-delay: 3s; animation-duration: 8s">🥬</span>
-        <span class="page-fruit" style="top: 30%; right: 8%; font-size: 4.5rem; animation-delay: 0.5s; animation-duration: 10s">🍇</span>
-        <span class="page-fruit" style="top: 40%; left: 5%; font-size: 3.5rem; animation-delay: 2s; animation-duration: 9s">🍓</span>
-        <span class="page-fruit" style="top: 50%; right: 3%; font-size: 4rem; animation-delay: 4s; animation-duration: 12s">🥔</span>
-        <span class="page-fruit" style="top: 60%; left: 10%; font-size: 3rem; animation-delay: 1s; animation-duration: 8s">🍊</span>
-        <span class="page-fruit" style="top: 70%; right: 10%; font-size: 5rem; animation-delay: 2.5s; animation-duration: 10s">🥒</span>
-        <span class="page-fruit" style="top: 80%; left: 5%; font-size: 3.5rem; animation-delay: 3.5s; animation-duration: 11s">🌽</span>
-        <span class="page-fruit" style="top: 85%; right: 5%; font-size: 4rem; animation-delay: 0.8s; animation-duration: 9s">🍐</span>
-        <span class="page-fruit" style="top: 92%; left: 15%; font-size: 3rem; animation-delay: 1.8s; animation-duration: 10s">🍋</span>
-        <span class="page-fruit" style="top: 15%; right: 20%; font-size: 3.5rem; animation-delay: 2.8s; animation-duration: 8s">🥝</span>
-    </div>
-
-    <!-- Header (identical to index.html) -->
-    <nav class="sticky-nav" role="navigation" aria-label="Основная навигация">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-14 sm:h-16">
-                <a href="index.html" class="flex items-center space-x-2 flex-shrink-0">
-                    <span class="text-2xl sm:text-3xl" aria-hidden="true">🥕</span>
-                    <span class="text-lg sm:text-2xl font-bold" style="color: var(--dark-wood)">BioMarket Club</span>
+    <!-- Header -->
+    <nav class="sticky-nav" role="navigation" aria-label="Основная навигация" style="position: -webkit-sticky; position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(132, 169, 60, 0.1);">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-12 sm:h-14">
+                <a href="index.html" class="flex items-center gap-1.5 flex-shrink-0">
+                    <span class="text-xl sm:text-2xl" aria-hidden="true">🥕</span>
+                    <span class="text-base sm:text-lg font-bold" style="color: var(--earth)">BioMarket</span>
                 </a>
 
                 <div class="hidden md:flex items-center space-x-8 flex-shrink-0">
                     <a href="index.html#membership" class="nav-link font-medium text-sm">Клуб</a>
                     <a href="index.html#farmers" class="nav-link font-medium text-sm">Фермеры</a>
                     <a href="index.html#how-it-works" class="nav-link font-medium text-sm">Как работает</a>
-                    <a href="index.html#marketplace" class="nav-link font-medium text-sm">Витрина</a>
+                    <a href="marketplace.html" class="nav-link font-medium text-sm">Витрина</a>
                 </div>
 
-                <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                    <!-- Role badge -->
-                    <a href="member-dashboard.html" class="header-btn role-badge">
-                        <span aria-hidden="true">🥕</span>
-                        <span class="hidden sm:inline" id="member-name-header">Участник</span>
-                    </a>
-
-                    <!-- Logout button -->
-                    <button onclick="logout()" class="header-btn btn-logout" title="Выйти" aria-label="Выйти из аккаунта">
-                        <span aria-hidden="true">↪️</span>
-                        <span class="hidden sm:inline">Выйти</span>
+                <div class="hidden md:flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <button onclick="toggleCart()" class="relative p-2 text-gray-600 hover:text-[var(--olive)] transition-all duration-300 flex-shrink-0" aria-label="Открыть корзину">
+                        <span class="text-2xl" aria-hidden="true">🛒</span>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold">0</span>
                     </button>
+                    <div id="auth-buttons" class="flex-shrink-0"></div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Welcome Card -->
-        <div class="dashboard-card p-6 sm:p-8 mb-8 border-l-4" style="border-left-color: var(--accent)">
-            <div class="flex items-center justify-between flex-wrap gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-md" style="background: var(--accent); color: var(--beige-text)">
-                        👤
-                    </div>
-                    <div>
-                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight" style="color: var(--dark-wood)" id="member-name">Участник</h1>
-                        <p class="text-gray-500 text-sm mt-0.5" id="member-email-display">-</p>
-                    </div>
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-[#FDFBF7] transform translate-x-full transition-transform duration-300 z-[200]" role="dialog" aria-label="Корзина покупок" aria-modal="true" style="box-shadow: -4px 0 24px rgba(128, 153, 79, 0.08);">
+        <div class="h-full flex flex-col">
+            <div class="p-5 sm:p-6 border-b border-[var(--olive)]/10 flex justify-between items-center bg-white/50">
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight"><span aria-hidden="true" class="opacity-90">🛒</span> Корзина</h2>
+                <button onclick="toggleCart()" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-[var(--olive)] hover:bg-[var(--olive)]/05 transition-all duration-200 text-xl font-light" aria-label="Закрыть корзину">×</button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4"></div>
+            <div class="p-5 sm:p-6 border-t border-[var(--olive)]/10 bg-white/30">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-600 font-medium">Итого</span>
+                    <span id="cart-total" class="text-xl font-bold text-[var(--olive)]">0 Kč</span>
                 </div>
-                <span class="status-badge status-active">
-                    ✓ Активная подписка
-                </span>
+                <button class="w-full btn-accent py-3.5 text-base font-semibold">Оформить заказ</button>
+                <p class="text-xs text-gray-500 text-center mt-3">🚚 Доставка каждую пятницу</p>
             </div>
         </div>
+    </div>
+    <div id="overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 hidden z-[150]" aria-hidden="true"></div>
 
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-            <div class="stat-card">
-                <div class="flex items-center gap-3">
-                    <div class="text-3xl" aria-hidden="true">📦</div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Доставок в месяц</p>
-                        <p class="text-2xl font-bold" style="color: var(--dark-wood)">4</p>
-                    </div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="flex items-center gap-3">
-                    <div class="text-3xl" aria-hidden="true">🛒</div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Всего заказов</p>
-                        <p class="text-2xl font-bold" style="color: var(--dark-wood)" id="orders-count">0</p>
-                    </div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="flex items-center gap-3">
-                    <div class="text-3xl" aria-hidden="true">💰</div>
-                    <div>
-                        <p class="text-gray-500 text-sm">Сэкономлено</p>
-                        <p class="text-2xl font-bold" style="color: var(--dark-wood)" id="saved-amount">0 Kč</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Info Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- Personal Info -->
-            <div class="info-card">
-                <h2 class="text-xl font-bold mb-4 flex items-center" style="color: var(--dark-wood)">
-                    <span class="mr-2" aria-hidden="true">📋</span>
-                    Личная информация
-                </h2>
-                <div class="space-y-1">
-                    <div class="info-row">
-                        <span class="info-label">Email</span>
-                        <span class="info-value" id="member-email">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Телефон</span>
-                        <span class="info-value" id="member-phone">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Адрес доставки</span>
-                        <span class="info-value" id="member-address">-</span>
-                    </div>
-                </div>
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-user">
+                <div class="user-avatar" id="user-avatar">👤</div>
+                <div class="user-name" id="sidebar-user-name">Участник</div>
+                <div class="user-email" id="sidebar-user-email">email@example.com</div>
+                <div class="user-status">Активная подписка</div>
             </div>
 
-            <!-- Subscription Info -->
-            <div class="info-card">
-                <h2 class="text-xl font-bold mb-4 flex items-center" style="color: var(--dark-wood)">
-                    <span class="mr-2" aria-hidden="true">💚</span>
-                    Моя подписка
-                </h2>
-                <div class="space-y-4">
-                    <div class="delivery-info-card">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-gray-600 text-sm">Статус</span>
-                            <span class="status-badge status-active">Активна</span>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-600 text-sm">Доставок в месяц</span>
-                            <span class="font-semibold">4</span>
-                        </div>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Следующая доставка</span>
-                        <span class="info-value">Пятница</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Эко-коробка</span>
-                        <span class="info-value">📦 Выдана</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">План питания</span>
-                        <span class="info-value">🥗 Доступен</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <nav class="sidebar-nav">
+                <a href="#overview" class="nav-item active" data-section="overview">
+                    <span class="nav-item-icon">📊</span>
+                    <span>Обзор</span>
+                </a>
+                <a href="#orders" class="nav-item" data-section="orders">
+                    <span class="nav-item-icon">📦</span>
+                    <span>Заказы</span>
+                </a>
+                <a href="#subscription" class="nav-item" data-section="subscription">
+                    <span class="nav-item-icon">💚</span>
+                    <span>Подписка</span>
+                </a>
+                <a href="#settings" class="nav-item" data-section="settings">
+                    <span class="nav-item-icon">⚙️</span>
+                    <span>Настройки</span>
+                </a>
+            </nav>
+        </aside>
 
-        <!-- Eco Counter & Delivery Info -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <!-- Eco Counter -->
-            <div class="eco-counter">
-                <div class="text-4xl mb-2" aria-hidden="true">🌱</div>
-                <div class="eco-value" id="eco-points">0</div>
-                <div class="eco-label">эко-очков</div>
-                <p class="text-sm mt-3 opacity-90">Вы помогли сохранить окружающую среду</p>
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Добро пожаловать, <span id="main-user-name">Участник</span>!</h1>
+                <p class="dashboard-subtitle">Управляйте своими заказами и подпиской</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon green">📦</div>
+                    <div class="stat-label">Заказов всего</div>
+                    <div class="stat-value" id="stat-orders">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">🚚</div>
+                    <div class="stat-label">Доставок в месяц</div>
+                    <div class="stat-value">4</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">💰</div>
+                    <div class="stat-label">Сэкономлено</div>
+                    <div class="stat-value" id="stat-saved">0 Kč</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">🌱</div>
+                    <div class="stat-label">Эко-очков</div>
+                    <div class="stat-value" id="stat-eco">0</div>
+                </div>
             </div>
 
             <!-- Next Delivery -->
-            <div class="dashboard-card p-6">
-                <h2 class="text-lg font-bold mb-4 flex items-center" style="color: var(--dark-wood)">
-                    <span class="mr-2" aria-hidden="true">🚚</span>
-                    Следующая доставка
-                </h2>
-                <div class="space-y-3">
-                    <div class="info-row">
-                        <span class="info-label">Дата</span>
-                        <span class="info-value">Пятница, 27 февраля</span>
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span aria-hidden="true">🚚</span>
+                        Следующая доставка
+                    </h2>
+                    <a href="#tracking" class="card-action">Отследить →</a>
+                </div>
+                
+                <div class="order-item">
+                    <div class="order-icon">📦</div>
+                    <div class="order-details">
+                        <div class="order-name">Бокс с овощами</div>
+                        <div class="order-meta">Пятница, 27 февраля • 14:00 - 18:00</div>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">Время</span>
-                        <span class="info-value">14:00 - 18:00</span>
+                    <div class="order-price">В пути</div>
+                </div>
+
+                <div class="delivery-timeline" style="margin-top: 1.5rem;">
+                    <div class="timeline-step">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-label">Заказан</div>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">Статус</span>
-                        <span class="info-value">
-                            <span class="status-badge status-pending">В пути</span>
-                        </span>
+                    <div class="timeline-step">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-label">Собирается</div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-label">В пути</div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-dot pending"></div>
+                        <div class="timeline-label">Доставлен</div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Orders History -->
-        <div class="dashboard-card p-6 mb-8">
-            <div class="section-header">
-                <h2 class="text-xl font-bold flex items-center" style="color: var(--dark-wood)">
-                    <span class="mr-2" aria-hidden="true">📦</span>
-                    Мои заказы
-                </h2>
-            </div>
-            <div id="orders-list" class="space-y-3">
-                <div class="text-center py-8 text-gray-500">
-                    <div class="text-5xl mb-4" aria-hidden="true">📋</div>
-                    <p>Пока нет заказов</p>
-                    <p class="text-sm mt-2">Закажите продукты из витрины</p>
+            <!-- Recent Orders -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span aria-hidden="true">📋</span>
+                        Последние заказы
+                    </h2>
+                    <a href="#all-orders" class="card-action">Все заказы →</a>
+                </div>
+                
+                <div id="recent-orders">
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <div class="empty-title">Пока нет заказов</div>
+                        <div class="empty-text">Закажите продукты из витрины</div>
+                        <a href="marketplace.html" class="btn-primary" style="margin-top: 1rem; display: inline-flex;">
+                            <span aria-hidden="true">🛒</span>
+                            <span>В магазин</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Main Action Button -->
-        <div class="mb-8">
-            <a href="index.html#marketplace" class="btn-primary-member w-full sm:w-auto">
-                <span aria-hidden="true" class="text-xl">🛒</span>
-                <span>Перейти в магазин</span>
-            </a>
-        </div>
+            <!-- Quick Actions -->
+            <div class="content-card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span aria-hidden="true">⚡</span>
+                        Быстрые действия
+                    </h2>
+                </div>
+                
+                <div class="quick-actions">
+                    <a href="marketplace.html" class="quick-action-btn">
+                        <span class="quick-action-icon">🛒</span>
+                        <span>В магазин</span>
+                    </a>
+                    <a href="#subscription" class="quick-action-btn">
+                        <span class="quick-action-icon">⭐</span>
+                        <span>Улучшить подписку</span>
+                    </a>
+                    <a href="index.html#farmers" class="quick-action-btn">
+                        <span class="quick-action-icon">👨‍🌾</span>
+                        <span>Фермеры</span>
+                    </a>
+                    <a href="#settings" class="quick-action-btn">
+                        <span class="quick-action-icon">📍</span>
+                        <span>Адрес доставки</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
 
-        <!-- Secondary Actions -->
-        <div class="flex flex-wrap gap-4">
-            <a href="index.html#membership" class="btn-accent">
-                <span aria-hidden="true" class="text-xl">⭐</span>
-                <span>Улучшить подписку</span>
-            </a>
-            <a href="index.html#farmers" class="btn-accent" style="background: transparent; color: var(--accent); border: 2px solid var(--accent)">
-                <span aria-hidden="true" class="text-xl">👨‍🌾</span>
-                <span>Наши фермеры</span>
-            </a>
-        </div>
-    </main>
-
-    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/member-dashboard.js"></script>
 </body>
 </html>

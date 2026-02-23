@@ -492,7 +492,7 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             const rememberMe = document.getElementById('remember-me').checked;
-            
+
             // Создаём тестового пользователя
             const user = {
                 fullname: email.split('@')[0] + ' ' + email.split('@')[0],
@@ -500,19 +500,27 @@
                 phone: '+420 123 456 789',
                 address: 'Test Address 123, Prague'
             };
-            
+
             // Сохраняем в localStorage
             localStorage.setItem('biomarket_user', JSON.stringify(user));
-            localStorage.setItem('biomarket_user_role', 'buyer');
             
+            // Определяем роль по email (для теста)
+            // Если email содержит "farmer" - роль фермер, иначе - покупатель
+            const userRole = email.toLowerCase().includes('farmer') ? 'farmer' : 'buyer';
+            localStorage.setItem('biomarket_user_role', userRole);
+
             if (rememberMe) {
                 localStorage.setItem('biomarket_remember', 'true');
             }
-            
-            console.log('Login:', { email, password, rememberMe });
-            
-            // Перенаправляем в личный кабинет
-            window.location.href = 'member-dashboard.html';
+
+            console.log('Login:', { email, password, rememberMe, role: userRole });
+
+            // Перенаправляем в личный кабинет в зависимости от роли
+            if (userRole === 'farmer') {
+                window.location.href = 'farmer-dashboard.html';
+            } else {
+                window.location.href = 'member-dashboard.html';
+            }
         }
 
         function handleRegister(event) {

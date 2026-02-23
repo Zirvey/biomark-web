@@ -13,6 +13,9 @@ function initializeDashboard() {
     // Загрузить данные пользователя
     loadUserData();
     
+    // Обработать URL hash для навигации
+    handleHashChange();
+    
     // Прикрепить обработчики
     attachEventListeners();
 }
@@ -39,6 +42,12 @@ function loadUserData() {
     document.getElementById('sidebar-user-email').textContent = user.email || 'email@example.com';
     document.getElementById('main-user-name').textContent = firstName;
     
+    // Заполнить форму настроек
+    document.getElementById('settings-name').value = user.fullname || '';
+    document.getElementById('settings-email').value = user.email || '';
+    document.getElementById('settings-phone').value = user.phone || '';
+    document.getElementById('settings-address').value = user.address || '';
+    
     // Загрузить статистику
     loadStats();
 }
@@ -53,7 +62,6 @@ function getAvatarEmoji(role) {
 
 function loadStats() {
     // Имитация загрузки статистики
-    // В реальности здесь был бы запрос к API
     const orders = JSON.parse(localStorage.getItem('biomarket_orders') || '[]');
     const saved = orders.reduce((sum, order) => sum + (order.saved || 0), 0);
     const ecoPoints = orders.length * 10;
@@ -67,32 +75,135 @@ function loadStats() {
 // НАВИГАЦИЯ
 // ============================================
 
+function navigateTo(section) {
+    // Обновить URL hash
+    window.location.hash = section;
+    
+    // Переключить секцию
+    switchSection(section);
+}
+
+function switchSection(sectionId) {
+    // Скрыть все секции
+    document.querySelectorAll('.dashboard-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Показать нужную секцию
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.classList.add('active');
+        
+        // Прокрутка вверх
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    // Обновить активный пункт меню
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.section === sectionId) {
+            item.classList.add('active');
+        }
+    });
+    
+    // Обновить заголовок страницы
+    updatePageTitle(sectionId);
+}
+
+function updatePageTitle(section) {
+    const titles = {
+        'overview': 'Обзор — BioMarket',
+        'orders': 'Заказы — BioMarket',
+        'subscription': 'Подписка — BioMarket',
+        'settings': 'Настройки — BioMarket'
+    };
+    document.title = titles[section] || 'BioMarket';
+}
+
+function handleHashChange() {
+    const hash = window.location.hash.slice(1) || 'overview';
+    const validSections = ['overview', 'orders', 'subscription', 'settings'];
+    
+    if (validSections.includes(hash)) {
+        switchSection(hash);
+    } else {
+        switchSection('overview');
+    }
+}
+
+// ============================================
+// ОБРАБОТЧИКИ СОБЫТИЙ
+// ============================================
+
 function attachEventListeners() {
     // Навигация по секциям
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            // Обновить активный класс
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-            
-            // Прокрутка к секции
             const sectionId = item.dataset.section;
-            const section = document.querySelector(`#${sectionId}`);
-            if (section) {
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            navigateTo(sectionId);
         });
+    });
+    
+    // Обработка изменения hash в URL
+    window.addEventListener('hashchange', handleHashChange);
+    
+    // Форма настроек
+    document.getElementById('settings-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveSettings();
     });
     
     // Обработчик выхода
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('logout-btn') || e.target.closest('.logout-btn')) {
             e.preventDefault();
-            localStorage.removeItem(STORAGE_KEYS.USER);
-            localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
-            window.location.href = 'index.html';
+            logout();
         }
     });
 }
+
+// ============================================
+// ФУНКЦИИ
+// ============================================
+
+function saveSettings() {
+    const user = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER) || '{}');
+    
+    user.fullname = document.getElementById('settings-name').value;
+    user.email = document.getElementById('settings-email').value;
+    user.phone = document.getElementById('settings-phone').value;
+    user.address = document.getElementById('settings-address').value;
+    
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+    
+    // Обновить отображение
+    document.getElementById('sidebar-user-name').textContent = user.fullname.split(' ')[0];
+    document.getElementById('sidebar-user-email').textContent = user.email;
+    
+    // Анимация успеха
+    const btn = document.querySelector('#settings-form .btn-save');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span aria-hidden="true">✓</span><span>Сохранено!</span>';
+    btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+    }, 2000);
+}
+
+function toggleSwitch(element) {
+    element.classList.toggle('active');
+}
+
+function logout() {
+    localStorage.removeItem(STORAGE_KEYS.USER);
+    localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
+    window.location.href = 'index.html';
+}
+
+// Экспортировать для глобального доступа
+window.navigateTo = navigateTo;
+window.toggleSwitch = toggleSwitch;
+window.logout = logout;

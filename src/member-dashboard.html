@@ -17,6 +17,7 @@
             padding: 2rem;
             max-width: 1400px;
             margin: 0 auto;
+            min-height: calc(100vh - 80px);
         }
 
         @media (max-width: 1024px) {
@@ -43,9 +44,10 @@
             .dashboard-sidebar {
                 position: static;
                 display: flex;
-                gap: 1rem;
+                gap: 0.5rem;
                 overflow-x: auto;
                 padding: 1rem;
+                margin-bottom: 1rem;
             }
         }
 
@@ -111,7 +113,7 @@
         .sidebar-nav {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.25rem;
         }
 
         @media (max-width: 1024px) {
@@ -132,6 +134,10 @@
             cursor: pointer;
             transition: all 0.2s ease;
             text-decoration: none;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
         }
 
         .nav-item:hover {
@@ -168,6 +174,27 @@
         .dashboard-subtitle {
             color: #6b7280;
             font-size: 1rem;
+        }
+
+        /* Section transitions */
+        .dashboard-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Stats Grid */
@@ -237,6 +264,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .card-title {
@@ -246,18 +275,6 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-        }
-
-        .card-action {
-            color: #84A93C;
-            font-weight: 500;
-            font-size: 0.875rem;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .card-action:hover {
-            color: #6B8A31;
         }
 
         /* Order Item */
@@ -312,6 +329,28 @@
             font-weight: 700;
             color: #84A93C;
             font-size: 1.125rem;
+        }
+
+        .order-status {
+            padding: 0.375rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .order-status.delivered {
+            background: rgba(132, 169, 60, 0.1);
+            color: #84A93C;
+        }
+
+        .order-status.pending {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+        }
+
+        .order-status.processing {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
         }
 
         /* Delivery Timeline */
@@ -415,6 +454,140 @@
         .quick-action-icon {
             font-size: 2rem;
         }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #84A93C;
+            box-shadow: 0 0 0 4px rgba(132, 169, 60, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Subscription Card */
+        .subscription-card {
+            background: linear-gradient(135deg, rgba(132, 169, 60, 0.1) 0%, rgba(132, 169, 60, 0.05) 100%);
+            border: 2px solid rgba(132, 169, 60, 0.2);
+        }
+
+        .subscription-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(132, 169, 60, 0.15);
+            color: #84A93C;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* Settings Toggle */
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .setting-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            background: #e5e7eb;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .toggle-switch.active {
+            background: #84A93C;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+
+        /* Save Button */
+        .btn-save {
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(132, 169, 60, 0.3);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(132, 169, 60, 0.4);
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -453,146 +626,360 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="#overview" class="nav-item active" data-section="overview">
+                <button class="nav-item active" data-section="overview">
                     <span class="nav-item-icon">📊</span>
                     <span>Обзор</span>
-                </a>
-                <a href="#orders" class="nav-item" data-section="orders">
+                </button>
+                <button class="nav-item" data-section="orders">
                     <span class="nav-item-icon">📦</span>
                     <span>Заказы</span>
-                </a>
-                <a href="#subscription" class="nav-item" data-section="subscription">
+                </button>
+                <button class="nav-item" data-section="subscription">
                     <span class="nav-item-icon">💚</span>
                     <span>Подписка</span>
-                </a>
-                <a href="#settings" class="nav-item" data-section="settings">
+                </button>
+                <button class="nav-item" data-section="settings">
                     <span class="nav-item-icon">⚙️</span>
                     <span>Настройки</span>
-                </a>
+                </button>
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="dashboard-main">
-            <div class="dashboard-header">
-                <h1 class="dashboard-title">Добро пожаловать, <span id="main-user-name">Участник</span>!</h1>
-                <p class="dashboard-subtitle">Управляйте своими заказами и подпиской</p>
-            </div>
-
-            <!-- Stats -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon green">📦</div>
-                    <div class="stat-label">Заказов всего</div>
-                    <div class="stat-value" id="stat-orders">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon blue">🚚</div>
-                    <div class="stat-label">Доставок в месяц</div>
-                    <div class="stat-value">4</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon purple">💰</div>
-                    <div class="stat-label">Сэкономлено</div>
-                    <div class="stat-value" id="stat-saved">0 Kč</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon orange">🌱</div>
-                    <div class="stat-label">Эко-очков</div>
-                    <div class="stat-value" id="stat-eco">0</div>
-                </div>
-            </div>
-
-            <!-- Next Delivery -->
-            <div class="content-card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <span aria-hidden="true">🚚</span>
-                        Следующая доставка
-                    </h2>
-                    <a href="#tracking" class="card-action">Отследить →</a>
-                </div>
-                
-                <div class="order-item">
-                    <div class="order-icon">📦</div>
-                    <div class="order-details">
-                        <div class="order-name">Бокс с овощами</div>
-                        <div class="order-meta">Пятница, 27 февраля • 14:00 - 18:00</div>
-                    </div>
-                    <div class="order-price">В пути</div>
+            <!-- Overview Section -->
+            <section id="overview" class="dashboard-section active">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Добро пожаловать, <span id="main-user-name">Участник</span>!</h1>
+                    <p class="dashboard-subtitle">Обзор вашей активности и подписки</p>
                 </div>
 
-                <div class="delivery-timeline" style="margin-top: 1.5rem;">
-                    <div class="timeline-step">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-label">Заказан</div>
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon green">📦</div>
+                        <div class="stat-label">Заказов всего</div>
+                        <div class="stat-value" id="stat-orders">0</div>
                     </div>
-                    <div class="timeline-step">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-label">Собирается</div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue">🚚</div>
+                        <div class="stat-label">Доставок в месяц</div>
+                        <div class="stat-value">4</div>
                     </div>
-                    <div class="timeline-step">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-label">В пути</div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">💰</div>
+                        <div class="stat-label">Сэкономлено</div>
+                        <div class="stat-value" id="stat-saved">0 Kč</div>
                     </div>
-                    <div class="timeline-step">
-                        <div class="timeline-dot pending"></div>
-                        <div class="timeline-label">Доставлен</div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">🌱</div>
+                        <div class="stat-label">Эко-очков</div>
+                        <div class="stat-value" id="stat-eco">0</div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Recent Orders -->
-            <div class="content-card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <span aria-hidden="true">📋</span>
-                        Последние заказы
-                    </h2>
-                    <a href="#all-orders" class="card-action">Все заказы →</a>
+                <!-- Next Delivery -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">🚚</span>
+                            Следующая доставка
+                        </h2>
+                        <a href="#tracking" class="card-action">Отследить →</a>
+                    </div>
+                    
+                    <div class="order-item">
+                        <div class="order-icon">📦</div>
+                        <div class="order-details">
+                            <div class="order-name">Бокс с овощами</div>
+                            <div class="order-meta">Пятница, 27 февраля • 14:00 - 18:00</div>
+                        </div>
+                        <div class="order-status processing">В пути</div>
+                    </div>
+
+                    <div class="delivery-timeline" style="margin-top: 1.5rem;">
+                        <div class="timeline-step">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Заказан</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Собирается</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">В пути</div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="timeline-dot pending"></div>
+                            <div class="timeline-label">Доставлен</div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div id="recent-orders">
-                    <div class="empty-state">
-                        <div class="empty-icon">📦</div>
-                        <div class="empty-title">Пока нет заказов</div>
-                        <div class="empty-text">Закажите продукты из витрины</div>
-                        <a href="marketplace.html" class="btn-primary" style="margin-top: 1rem; display: inline-flex;">
-                            <span aria-hidden="true">🛒</span>
+
+                <!-- Recent Orders -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">📋</span>
+                            Последние заказы
+                        </h2>
+                        <a href="#" class="card-action" onclick="navigateTo('orders'); return false;">Все заказы →</a>
+                    </div>
+                    
+                    <div id="recent-orders">
+                        <div class="empty-state">
+                            <div class="empty-icon">📦</div>
+                            <div class="empty-title">Пока нет заказов</div>
+                            <div class="empty-text">Закажите продукты из витрины</div>
+                            <a href="marketplace.html" class="btn-save" style="margin-top: 1rem; display: inline-flex;">
+                                <span aria-hidden="true">🛒</span>
+                                <span>В магазин</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">⚡</span>
+                            Быстрые действия
+                        </h2>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <a href="marketplace.html" class="quick-action-btn">
+                            <span class="quick-action-icon">🛒</span>
                             <span>В магазин</span>
+                        </a>
+                        <a href="#" class="quick-action-btn" onclick="navigateTo('subscription'); return false;">
+                            <span class="quick-action-icon">⭐</span>
+                            <span>Подписка</span>
+                        </a>
+                        <a href="index.html#farmers" class="quick-action-btn">
+                            <span class="quick-action-icon">👨‍🌾</span>
+                            <span>Фермеры</span>
+                        </a>
+                        <a href="#" class="quick-action-btn" onclick="navigateTo('settings'); return false;">
+                            <span class="quick-action-icon">📍</span>
+                            <span>Адрес</span>
                         </a>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Quick Actions -->
-            <div class="content-card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <span aria-hidden="true">⚡</span>
-                        Быстрые действия
-                    </h2>
+            <!-- Orders Section -->
+            <section id="orders" class="dashboard-section">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Мои заказы</h1>
+                    <p class="dashboard-subtitle">История всех ваших заказов</p>
                 </div>
-                
-                <div class="quick-actions">
-                    <a href="marketplace.html" class="quick-action-btn">
-                        <span class="quick-action-icon">🛒</span>
-                        <span>В магазин</span>
-                    </a>
-                    <a href="#subscription" class="quick-action-btn">
-                        <span class="quick-action-icon">⭐</span>
-                        <span>Улучшить подписку</span>
-                    </a>
-                    <a href="index.html#farmers" class="quick-action-btn">
-                        <span class="quick-action-icon">👨‍🌾</span>
-                        <span>Фермеры</span>
-                    </a>
-                    <a href="#settings" class="quick-action-btn">
-                        <span class="quick-action-icon">📍</span>
-                        <span>Адрес доставки</span>
-                    </a>
+
+                <div class="content-card">
+                    <div id="orders-list">
+                        <div class="empty-state">
+                            <div class="empty-icon">📦</div>
+                            <div class="empty-title">Пока нет заказов</div>
+                            <div class="empty-text">Закажите продукты из витрины</div>
+                            <a href="marketplace.html" class="btn-save" style="margin-top: 1rem; display: inline-flex;">
+                                <span aria-hidden="true">🛒</span>
+                                <span>В магазин</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
+
+            <!-- Subscription Section -->
+            <section id="subscription" class="dashboard-section">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Моя подписка</h1>
+                    <p class="dashboard-subtitle">Управление подпиской и доставкой</p>
+                </div>
+
+                <div class="content-card subscription-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">💚</span>
+                            Текущий план
+                        </h2>
+                        <span class="subscription-badge">
+                            <span>✓</span>
+                            <span>Активна</span>
+                        </span>
+                    </div>
+                    
+                    <div class="stats-grid" style="margin-bottom: 1.5rem;">
+                        <div>
+                            <div class="stat-label">Доставок в месяц</div>
+                            <div class="stat-value">4</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">Следующая доставка</div>
+                            <div class="stat-value">Пятница</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">Эко-коробка</div>
+                            <div class="stat-value">📦 Выдана</div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a href="index.html#membership" class="btn-save">
+                            <span aria-hidden="true">⭐</span>
+                            <span>Улучшить подписку</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">📅</span>
+                            Преимущества подписки
+                        </h2>
+                    </div>
+                    
+                    <div style="display: grid; gap: 1rem;">
+                        <div class="order-item">
+                            <div class="order-icon">🚚</div>
+                            <div class="order-details">
+                                <div class="order-name">4 доставки в месяц</div>
+                                <div class="order-meta">Каждую пятницу свежий бокс</div>
+                            </div>
+                        </div>
+                        <div class="order-item">
+                            <div class="order-icon">💰</div>
+                            <div class="order-details">
+                                <div class="order-name">Цены фермеров</div>
+                                <div class="order-meta">Экономия до 40% на продуктах</div>
+                            </div>
+                        </div>
+                        <div class="order-item">
+                            <div class="order-icon">♻️</div>
+                            <div class="order-details">
+                                <div class="order-name">Эко-коробка</div>
+                                <div class="order-meta">Многоразовая деревянная тара</div>
+                            </div>
+                        </div>
+                        <div class="order-item">
+                            <div class="order-icon">🥗</div>
+                            <div class="order-details">
+                                <div class="order-name">Консультации нутрициолога</div>
+                                <div class="order-meta">Планы питания для здоровья</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="dashboard-section">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Настройки</h1>
+                    <p class="dashboard-subtitle">Управление профилем и предпочтениями</p>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">👤</span>
+                            Личная информация
+                        </h2>
+                    </div>
+                    
+                    <form id="settings-form">
+                        <div class="form-group">
+                            <label class="form-label" for="settings-name">ФИО</label>
+                            <input type="text" id="settings-name" class="form-input" placeholder="Иванов Иван Иванович">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="settings-email">Email</label>
+                                <input type="email" id="settings-email" class="form-input" placeholder="ivan@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="settings-phone">Телефон</label>
+                                <input type="tel" id="settings-phone" class="form-input" placeholder="+420 XXX XXX XXX">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="settings-address">Адрес доставки</label>
+                            <input type="text" id="settings-address" class="form-input" placeholder="Улица, дом, квартира, город">
+                        </div>
+                        
+                        <button type="submit" class="btn-save">
+                            <span aria-hidden="true">✓</span>
+                            <span>Сохранить изменения</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">🔔</span>
+                            Уведомления
+                        </h2>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Email уведомления</div>
+                            <div class="setting-description">Получать новости о доставках на email</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)"></div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">SMS уведомления</div>
+                            <div class="setting-description">Получать SMS перед доставкой</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Маркетинговые рассылки</div>
+                            <div class="setting-description">Акции и специальные предложения</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">🔒</span>
+                            Безопасность
+                        </h2>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Сменить пароль</div>
+                            <div class="setting-description">Измените пароль вашего аккаунта</div>
+                        </div>
+                        <button class="btn-save" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Изменить</button>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <div class="setting-label">Выйти из аккаунта</div>
+                            <div class="setting-description">Завершить текущую сессию</div>
+                        </div>
+                        <button class="btn-save" style="padding: 0.5rem 1rem; font-size: 0.875rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);" onclick="logout()">
+                            <span aria-hidden="true">↪️</span>
+                            <span>Выйти</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 

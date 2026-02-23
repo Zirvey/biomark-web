@@ -215,7 +215,7 @@ export function updateAuthUI(user, userRole) {
         `;
     } else {
         html = `
-            <a href="register.html" class="text-gray-600 hover:text-[var(--olive)] transition-colors font-medium text-sm flex items-center gap-2">
+            <a href="register.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-gray-700 hover:border-[#84A93C]/40 hover:bg-[#84A93C]/5 flex-shrink-0">
                 <span>Войти</span>
             </a>
         `;

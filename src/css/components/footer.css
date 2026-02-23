@@ -1,0 +1,17 @@
+/* src/css/components/footer.css */
+
+footer {
+    margin-top: auto;
+}
+
+footer a {
+    @apply hover:text-white/80 transition-colors duration-300;
+}
+
+footer a:focus-visible {
+    @apply outline-none underline;
+}
+
+.delivery-badge {
+    @apply inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-white;
+}

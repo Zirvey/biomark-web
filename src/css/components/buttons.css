@@ -1,0 +1,62 @@
+/* src/css/components/buttons.css */
+
+@layer components {
+  .btn-accent,
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-[#84A93C] text-white px-6 py-3 rounded-xl font-semibold;
+    @apply hover:bg-[#6B8A31] hover:shadow-lg hover:-translate-y-0.5;
+    @apply transition-all duration-200 active:scale-95;
+  }
+
+  .btn-outline-olive,
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-transparent border-2 border-[#84A93C] text-[#84A93C] px-6 py-3 rounded-xl font-semibold;
+    @apply hover:bg-[#84A93C]/10 hover:shadow-lg hover:-translate-y-0.5;
+    @apply transition-all duration-200 active:scale-95;
+  }
+
+  .btn-wood {
+    @apply btn-primary;
+    background: linear-gradient(135deg, #7A6B5A 0%, #5C4D3A 100%);
+  }
+
+  /* Header buttons */
+  .header-btn,
+  .role-badge,
+  .btn-logout {
+    @apply px-4 py-2 rounded-full font-semibold text-sm;
+    @apply inline-flex items-center justify-center gap-2;
+    @apply transition-all duration-200 min-h-[40px] whitespace-nowrap;
+  }
+
+  .role-badge {
+    @apply bg-[#84A93C] text-white;
+    box-shadow: 0 2px 8px rgba(132, 169, 60, 0.25);
+  }
+
+  .btn-logout {
+    @apply bg-transparent text-[#84A93C] border-2 border-[#84A93C];
+  }
+
+  .btn-logout:hover {
+    @apply bg-[#84A93C] text-white;
+  }
+
+  /* Filter buttons */
+  .filter-btn {
+    @apply px-4 py-2 rounded-full font-medium bg-white text-gray-700 border border-gray-200;
+    @apply hover:bg-[#84A93C]/5 hover:border-[#84A93C]/40 hover:text-[#84A93C];
+    @apply transition-all duration-200 ease-out shadow-sm;
+  }
+
+  .filter-btn.active {
+    @apply bg-[#84A93C] text-white border-[#84A93C] shadow-md;
+  }
+
+  /* Step number */
+  .step-number {
+    @apply w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold text-white;
+    background: #84A93C;
+    box-shadow: 0 2px 10px rgba(132, 169, 60, 0.3);
+  }
+}

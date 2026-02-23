@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет — BioMarket</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen">
+    <!-- Background Fruits -->
+    <div class="page-fruits" aria-hidden="true">
+        <span class="page-fruit" style="top: 5%; left: 3%; font-size: 4rem; animation-delay: 0s; animation-duration: 9s">🥕</span>
+        <span class="page-fruit" style="top: 10%; right: 5%; font-size: 5rem; animation-delay: 1.5s; animation-duration: 11s">🍎</span>
+        <span class="page-fruit" style="top: 20%; left: 8%; font-size: 3rem; animation-delay: 3s; animation-duration: 8s">🥬</span>
+        <span class="page-fruit" style="top: 30%; right: 8%; font-size: 4.5rem; animation-delay: 0.5s; animation-duration: 10s">🍇</span>
+        <span class="page-fruit" style="top: 40%; left: 5%; font-size: 3.5rem; animation-delay: 2s; animation-duration: 9s">🍓</span>
+        <span class="page-fruit" style="top: 50%; right: 3%; font-size: 4rem; animation-delay: 4s; animation-duration: 12s">🥔</span>
+        <span class="page-fruit" style="top: 60%; left: 10%; font-size: 3rem; animation-delay: 1s; animation-duration: 8s">🍊</span>
+        <span class="page-fruit" style="top: 70%; right: 10%; font-size: 5rem; animation-delay: 2.5s; animation-duration: 10s">🥒</span>
+        <span class="page-fruit" style="top: 80%; left: 5%; font-size: 3.5rem; animation-delay: 3.5s; animation-duration: 11s">🌽</span>
+        <span class="page-fruit" style="top: 85%; right: 5%; font-size: 4rem; animation-delay: 0.8s; animation-duration: 9s">🍐</span>
+        <span class="page-fruit" style="top: 92%; left: 15%; font-size: 3rem; animation-delay: 1.8s; animation-duration: 10s">🍋</span>
+        <span class="page-fruit" style="top: 15%; right: 20%; font-size: 3.5rem; animation-delay: 2.8s; animation-duration: 8s">🥝</span>
+    </div>
+
+    <!-- Header (identical to index.html) -->
+    <nav class="sticky-nav" role="navigation" aria-label="Основная навигация">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-14 sm:h-16">
+                <a href="index.html" class="flex items-center space-x-2 flex-shrink-0">
+                    <span class="text-2xl sm:text-3xl" aria-hidden="true">🥕</span>
+                    <span class="text-lg sm:text-2xl font-bold" style="color: var(--dark-wood)">BioMarket Club</span>
+                </a>
+
+                <div class="hidden md:flex items-center space-x-8 flex-shrink-0">
+                    <a href="index.html#membership" class="nav-link font-medium text-sm">Клуб</a>
+                    <a href="index.html#farmers" class="nav-link font-medium text-sm">Фермеры</a>
+                    <a href="index.html#how-it-works" class="nav-link font-medium text-sm">Как работает</a>
+                    <a href="index.html#marketplace" class="nav-link font-medium text-sm">Витрина</a>
+                </div>
+
+                <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <!-- Role badge -->
+                    <a href="member-dashboard.html" class="header-btn role-badge">
+                        <span aria-hidden="true">🥕</span>
+                        <span class="hidden sm:inline" id="member-name-header">Участник</span>
+                    </a>
+
+                    <!-- Logout button -->
+                    <button onclick="logout()" class="header-btn btn-logout" title="Выйти" aria-label="Выйти из аккаунта">
+                        <span aria-hidden="true">↪️</span>
+                        <span class="hidden sm:inline">Выйти</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Card -->
+        <div class="dashboard-card p-6 sm:p-8 mb-8 border-l-4" style="border-left-color: var(--accent)">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-md" style="background: var(--accent); color: var(--beige-text)">
+                        👤
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight" style="color: var(--dark-wood)" id="member-name">Участник</h1>
+                        <p class="text-gray-500 text-sm mt-0.5" id="member-email-display">-</p>
+                    </div>
+                </div>
+                <span class="status-badge status-active">
+                    ✓ Активная подписка
+                </span>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+            <div class="stat-card">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl" aria-hidden="true">📦</div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Доставок в месяц</p>
+                        <p class="text-2xl font-bold" style="color: var(--dark-wood)">4</p>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl" aria-hidden="true">🛒</div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Всего заказов</p>
+                        <p class="text-2xl font-bold" style="color: var(--dark-wood)" id="orders-count">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl" aria-hidden="true">💰</div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Сэкономлено</p>
+                        <p class="text-2xl font-bold" style="color: var(--dark-wood)" id="saved-amount">0 Kč</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Personal Info -->
+            <div class="info-card">
+                <h2 class="text-xl font-bold mb-4 flex items-center" style="color: var(--dark-wood)">
+                    <span class="mr-2" aria-hidden="true">📋</span>
+                    Личная информация
+                </h2>
+                <div class="space-y-1">
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value" id="member-email">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Телефон</span>
+                        <span class="info-value" id="member-phone">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Адрес доставки</span>
+                        <span class="info-value" id="member-address">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscription Info -->
+            <div class="info-card">
+                <h2 class="text-xl font-bold mb-4 flex items-center" style="color: var(--dark-wood)">
+                    <span class="mr-2" aria-hidden="true">💚</span>
+                    Моя подписка
+                </h2>
+                <div class="space-y-4">
+                    <div class="delivery-info-card">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-gray-600 text-sm">Статус</span>
+                            <span class="status-badge status-active">Активна</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600 text-sm">Доставок в месяц</span>
+                            <span class="font-semibold">4</span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Следующая доставка</span>
+                        <span class="info-value">Пятница</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Эко-коробка</span>
+                        <span class="info-value">📦 Выдана</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">План питания</span>
+                        <span class="info-value">🥗 Доступен</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eco Counter & Delivery Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Eco Counter -->
+            <div class="eco-counter">
+                <div class="text-4xl mb-2" aria-hidden="true">🌱</div>
+                <div class="eco-value" id="eco-points">0</div>
+                <div class="eco-label">эко-очков</div>
+                <p class="text-sm mt-3 opacity-90">Вы помогли сохранить окружающую среду</p>
+            </div>
+
+            <!-- Next Delivery -->
+            <div class="dashboard-card p-6">
+                <h2 class="text-lg font-bold mb-4 flex items-center" style="color: var(--dark-wood)">
+                    <span class="mr-2" aria-hidden="true">🚚</span>
+                    Следующая доставка
+                </h2>
+                <div class="space-y-3">
+                    <div class="info-row">
+                        <span class="info-label">Дата</span>
+                        <span class="info-value">Пятница, 27 февраля</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Время</span>
+                        <span class="info-value">14:00 - 18:00</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Статус</span>
+                        <span class="info-value">
+                            <span class="status-badge status-pending">В пути</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders History -->
+        <div class="dashboard-card p-6 mb-8">
+            <div class="section-header">
+                <h2 class="text-xl font-bold flex items-center" style="color: var(--dark-wood)">
+                    <span class="mr-2" aria-hidden="true">📦</span>
+                    Мои заказы
+                </h2>
+            </div>
+            <div id="orders-list" class="space-y-3">
+                <div class="text-center py-8 text-gray-500">
+                    <div class="text-5xl mb-4" aria-hidden="true">📋</div>
+                    <p>Пока нет заказов</p>
+                    <p class="text-sm mt-2">Закажите продукты из витрины</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Action Button -->
+        <div class="mb-8">
+            <a href="index.html#marketplace" class="btn-primary-member w-full sm:w-auto">
+                <span aria-hidden="true" class="text-xl">🛒</span>
+                <span>Перейти в магазин</span>
+            </a>
+        </div>
+
+        <!-- Secondary Actions -->
+        <div class="flex flex-wrap gap-4">
+            <a href="index.html#membership" class="btn-accent">
+                <span aria-hidden="true" class="text-xl">⭐</span>
+                <span>Улучшить подписку</span>
+            </a>
+            <a href="index.html#farmers" class="btn-accent" style="background: transparent; color: var(--accent); border: 2px solid var(--accent)">
+                <span aria-hidden="true" class="text-xl">👨‍🌾</span>
+                <span>Наши фермеры</span>
+            </a>
+        </div>
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

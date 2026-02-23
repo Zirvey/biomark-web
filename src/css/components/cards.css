@@ -1,0 +1,48 @@
+/* src/css/components/cards.css */
+
+@layer components {
+  /* Базовый стиль карточки - оригинальный стиль из GitHub */
+  .card,
+  .membership-card,
+  .farmer-card,
+  .product-card {
+    @apply bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-white/50;
+    @apply hover:shadow-xl hover:-translate-y-1;
+    @apply transition-all duration-300;
+  }
+
+  /* Выделенная карточка (Popular/Featured) */
+  .card-popular {
+    @apply ring-2 ring-[#84A93C] relative scale-[1.02] shadow-2xl;
+  }
+
+  .card-popular::before {
+    content: '🔥 Популярный';
+    @apply absolute -top-3 left-1/2 -translate-x-1/2 bg-[#84A93C] text-white px-4 py-1 rounded-full text-xs font-medium whitespace-nowrap;
+  }
+
+  /* Product card specific */
+  .product-card {
+    @apply flex flex-col;
+  }
+
+  /* Price badge */
+  .price-badge {
+    @apply inline-block bg-[#84A93C]/10 text-[#84A93C] text-xs font-semibold px-2 py-1 rounded;
+  }
+
+  /* Tag farm */
+  .tag-farm {
+    @apply text-xs font-semibold px-3 py-1 rounded-full bg-[#84A93C]/10 text-[#84A93C] border border-[#84A93C]/20;
+  }
+
+  /* Savings badge */
+  .savings-badge {
+    @apply inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  /* Eco box highlight */
+  .eco-box-highlight {
+    @apply text-[#84A93C] font-bold;
+  }
+}

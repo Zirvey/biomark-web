@@ -1,0 +1,131 @@
+/* Register/Auth page styles */
+
+html {
+    scroll-behavior: smooth;
+}
+
+:root {
+    --dark-wood: #5D4037;
+    --olive: #6B8E23;
+    --olive-dark: #556B2F;
+    --sand: #F5E6D3;
+    --cream: #FAF7F2;
+    --amber: #D97706;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(180deg, var(--sand) 0%, var(--cream) 100%);
+    min-height: 100vh;
+}
+
+.auth-card {
+    background: #FDFBF7;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px rgba(107, 142, 35, 0.08);
+    border: 1px solid rgba(107, 142, 35, 0.06);
+}
+
+.btn-olive {
+    background: linear-gradient(135deg, var(--olive) 0%, var(--olive-dark) 100%);
+    color: white;
+    padding: 0.875rem 2rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(107, 142, 35, 0.3);
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-olive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(107, 142, 35, 0.4);
+}
+
+.btn-amber {
+    background: linear-gradient(135deg, var(--amber) 0%, #B45309 100%);
+    color: white;
+    padding: 0.875rem 2rem;
+    border-radius: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-amber:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4);
+}
+
+/* Input field - renamed to avoid conflict with global styles */
+.auth-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d0c5b5;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: var(--olive);
+    box-shadow: 0 0 0 3px rgba(107, 142, 35, 0.1);
+}
+
+.role-tabs {
+    display: flex;
+    background: rgba(107, 142, 35, 0.06);
+    border-radius: 1.25rem;
+    padding: 0.375rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(107, 142, 35, 0.08);
+}
+
+.role-tab {
+    flex: 1;
+    padding: 0.75rem;
+    text-align: center;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #6B7280;
+}
+
+.role-tab.active.buyer {
+    background: white;
+    color: var(--amber);
+    box-shadow: 0 2px 8px rgba(217, 119, 6, 0.2);
+}
+
+.role-tab.active.farmer {
+    background: white;
+    color: var(--olive);
+    box-shadow: 0 2px 8px rgba(107, 142, 35, 0.2);
+}
+
+.benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.benefit-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.form-section {
+    display: none;
+}
+
+.form-section.active {
+    display: block;
+}

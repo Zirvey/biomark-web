@@ -1,0 +1,44 @@
+/* src/css/components/header.css */
+
+nav.sticky-nav {
+    @apply sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-olive/10;
+}
+
+.nav-link {
+    @apply text-gray-700 hover:text-olive transition-colors duration-300;
+}
+
+.nav-link:focus-visible {
+    @apply outline-none ring-2 ring-olive ring-offset-2 rounded;
+}
+
+#mobile-menu {
+    animation: slideDown 0.3s ease-out;
+}
+
+#mobile-menu.hidden {
+    animation: slideUp 0.3s ease-out;
+    display: none;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}

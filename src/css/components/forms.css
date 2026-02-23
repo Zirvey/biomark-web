@@ -1,0 +1,39 @@
+/* src/css/components/forms.css */
+
+label {
+    @apply block font-semibold text-gray-700 mb-2;
+}
+
+input,
+select,
+textarea {
+    @apply w-full px-4 py-2.5 rounded-lg border border-gray-200 transition-all duration-300;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    @apply outline-none border-olive ring-2 ring-olive/10;
+}
+
+select {
+    @apply appearance-none bg-white pr-10 cursor-pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    @apply w-auto mr-2;
+}
+
+::placeholder {
+    @apply text-gray-400;
+}
+
+input:invalid {
+    @apply border-red-500;
+}

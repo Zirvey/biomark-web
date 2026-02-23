@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>BioMarket — Vegetable Subscription Club</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <nav class="sticky-nav" role="navigation" aria-label="Основная навигация" style="position: -webkit-sticky; position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(132, 169, 60, 0.1);">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-12 sm:h-14">
+                <a href="index.html" class="flex items-center gap-1.5 flex-shrink-0">
+                    <span class="text-xl sm:text-2xl" aria-hidden="true">🥕</span>
+                    <span class="text-base sm:text-lg font-bold" style="color: var(--earth)">BioMarket</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8 flex-shrink-0">
+                    <a href="#membership" class="nav-link font-medium text-sm">Клуб</a>
+                    <a href="#farmers" class="nav-link font-medium text-sm">Фермеры</a>
+                    <a href="#how-it-works" class="nav-link font-medium text-sm">Как работает</a>
+                    <a href="#marketplace" class="nav-link font-medium text-sm">Витрина</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center gap-0.5 md:hidden">
+                    <!-- Mobile Cart -->
+                    <button onclick="toggleCart()" class="relative p-1.5 text-gray-600 hover:text-[var(--olive)] transition-colors" aria-label="Открыть корзину">
+                        <span class="text-xl" aria-hidden="true">🛒</span>
+                        <span id="mobile-cart-count-header" class="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span>
+                    </button>
+                    <!-- Hamburger -->
+                    <button id="mobile-menu-btn" class="p-1.5 text-gray-600 hover:text-[var(--olive)] transition-colors" aria-label="Открыть меню" aria-expanded="false">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="hidden md:flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <!-- Cart -->
+                    <button onclick="toggleCart()" class="relative p-2 text-gray-600 hover:text-[var(--olive)] transition-all duration-300 flex-shrink-0" aria-label="Открыть корзину">
+                        <span class="text-2xl" aria-hidden="true">🛒</span>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                    </button>
+
+                    <!-- For Members / User Profile -->
+                    <div id="auth-buttons" class="flex-shrink-0">
+                        <!-- Will be populated by JS based on login state -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 py-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="#membership" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Клуб</a>
+                    <a href="#farmers" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Фермеры</a>
+                    <a href="#how-it-works" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Как работает</a>
+                    <a href="#marketplace" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Витрина</a>
+                    <!-- Mobile Auth Buttons -->
+                    <div id="mobile-auth-buttons" class="pt-3 border-t border-gray-100 px-4"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-[#FDFBF7] transform translate-x-full transition-transform duration-300 z-[200]" role="dialog" aria-label="Корзина покупок" aria-modal="true" style="box-shadow: -4px 0 24px rgba(128, 153, 79, 0.08);">
+        <div class="h-full flex flex-col">
+            <div class="p-5 sm:p-6 border-b border-[var(--olive)]/10 flex justify-between items-center bg-white/50">
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight"><span aria-hidden="true" class="opacity-90">🛒</span> Корзина</h2>
+                <button onclick="toggleCart()" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-[var(--olive)] hover:bg-[var(--olive)]/05 transition-all duration-200 text-xl font-light" aria-label="Закрыть корзину">×</button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
+                <div class="text-center py-16 px-4">
+                    <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-[var(--olive)]/10 flex items-center justify-center text-4xl" aria-hidden="true">🛒</div>
+                    <p class="text-gray-500 font-medium">Корзина пуста</p>
+                    <p class="text-sm text-gray-400 mt-1">Добавьте продукты из витрины — цены для участников клуба</p>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 border-t border-[var(--olive)]/10 bg-white/30">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-600 font-medium">Итого</span>
+                    <span id="cart-total" class="text-xl font-bold text-[var(--olive)]">0 Kč</span>
+                </div>
+                <button class="w-full btn-accent py-3.5 text-base font-semibold">
+                    Оформить заказ
+                </button>
+                <p class="text-xs text-gray-500 text-center mt-3">🚚 Доставка каждую пятницу</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 hidden z-[150]" aria-hidden="true"></div>
+
+    <!-- Hero Section -->
+    <section class="hero relative">
+        <!-- Background Fruits -->
+        <div class="page-fruits" aria-hidden="true" style="z-index: 0;">
+            <span class="page-fruit" style="top: 10%; left: 8%; font-size: 5rem; animation-delay: 0s; animation-duration: 11s">🥕</span>
+            <span class="page-fruit" style="top: 20%; right: 10%; font-size: 6rem; animation-delay: 1.5s; animation-duration: 13s">🍎</span>
+            <span class="page-fruit" style="top: 35%; left: 12%; font-size: 4rem; animation-delay: 3s; animation-duration: 9s">🥬</span>
+            <span class="page-fruit" style="top: 45%; right: 15%; font-size: 5rem; animation-delay: 0.8s; animation-duration: 12s">🍇</span>
+            <span class="page-fruit" style="top: 55%; left: 8%; font-size: 4.5rem; animation-delay: 2.2s; animation-duration: 10s">🍓</span>
+            <span class="page-fruit" style="top: 65%; right: 12%; font-size: 5rem; animation-delay: 4s; animation-duration: 14s">🥔</span>
+            <span class="page-fruit" style="top: 75%; left: 15%; font-size: 4rem; animation-delay: 1.2s; animation-duration: 9s">🍊</span>
+            <span class="page-fruit" style="top: 85%; right: 15%; font-size: 4rem; animation-delay: 2.8s; animation-duration: 11s">🥒</span>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 pb-40 relative" style="z-index: 10;">
+            <div class="text-center">
+                <div class="inline-flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-5 py-2.5 rounded-full mb-8 shadow-sm border border-[#84A93C]/10">
+                    <span class="text-[#84A93C] font-semibold" aria-hidden="true">🚚</span>
+                    <span class="text-sm font-medium text-gray-700">Работаем в Holešovice, Vinohrady, Žižkov, Dejvice</span>
+                </div>
+
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight">
+                    Прямой доступ к чешским<br>
+                    <span class="text-[#84A93C]">садам и огородам</span> <span aria-hidden="true">🚜</span>
+                </h1>
+
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-10">
+                    Подписка на доступ к ценам фермеров без посредников.
+                    <span class="font-semibold text-[#84A93C]">Экономьте до 40%</span> на свежих продуктах напрямую от производителей.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#membership" class="btn-hero-primary">
+                        <span aria-hidden="true">🥕</span>
+                        <span>Присоединиться</span>
+                    </a>
+                </div>
+
+                <!-- Trust badges -->
+                <div class="hero-trust-badges">
+                    <div class="hero-trust-badge">
+                        <span class="text-2xl" aria-hidden="true">🌿</span>
+                        <span class="font-medium">100% BIO</span>
+                    </div>
+                    <div class="hero-trust-badge">
+                        <span class="text-2xl" aria-hidden="true">🚜</span>
+                        <span class="font-medium">Прямо с фермы</span>
+                    </div>
+                    <div class="hero-trust-badge">
+                        <span class="text-2xl" aria-hidden="true">♻️</span>
+                        <span class="font-medium">Без пластика</span>
+                    </div>
+                    <div class="hero-trust-badge">
+                        <span class="text-2xl" aria-hidden="true">💰</span>
+                        <span class="font-medium">Цены без наценок</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Membership Section -->
+    <section id="membership" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4" style="color: var(--earth)">🥕 Выберите уровень членства</h2>
+                <p class="text-xl text-gray-600"><strong>Еженедельная бесплатная доставка</strong> каждую пятницу</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 items-stretch">
+                <!-- 1 Month -->
+                <article class="membership-card card flex flex-col" data-membership="1month">
+                    <div class="flex-1 flex flex-col text-center">
+                        <div class="text-5xl mb-4" aria-hidden="true">🌱</div>
+                        <h3 class="text-2xl font-bold mb-2" style="color: var(--earth)">1 месяц</h3>
+                        <p class="text-gray-600 mb-6">Базовый доступ</p>
+
+                        <div class="mb-6">
+                            <span class="price">590</span>
+                            <span class="price-period"> Kč/мес</span>
+                        </div>
+
+                        <ul class="space-y-3 mb-8 text-left flex-1">
+                            <li class="flex items-center space-x-3">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span class="text-gray-700">Доступ к ценам фермеров</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span class="text-gray-700">Доступ к витрине продуктов</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span class="text-gray-700">Еженедельная доставка</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span class="text-gray-700">Поддержка по email</span>
+                            </li>
+                        </ul>
+
+                        <button class="w-full btn-accent py-3 mt-auto">Выбрать план</button>
+                    </div>
+                </article>
+
+                <!-- 3 Months (Popular) -->
+                <article class="membership-card card card-popular flex flex-col" data-membership="3months">
+                    <div class="flex-1 flex flex-col text-center">
+                        <div class="text-5xl mb-4" aria-hidden="true">📦</div>
+                        <h3 class="text-2xl font-bold mb-2" style="color: var(--earth)">3 месяца</h3>
+                        <p class="text-gray-600 mb-6">С эко-коробкой</p>
+
+                        <div class="mb-6">
+                            <span class="price">1500</span>
+                            <span class="price-period"> Kč/3 мес</span>
+                        </div>
+                        <div class="savings-badge">💰 Экономия 270 Kč</div>
+
+                        <ul class="space-y-3 mb-8 text-left flex-1">
+                            <li class="flex items-center space-x-3">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span class="eco-box-highlight">📦 Качественная деревянная эко-коробка</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span class="text-gray-700">Приоритет на дефицитные овощи</span>
+                            </li>
+                        </ul>
+
+                        <button class="w-full btn-accent py-3 mt-auto">Выбрать план</button>
+                    </div>
+                </article>
+
+                <!-- 1 Year -->
+                <article class="membership-card card flex flex-col" data-membership="1year">
+                    <div class="flex-1 flex flex-col text-center">
+                        <div class="text-5xl mb-4" aria-hidden="true">🏆</div>
+                        <h3 class="text-2xl font-bold mb-2" style="color: var(--earth)">1 год</h3>
+                        <p class="text-gray-600 mb-6">Максимальная выгода</p>
+
+                        <div class="mb-6">
+                            <span class="price">4900</span>
+                            <span class="price-period"> Kč/год</span>
+                        </div>
+                        <div class="savings-badge">💰 Экономия 2180 Kč</div>
+
+                        <ul class="space-y-3 mb-8 text-left flex-1">
+                            <li class="flex items-center space-x-3">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span class="text-gray-700"><strong>Еженедельная консультация с нутрициологом</strong></span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span class="text-gray-700">Составление планов питания</span>
+                            </li>
+                        </ul>
+
+                        <button class="w-full btn-accent py-3 mt-auto">Выбрать план</button>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Eco Box Info -->
+            <div class="mt-12 card">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4" style="color: var(--earth)">📦 Эко-коробка — наша забота о природе</h3>
+                        <p class="text-gray-700 mb-4">
+                            Мы используем качественные деревянные коробки из натуральной древесины. 
+                            Они служат многократно и полностью экологичны.
+                        </p>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-center space-x-2">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span>Прочная и долговечная</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span>Возвратная тара (оборачиваемость)</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="text-green-500" aria-hidden="true">✓</span>
+                                <span>0% пластика</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="h-64 bg-gradient-to-br from-amber-100 to-yellow-200 rounded-2xl flex items-center justify-center text-9xl">
+                        📦
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Farmers Section -->
+    <section id="farmers" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4" style="color: var(--earth)">👨‍🌾 Наши Фермеры</h2>
+                <p class="text-xl text-gray-600">Знакомьтесь с производителями, которые выращивают ваши продукты</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+                <!-- Farmer 1 -->
+                <article class="farmer-card card flex flex-col">
+                    <div class="h-40 bg-gradient-to-br from-amber-100 to-yellow-200 flex items-center justify-center text-7xl rounded-xl">
+                        🥚
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h3 class="text-xl font-bold mb-2 farmer-name" style="color: var(--earth)">HOKI FARMA</h3>
+                        <p class="text-gray-600 text-sm mb-4">📍 Южная Чехия</p>
+                        <p class="text-gray-700 text-sm mb-4 line-clamp-2 farmer-desc" title="Vajíčka, která chutnají po slunci, svobodě a poctivé práci.">Vajíčka, která chutnají po slunci, svobodě a poctivé práci.</p>
+                        <div class="flex items-center justify-between gap-2 flex-wrap mt-auto">
+                            <div class="flex items-center space-x-1 farmer-rating">
+                                <span class="text-yellow-400" aria-hidden="true">⭐</span>
+                                <span class="font-semibold">4.9</span>
+                                <span class="text-gray-400 text-sm">(156)</span>
+                            </div>
+                            <button class="btn-outline-olive text-xs py-1.5 px-3 whitespace-nowrap">Ассортимент →</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Farmer 2 -->
+                <article class="farmer-card card flex flex-col">
+                    <div class="h-40 bg-gradient-to-br from-red-100 to-rose-200 flex items-center justify-center text-7xl rounded-xl">
+                        🍎
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h3 class="text-xl font-bold mb-2 farmer-name" style="color: var(--earth)">BIO zelenina Uhříněves</h3>
+                        <p class="text-gray-600 text-sm mb-4">📍 Моравия</p>
+                        <p class="text-gray-700 text-sm mb-4 line-clamp-2 farmer-desc" title="V současné době nabízíme široký sortiment BIO zeleniny a ovoce.">V současné době nabízíme široký sortiment BIO zeleniny a ovoce.</p>
+                        <div class="flex items-center justify-between gap-2 flex-wrap mt-auto">
+                            <div class="flex items-center space-x-1">
+                                <span class="text-yellow-400" aria-hidden="true">⭐</span>
+                                <span class="font-semibold">5.0</span>
+                                <span class="text-gray-400 text-sm">(203)</span>
+                            </div>
+                            <button class="btn-outline-olive text-xs py-1.5 px-3 whitespace-nowrap">Ассортимент →</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Farmer 3 -->
+                <article class="farmer-card card flex flex-col">
+                    <div class="h-40 bg-gradient-to-br from-green-100 to-emerald-200 flex items-center justify-center text-7xl rounded-xl">
+                        🥬
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h3 class="text-xl font-bold mb-2 farmer-name" style="color: var(--earth)">Farma Kopeček</h3>
+                        <p class="text-gray-600 text-sm mb-4">📍 Поллаби</p>
+                        <p class="text-gray-700 text-sm mb-4 line-clamp-2 farmer-desc" title="Farmy Čerstvě utrženo najdete v Olomouckém kraji - V Smržicích, v Kostelci na Haní, a dále v Mutěnicích, Velkých Němčicích, Hovoranech, Postoupkách, Velkých Bílovicích a Skrýšově.">Farmy Čerstvě utrženo najdete v Olomouckém kraji - V Smržicích, v Kostelci na Haní, a dále v Mutěnicích, Velkých Němčicích, Hovoranech, Postoupkách, Velkých Bílovicích a Skrýšově.</p>
+                        <div class="flex items-center justify-between gap-2 flex-wrap mt-auto">
+                            <div class="flex items-center space-x-1 farmer-rating">
+                                <span class="text-yellow-400" aria-hidden="true">⭐</span>
+                                <span class="font-semibold">4.8</span>
+                                <span class="text-gray-400 text-sm">(178)</span>
+                            </div>
+                            <button class="btn-outline-olive text-xs py-1.5 px-3 whitespace-nowrap">Ассортимент →</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Farmer 4 -->
+                <article class="farmer-card card flex flex-col">
+                    <div class="h-40 bg-gradient-to-br from-pink-100 to-rose-200 flex items-center justify-center text-7xl rounded-xl">
+                        🐄
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h3 class="text-xl font-bold mb-2 farmer-name" style="color: var(--earth)">Farma rodiny Němcovy</h3>
+                        <p class="text-gray-600 text-sm mb-4">📍 Крконоше</p>
+                        <p class="text-gray-700 text-sm mb-4 line-clamp-2 farmer-desc" title="Máme nejširší záběr v chování hospodářských zvířat - krávy na mléko, hovězí na maso, kuřecí na maso. Jsme jedna z mála farem, která dává na internet videa a fotky z farmy a výroby.">Máme nejširší záběr v chování hospodářských zvířat - krávy na mléko, hovězí na maso, kuřecí na maso. Jsme jedna z mála farem, která dává na internet videa a fotky z farmy a výroby.</p>
+                        <div class="flex items-center justify-between gap-2 flex-wrap mt-auto">
+                            <div class="flex items-center space-x-1">
+                                <span class="text-yellow-400" aria-hidden="true">⭐</span>
+                                <span class="font-semibold">4.9</span>
+                                <span class="text-gray-400 text-sm">(145)</span>
+                            </div>
+                            <button class="btn-outline-olive text-xs py-1.5 px-3 whitespace-nowrap">Ассортимент →</button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="text-center mt-10">
+                <a href="#marketplace" class="btn-wood inline-flex items-center space-x-2">
+                    <span>🛒</span>
+                    <span>Смотреть все продукты</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4" style="color: var(--earth)">📋 Как это работает</h2>
+                <p class="text-xl text-gray-600">4 простых шага к свежим продуктам от фермеров</p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Step 1 -->
+                <div class="step-card text-center">
+                    <div class="step-number mx-auto mb-6">
+                        1
+                    </div>
+                    <div class="text-5xl mb-4" aria-hidden="true">📝</div>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--earth)">Подписываешься</h3>
+                    <p class="text-gray-600">Выбираешь удобный план членства и получаешь доступ к ценам фермеров</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-card text-center">
+                    <div class="step-number mx-auto mb-6">
+                        2
+                    </div>
+                    <div class="text-5xl mb-4" aria-hidden="true">🛒</div>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--earth)">Выбираешь продукты</h3>
+                    <p class="text-gray-600">До вечера среды заказываешь свежие овощи и фрукты у любимых фермеров</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-card text-center">
+                    <div class="step-number mx-auto mb-6">
+                        3
+                    </div>
+                    <div class="text-5xl mb-4" aria-hidden="true">📦</div>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--earth)">Собираем бокс</h3>
+                    <p class="text-gray-600">В четверг мы аккуратно собираем всё в экологичную коробку</p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step-card text-center">
+                    <div class="step-number mx-auto mb-6">
+                        4
+                    </div>
+                    <div class="text-5xl mb-4" aria-hidden="true">🚚</div>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--earth)">Доставка</h3>
+                    <p class="text-gray-600">В пятницу курьер доставляет свежий бокс прямо к твоей двери</p>
+                </div>
+            </div>
+
+            <!-- Timeline visual -->
+            <div class="mt-16 rounded-3xl p-8">
+                <div class="flex flex-wrap justify-center items-center gap-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-xl font-bold text-red-600">ПН</div>
+                        <span class="text-gray-600">Открытие заказов</span>
+                    </div>
+                    <div class="hidden md:block w-12 h-0.5 bg-gray-200"></div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-xl font-bold text-orange-600">СР</div>
+                        <span class="text-gray-600">Дедлайн заказов</span>
+                    </div>
+                    <div class="hidden md:block w-12 h-0.5 bg-gray-200"></div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-xl font-bold text-green-600">ЧТ</div>
+                        <span class="text-gray-600">Сборка боксов</span>
+                    </div>
+                    <div class="hidden md:block w-12 h-0.5 bg-gray-200"></div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-xl font-bold text-blue-600">ПТ</div>
+                        <span class="text-gray-600">Доставка</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sticky Filters Panel -->
+    <div id="marketplace" class="sticky-filters border-y border-gray-200 shadow-sm" style="background: rgba(255, 255, 255, 0.95)">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-3">
+            <div class="flex flex-col gap-3">
+                <!-- Category Filters - Horizontal Scroll -->
+                <div class="flex gap-1.5 overflow-x-auto pb-2 pt-1 pl-1 scrollbar-hide" role="group" aria-label="Фильтры категорий">
+                    <button class="filter-btn active flex-shrink-0 px-4 py-2 rounded-full font-medium text-xs whitespace-nowrap transition-all duration-300 bg-[#84A93C] text-white shadow-md" data-category="all">Все</button>
+                    <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full font-medium text-xs whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-gray-700 hover:border-[#84A93C]/40 hover:bg-[#84A93C]/5" data-category="potatoes">🥔<span class="hidden md:inline ml-1">Картофель</span></button>
+                    <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full font-medium text-xs whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-gray-700 hover:border-[#84A93C]/40 hover:bg-[#84A93C]/5" data-category="vegetables">🥬<span class="hidden md:inline ml-1">Овощи</span></button>
+                    <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full font-medium text-xs whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-gray-700 hover:border-[#84A93C]/40 hover:bg-[#84A93C]/5" data-category="fruits">🍎<span class="hidden md:inline ml-1">Фрукты</span></button>
+                    <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full font-medium text-xs whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-gray-700 hover:border-[#84A93C]/40 hover:bg-[#84A93C]/5" data-category="berries">🍓<span class="hidden md:inline ml-1">Ягоды</span></button>
+                    <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full font-medium text-xs whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-gray-700 hover:border-[#84A93C]/40 hover:bg-[#84A93C]/5" data-category="herbs">🌿<span class="hidden md:inline ml-1">Зелень</span></button>
+                    <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full font-medium text-xs whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-gray-700 hover:border-[#84A93C]/40 hover:bg-[#84A93C]/5" data-category="eggs">🥚<span class="hidden md:inline ml-1">Яйца</span></button>
+                    <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full font-medium text-xs whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-gray-700 hover:border-[#84A93C]/40 hover:bg-[#84A93C]/5" data-category="meat">🥩<span class="hidden md:inline ml-1">Мясо</span></button>
+                </div>
+
+                <!-- Controls Row -->
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500 text-xs">💚 Цены для членов клуба</span>
+
+                    <!-- Sort Dropdown -->
+                    <div class="relative">
+                        <select id="sort-select" class="appearance-none px-3 py-1.5 pr-8 rounded-full border border-[var(--olive)]/20 bg-white font-medium text-gray-700 cursor-pointer hover:border-[var(--olive)]/40 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--olive)]/20 text-xs">
+                            <option value="rating">⭐ Рейтинг</option>
+                            <option value="price-asc">💰 Дешевле</option>
+                            <option value="price-desc">💰 Дороже</option>
+                        </select>
+                        <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs" aria-hidden="true">▼</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Showcase -->
+    <section class="py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold" style="color: var(--earth)">🏪 Витрина продуктов</h2>
+                <span id="products-count" class="text-gray-500 font-medium"><span id="visible-count">0</span> товаров</span>
+            </div>
+
+            <!-- Products Grid -->
+            <div id="products-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch" role="list" aria-label="Список продуктов">
+                <!-- Product cards will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 footer-transition" style="background: linear-gradient(135deg, var(--olive) 0%, var(--olive-dark) 100%); color: white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-3xl" aria-hidden="true">🥕</span>
+                        <span class="text-2xl font-bold">BioMarket Club</span>
+                    </div>
+                    <p class="text-white/80 text-sm">
+                        Прямой доступ к чешским фермерам. Свежие овощи и фрукты без посредников.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Клуб</h4>
+                    <ul class="space-y-2 text-white/80 text-sm">
+                        <li><a href="#membership" class="hover:text-white transition-colors">Членство</a></li>
+                        <li><a href="#farmers" class="hover:text-white transition-colors">Фермеры</a></li>
+                        <li><a href="#how-it-works" class="hover:text-white transition-colors">Как работает</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Информация</h4>
+                    <ul class="space-y-2 text-white/80 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">О нас</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Доставка</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Контакты</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Районы доставки</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="inline-flex items-center space-x-1 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-white">
+                            <span>📍</span>
+                            <span>Holešovice</span>
+                        </span>
+                        <span class="inline-flex items-center space-x-1 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-white">
+                            <span>📍</span>
+                            <span>Vinohrady</span>
+                        </span>
+                        <span class="inline-flex items-center space-x-1 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-white">
+                            <span>📍</span>
+                            <span>Žižkov</span>
+                        </span>
+                        <span class="inline-flex items-center space-x-1 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-white">
+                            <span>📍</span>
+                            <span>Dejvice</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eco Counter -->
+            <div class="border-t border-white/20 pt-8">
+                <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 text-center">
+                    <div class="text-5xl mb-4" aria-hidden="true">♻️</div>
+                    <h3 class="text-2xl font-bold mb-2">Эко-счетчик</h3>
+                    <p class="text-white/80 mb-4">Наши клиенты в Праге уже сэкономили</p>
+                    <div class="text-6xl font-extrabold" style="color: #C5D1A8">
+                        <span id="eco-counter">12450</span>
+                    </div>
+                    <p class="text-lg text-white/80 mt-2">пластиковых пакетов 🌍</p>
+                </div>
+            </div>
+
+            <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/60 text-sm">
+                <p>© 2026 BioMarket Praha. Všechna práva vyhrazena. S láskou 💚 pro farmáře a zákazníky.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

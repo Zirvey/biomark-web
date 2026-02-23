@@ -1,0 +1,60 @@
+/* src/css/base.css */
+
+@layer base {
+  :root {
+    --olive: #84A93C;
+    --olive-dark: #6B8A31;
+    --earth: #5C4D3A;
+    --gap: 1rem;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    min-height: 100vh;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply font-sans antialiased text-gray-900;
+    background: linear-gradient(
+      to bottom,
+      #FFFEF7 0%,
+      #FDF4D6 50%,
+      #F5E6C8 100%
+    );
+    min-height: 100vh;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Fixed background for desktop, scroll for mobile */
+  @media (min-width: 768px) {
+    body {
+      background-attachment: fixed;
+    }
+  }
+
+  /* All sections transparent to show body gradient */
+  section,
+  .hero,
+  .membership,
+  .farmers,
+  .how-it-works,
+  .marketplace {
+    @apply bg-transparent;
+  }
+
+  /* Smooth transition to footer */
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 250px;
+    background: linear-gradient(to bottom, transparent, rgba(132, 169, 60, 0.15));
+    pointer-events: none;
+    z-index: 0;
+  }
+}

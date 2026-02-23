@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кабинет фермера — BioMarket</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="min-h-screen">
+    <!-- Background Fruits -->
+    <div class="page-fruits" aria-hidden="true">
+        <span class="page-fruit" style="top: 5%; left: 3%; font-size: 4rem; animation-delay: 0s; animation-duration: 9s">🥕</span>
+        <span class="page-fruit" style="top: 10%; right: 5%; font-size: 5rem; animation-delay: 1.5s; animation-duration: 11s">🍎</span>
+        <span class="page-fruit" style="top: 20%; left: 8%; font-size: 3rem; animation-delay: 3s; animation-duration: 8s">🥬</span>
+        <span class="page-fruit" style="top: 30%; right: 8%; font-size: 4.5rem; animation-delay: 0.5s; animation-duration: 10s">🍇</span>
+        <span class="page-fruit" style="top: 40%; left: 5%; font-size: 3.5rem; animation-delay: 2s; animation-duration: 9s">🍓</span>
+        <span class="page-fruit" style="top: 50%; right: 3%; font-size: 4rem; animation-delay: 4s; animation-duration: 12s">🥔</span>
+        <span class="page-fruit" style="top: 60%; left: 10%; font-size: 3rem; animation-delay: 1s; animation-duration: 8s">🍊</span>
+        <span class="page-fruit" style="top: 70%; right: 10%; font-size: 5rem; animation-delay: 2.5s; animation-duration: 10s">🥒</span>
+        <span class="page-fruit" style="top: 80%; left: 5%; font-size: 3.5rem; animation-delay: 3.5s; animation-duration: 11s">🌽</span>
+        <span class="page-fruit" style="top: 85%; right: 5%; font-size: 4rem; animation-delay: 0.8s; animation-duration: 9s">🍐</span>
+        <span class="page-fruit" style="top: 92%; left: 15%; font-size: 3rem; animation-delay: 1.8s; animation-duration: 10s">🍋</span>
+        <span class="page-fruit" style="top: 15%; right: 20%; font-size: 3.5rem; animation-delay: 2.8s; animation-duration: 8s">🥝</span>
+    </div>
+
+    <!-- Header (identical to index.html) -->
+    <nav class="sticky-nav" role="navigation" aria-label="Основная навигация">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-14 sm:h-16">
+                <a href="index.html" class="flex items-center space-x-2 flex-shrink-0">
+                    <span class="text-2xl sm:text-3xl" aria-hidden="true">🥕</span>
+                    <span class="text-lg sm:text-2xl font-bold" style="color: var(--dark-wood)">BioMarket Club</span>
+                </a>
+
+                <div class="hidden md:flex items-center space-x-8 flex-shrink-0">
+                    <a href="index.html#membership" class="nav-link font-medium text-sm">Клуб</a>
+                    <a href="index.html#farmers" class="nav-link font-medium text-sm">Фермеры</a>
+                    <a href="index.html#how-it-works" class="nav-link font-medium text-sm">Как работает</a>
+                    <a href="index.html#marketplace" class="nav-link font-medium text-sm">Витрина</a>
+                </div>
+
+                <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <!-- Role badge -->
+                    <a href="farmer-dashboard.html" class="header-btn role-badge">
+                        <span aria-hidden="true">👨‍🌾</span>
+                        <span class="hidden sm:inline" id="farmer-name-header">Фермер</span>
+                    </a>
+
+                    <!-- Logout button -->
+                    <button onclick="logout()" class="header-btn btn-logout" title="Выйти" aria-label="Выйти из аккаунта">
+                        <span aria-hidden="true">↪️</span>
+                        <span class="hidden sm:inline">Выйти</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold mb-2" style="color: var(--dark-wood)">Кабинет фермера</h1>
+            <p class="text-gray-600">Управляйте урожаем и поставками</p>
+        </div>
+
+        <!-- Pickup Schedule Card -->
+        <div class="dashboard-card pickup-card p-6 mb-8">
+            <div class="flex items-start gap-4">
+                <div class="text-4xl" aria-hidden="true">🚚</div>
+                <div class="flex-1">
+                    <h2 class="text-lg font-bold mb-2" style="color: var(--dark-wood)">Забор груза на этой неделе</h2>
+                    <p class="text-gray-600 mb-4">Наша машина приедет к вам на ферму для забора урожая</p>
+                    <div class="flex flex-wrap gap-4">
+                        <div>
+                            <span class="text-sm text-gray-500">Дата:</span>
+                            <span class="ml-2 font-semibold">Четверг, 26 февраля</span>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-500">Время:</span>
+                            <span class="ml-2 font-semibold">08:00 - 12:00</span>
+                        </div>
+                        <div>
+                            <span class="text-sm text-gray-500">Адрес:</span>
+                            <span class="ml-2 font-semibold">Ваша ферма</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right flex-shrink-0">
+                    <div class="text-2xl sm:text-3xl font-bold" style="color: var(--dark-wood)">150 кг</div>
+                    <div class="text-sm text-gray-500">к забору</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="stat-card">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl" aria-hidden="true">💰</div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Выручка</p>
+                        <p class="text-2xl font-bold" style="color: var(--dark-wood)" id="revenue-stat">0 Kč</p>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl" aria-hidden="true">📦</div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Поставки</p>
+                        <p class="text-2xl font-bold" style="color: var(--dark-wood)" id="deliveries-stat">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl" aria-hidden="true">⭐</div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Рейтинг</p>
+                        <p class="text-2xl font-bold" style="color: var(--dark-wood)">4.9</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+            <!-- Left Column: Add Product Form -->
+            <div class="lg:col-span-1">
+                <div class="dashboard-card p-6 sticky top-24">
+                    <div class="section-header">
+                        <h2 class="text-xl font-bold flex items-center" style="color: var(--dark-wood)">
+                            <span class="mr-2" aria-hidden="true">➕</span> Добавить урожай
+                        </h2>
+                    </div>
+
+                    <form id="add-product-form" class="space-y-4" novalidate>
+                        <div>
+                            <label for="product-name" class="block text-sm font-medium text-gray-700 mb-1.5">Название овоща/фрукта</label>
+                            <input
+                                type="text"
+                                id="product-name"
+                                name="product-name"
+                                required
+                                placeholder="Например: Морковь"
+                                class="input-dashboard"
+                            >
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="product-quantity" class="block text-sm font-medium text-gray-700 mb-1.5">Кол-во (кг)</label>
+                                <input
+                                    type="number"
+                                    id="product-quantity"
+                                    name="product-quantity"
+                                    required
+                                    min="1"
+                                    placeholder="50"
+                                    class="input-dashboard"
+                                >
+                            </div>
+                            <div>
+                                <label for="product-price" class="block text-sm font-medium text-gray-700 mb-1.5">Цена (Kč/кг)</label>
+                                <input
+                                    type="number"
+                                    id="product-price"
+                                    name="product-price"
+                                    required
+                                    min="1"
+                                    placeholder="18"
+                                    class="input-dashboard"
+                                >
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="product-category" class="block text-sm font-medium text-gray-700 mb-1.5">Категория</label>
+                            <select
+                                id="product-category"
+                                name="product-category"
+                                class="input-dashboard"
+                            >
+                                <option value="potatoes">🥔 Корнеплоды</option>
+                                <option value="vegetables">🥬 Овощи</option>
+                                <option value="fruits">🍎 Фрукты</option>
+                                <option value="berries">🍓 Ягоды</option>
+                                <option value="herbs">🌿 Зелень и травы</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="product-harvest" class="block text-sm font-medium text-gray-700 mb-1.5">Дата сбора</label>
+                            <input
+                                type="date"
+                                id="product-harvest"
+                                name="product-harvest"
+                                class="input-dashboard"
+                            >
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="w-full btn-primary-farmer"
+                        >
+                            <span aria-hidden="true">✓</span>
+                            <span>Добавить товар</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Column: Products Table & Deliveries -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Products Table -->
+                <div class="dashboard-card p-6">
+                    <div class="section-header">
+                        <h2 class="text-xl font-bold flex items-center" style="color: var(--dark-wood)">
+                            <span class="mr-2" aria-hidden="true">📦</span> Мои товары на складе
+                        </h2>
+                        <span id="products-count" class="text-sm font-normal text-gray-500 bg-gray-100 px-3 py-1 rounded-full">0 позиций</span>
+                    </div>
+
+                    <!-- Desktop Table -->
+                    <table class="dashboard-table desktop-table">
+                        <thead class="table-header">
+                            <tr>
+                                <th>Название</th>
+                                <th>Категория</th>
+                                <th>Кол-во (кг)</th>
+                                <th>Цена (Kč/кг)</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                            <!-- Products will be added here dynamically -->
+                        </tbody>
+                    </table>
+
+                    <!-- Mobile Cards Container -->
+                    <div id="products-mobile-cards">
+                        <!-- Mobile cards will be added here dynamically -->
+                    </div>
+                </div>
+
+                <!-- Weekly Deliveries -->
+                <div class="dashboard-card p-6">
+                    <div class="section-header">
+                        <h2 class="text-xl font-bold flex items-center" style="color: var(--dark-wood)">
+                            <span class="mr-2" aria-hidden="true">📋</span> Мои поставки на эту неделю
+                        </h2>
+                    </div>
+
+                    <div id="deliveries-list" class="space-y-3">
+                        <!-- Delivery items will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

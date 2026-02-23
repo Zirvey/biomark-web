@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Витрина — BioMarket</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-[#FDFBF7] min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50" role="navigation" aria-label="Основная навигация">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-3xl" aria-hidden="true">🌿</span>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">BioMarket</span>
+                </a>
+                <div class="flex items-center space-x-4">
+                    <button 
+                        onclick="toggleCart()" 
+                        class="relative text-gray-600 hover:text-green-600 transition-colors"
+                        aria-label="Открыть корзину"
+                        aria-haspopup="dialog"
+                    >
+                        <span class="text-2xl" aria-hidden="true">🛒</span>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                    </button>
+                    <span class="text-gray-400" aria-hidden="true">|</span>
+                    <span class="text-gray-700 font-medium"><span aria-hidden="true">🛒</span> Покупатель</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Header -->
+        <div class="mb-10">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Витрина продуктов</h1>
+            <p class="text-gray-600">Свежие продукты напрямую от фермеров</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="rounded-3xl p-4 mb-8" role="group" aria-label="Фильтры категорий">
+            <div class="flex flex-wrap gap-3">
+                <button class="filter-btn active" data-category="all" aria-pressed="true">
+                    Все
+                </button>
+                <button class="filter-btn" data-category="vegetables" aria-pressed="false">
+                    🥬 Овощи
+                </button>
+                <button class="filter-btn" data-category="fruits" aria-pressed="false">
+                    🍎 Фрукты
+                </button>
+                <button class="filter-btn" data-category="dairy" aria-pressed="false">
+                    🥛 Молочные
+                </button>
+                <button class="filter-btn" data-category="meat" aria-pressed="false">
+                    🥩 Мясо
+                </button>
+                <button class="filter-btn" data-category="greens" aria-pressed="false">
+                    🌿 Зелень
+                </button>
+                <button class="filter-btn" data-category="honey" aria-pressed="false">
+                    🍯 Мёд
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="marketplace-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" role="list" aria-label="Список продуктов">
+            <!-- Sample Product Cards -->
+            <article class="product-card bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" data-category="vegetables" role="listitem">
+                <div class="h-40 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl mb-4 flex items-center justify-center text-6xl" aria-hidden="true">
+                    🍅
+                </div>
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="font-bold text-gray-900 text-lg">Помидоры</h3>
+                    <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Органические</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">Ферма "Зелёный сад"</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-2xl font-bold text-gray-900">250 Kč<span class="text-sm text-gray-500 font-normal">/кг</span></span>
+                    <button
+                        onclick="addToCart(this)"
+                        class="btn-primary px-4 py-2.5 flex items-center space-x-1"
+                        aria-label="Добавить помидоры в корзину"
+                    >
+                        <span aria-hidden="true">🛒</span>
+                        <span>В корзину</span>
+                    </button>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-xs">
+                    <span class="text-gray-500"><span aria-hidden="true">🚚</span> Доставка: 2-3 дня</span>
+                    <span class="text-green-600 font-medium">✓ В наличии</span>
+                </div>
+            </article>
+
+            <article class="product-card bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" data-category="fruits" role="listitem">
+                <div class="h-40 bg-gradient-to-br from-red-100 to-red-200 rounded-2xl mb-4 flex items-center justify-center text-6xl" aria-hidden="true">
+                    🍎
+                </div>
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="font-bold text-gray-900 text-lg">Яблоки</h3>
+                    <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Органические</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">Ферма "Сад мечты"</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-2xl font-bold text-gray-900">180 Kč<span class="text-sm text-gray-500 font-normal">/кг</span></span>
+                    <button
+                        onclick="addToCart(this)"
+                        class="btn-primary px-4 py-2.5 flex items-center space-x-1"
+                        aria-label="Добавить яблоки в корзину"
+                    >
+                        <span aria-hidden="true">🛒</span>
+                        <span>В корзину</span>
+                    </button>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-xs">
+                    <span class="text-gray-500"><span aria-hidden="true">🚚</span> Доставка: 1-2 дня</span>
+                    <span class="text-green-600 font-medium">✓ В наличии</span>
+                </div>
+            </article>
+
+            <article class="product-card bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" data-category="dairy" role="listitem">
+                <div class="h-40 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl mb-4 flex items-center justify-center text-6xl" aria-hidden="true">
+                    🥛
+                </div>
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="font-bold text-gray-900 text-lg">Молоко</h3>
+                    <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Свежее</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">Ферма "Луговое"</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-2xl font-bold text-gray-900">120 Kč<span class="text-sm text-gray-500 font-normal">/л</span></span>
+                    <button
+                        onclick="addToCart(this)"
+                        class="btn-primary px-4 py-2.5 flex items-center space-x-1"
+                        aria-label="Добавить молоко в корзину"
+                    >
+                        <span aria-hidden="true">🛒</span>
+                        <span>В корзину</span>
+                    </button>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-xs">
+                    <span class="text-gray-500"><span aria-hidden="true">🚚</span> Доставка: 1 день</span>
+                    <span class="text-green-600 font-medium">✓ В наличии</span>
+                </div>
+            </article>
+
+            <article class="product-card bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" data-category="honey" role="listitem">
+                <div class="h-40 bg-gradient-to-br from-amber-100 to-amber-200 rounded-2xl mb-4 flex items-center justify-center text-6xl" aria-hidden="true">
+                    🍯
+                </div>
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="font-bold text-gray-900 text-lg">Мёд липовый</h3>
+                    <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Натуральный</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">Ферма "Пасека"</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-2xl font-bold text-gray-900">850 Kč<span class="text-sm text-gray-500 font-normal">/кг</span></span>
+                    <button
+                        onclick="addToCart(this)"
+                        class="btn-primary px-4 py-2.5 flex items-center space-x-1"
+                        aria-label="Добавить мёд в корзину"
+                    >
+                        <span aria-hidden="true">🛒</span>
+                        <span>В корзину</span>
+                    </button>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-xs">
+                    <span class="text-gray-500"><span aria-hidden="true">🚚</span> Доставка: 3-4 дня</span>
+                    <span class="text-green-600 font-medium">✓ В наличии</span>
+                </div>
+            </article>
+
+            <article class="product-card bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" data-category="vegetables" role="listitem">
+                <div class="h-40 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl mb-4 flex items-center justify-center text-6xl" aria-hidden="true">
+                    🥕
+                </div>
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="font-bold text-gray-900 text-lg">Морковь</h3>
+                    <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Органические</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">Ферма "Огород"</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-2xl font-bold text-gray-900">90 Kč<span class="text-sm text-gray-500 font-normal">/кг</span></span>
+                    <button
+                        onclick="addToCart(this)"
+                        class="btn-primary px-4 py-2.5 flex items-center space-x-1"
+                        aria-label="Добавить морковь в корзину"
+                    >
+                        <span aria-hidden="true">🛒</span>
+                        <span>В корзину</span>
+                    </button>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-xs">
+                    <span class="text-gray-500"><span aria-hidden="true">🚚</span> Доставка: 2-3 дня</span>
+                    <span class="text-green-600 font-medium">✓ В наличии</span>
+                </div>
+            </article>
+
+            <article class="product-card bg-white rounded-3xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1" data-category="greens" role="listitem">
+                <div class="h-40 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-2xl mb-4 flex items-center justify-center text-6xl" aria-hidden="true">
+                    🥬
+                </div>
+                <div class="flex items-start justify-between mb-2">
+                    <h3 class="font-bold text-gray-900 text-lg">Салат</h3>
+                    <span class="bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">Свежий</span>
+                </div>
+                <p class="text-gray-500 text-sm mb-3">Ферма "Зелёный лист"</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-2xl font-bold text-gray-900">150 Kč<span class="text-sm text-gray-500 font-normal">/уп</span></span>
+                    <button
+                        onclick="addToCart(this)"
+                        class="btn-primary px-4 py-2.5 flex items-center space-x-1"
+                        aria-label="Добавить салат в корзину"
+                    >
+                        <span aria-hidden="true">🛒</span>
+                        <span>В корзину</span>
+                    </button>
+                </div>
+                <div class="mt-3 flex items-center justify-between text-xs">
+                    <span class="text-gray-500"><span aria-hidden="true">🚚</span> Доставка: 1 день</span>
+                    <span class="text-green-600 font-medium">✓ В наличии</span>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50" role="dialog" aria-label="Корзина покупок" aria-modal="true">
+        <div class="h-full flex flex-col">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-900"><span aria-hidden="true">🛒</span> Корзина</h2>
+                <button onclick="toggleCart()" class="text-gray-400 hover:text-gray-600 text-2xl" aria-label="Закрыть корзину">×</button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+                <div class="text-center text-gray-400 mt-20">
+                    <div class="text-6xl mb-4" aria-hidden="true">🛒</div>
+                    <p>Корзина пуста</p>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-100">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-600">Итого:</span>
+                    <span id="cart-total" class="text-2xl font-bold text-gray-900">0 Kč</span>
+                </div>
+                <button class="w-full btn-primary py-4 text-lg">
+                    Оформить заказ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 hidden z-40" aria-hidden="true"></div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

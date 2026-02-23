@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход и регистрация — BioMarket</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50" role="navigation" aria-label="Основная навигация">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-14 sm:h-16">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-2xl sm:text-3xl" aria-hidden="true">🥕</span>
+                    <span class="text-lg sm:text-2xl font-bold" style="color: var(--dark-wood)">BioMarket</span>
+                </a>
+                <a href="index.html" class="text-gray-600 hover:text-green-600 transition-colors font-medium text-sm">← На главную</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-12">
+        <!-- Role Tabs -->
+        <div class="role-tabs" role="radiogroup" aria-label="Выберите вашу роль">
+            <div class="role-tab active buyer" onclick="switchRole('buyer')" role="radio" aria-checked="true">
+                <span aria-hidden="true">💚</span> Участник
+            </div>
+            <div class="role-tab" onclick="switchRole('farmer')" role="radio" aria-checked="false">
+                <span aria-hidden="true">🚜</span> Фермер
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Left Column: Benefits -->
+            <div class="auth-card p-6 h-fit">
+                <!-- Buyer Benefits -->
+                <div id="buyer-benefits" class="form-section active">
+                    <div class="text-center mb-6">
+                        <div class="text-5xl mb-4" aria-hidden="true">🛒</div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Для участников</h2>
+                        <p class="text-gray-600">Получайте свежие продукты с доставкой</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Доступ к ценам фермеров</h3>
+                                <p class="text-sm text-gray-600">Экономьте до 40% на продуктах</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <span class="benefit-icon">🚚</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">4 доставки в месяц</h3>
+                                <p class="text-sm text-gray-600">Каждую пятницу свежий бокс</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <span class="benefit-icon">♻️</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Эко-коробка</h3>
+                                <p class="text-sm text-gray-600">Качественная деревянная тара</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <span class="benefit-icon">🥗</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Консультации нутрициолога</h3>
+                                <p class="text-sm text-gray-600">Планы питания для здоровья</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-green-50 rounded-xl">
+                        <p class="text-sm text-gray-700">
+                            <strong>5000+ участников</strong> уже получают свежие продукты через BioMarket
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Farmer Benefits -->
+                <div id="farmer-benefits" class="form-section">
+                    <div class="text-center mb-6">
+                        <div class="text-5xl mb-4" aria-hidden="true">🚜</div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Для фермеров</h2>
+                        <p class="text-gray-600">Продавайте без комиссий и посредников</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="benefit-item">
+                            <span class="benefit-icon">✓</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">0% комиссии</h3>
+                                <p class="text-sm text-gray-600">Вы получаете полную стоимость</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <span class="benefit-icon">🚚</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Бесплатный забор груза</h3>
+                                <p class="text-sm text-gray-600">Сами заберём урожай с фермы</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <span class="benefit-icon">📦</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Готовая логистика</h3>
+                                <p class="text-sm text-gray-600">Упакуем и доставим клиентам</p>
+                            </div>
+                        </div>
+
+                        <div class="benefit-item">
+                            <span class="benefit-icon">💰</span>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Стабильные выплаты</h3>
+                                <p class="text-sm text-gray-600">Оплата каждую неделю на счёт</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-green-50 rounded-xl">
+                        <p class="text-sm text-gray-700">
+                            <strong>50+ фермеров</strong> уже продают через BioMarket по всей Чехии
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Forms -->
+            <div class="auth-card p-6">
+                <!-- Buyer Login Form -->
+                <div id="buyer-login-form" class="form-section active">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Вход для участников</h3>
+                        <p class="text-gray-600 text-sm">Введите email для входа</p>
+                    </div>
+
+                    <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+                        <div>
+                            <label for="login-email" class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                            <input
+                                type="email"
+                                id="login-email"
+                                name="login-email"
+                                required
+                                placeholder="example@mail.ru"
+                                class="auth-input"
+                                autocomplete="email"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="login-password" class="block text-sm font-medium text-gray-700 mb-1.5">Пароль</label>
+                            <input
+                                type="password"
+                                id="login-password"
+                                name="login-password"
+                                required
+                                minlength="6"
+                                placeholder="••••••"
+                                class="auth-input"
+                                autocomplete="current-password"
+                            >
+                        </div>
+
+                        <button type="submit" class="btn-amber py-3.5 text-base">
+                            Войти
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-500 mb-3">Нет аккаунта?</p>
+                        <button onclick="showBuyerRegister()" class="text-amber-600 font-semibold hover:text-amber-700 text-sm">
+                            Зарегистрироваться →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Buyer Register Form -->
+                <div id="buyer-register-form" class="form-section">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Регистрация участника</h3>
+                        <p class="text-gray-600 text-sm">Станьте частью BioMarket</p>
+                    </div>
+
+                    <form id="register-form" class="space-y-4" onsubmit="handleRegister(event)">
+                        <div>
+                            <label for="fullname" class="block text-sm font-medium text-gray-700 mb-1.5">ФИО</label>
+                            <input
+                                type="text"
+                                id="fullname"
+                                name="fullname"
+                                required
+                                placeholder="Иванов Иван Иванович"
+                                class="auth-input"
+                                autocomplete="name"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                required
+                                placeholder="example@mail.ru"
+                                class="auth-input"
+                                autocomplete="email"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1.5">Телефон</label>
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                required
+                                placeholder="+420 000 000 000"
+                                class="auth-input"
+                                autocomplete="tel"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1.5">Адрес доставки</label>
+                            <input
+                                type="text"
+                                id="address"
+                                name="address"
+                                required
+                                placeholder="Улица, дом, квартира"
+                                class="auth-input"
+                                autocomplete="street-address"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1.5">Пароль</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                required
+                                minlength="6"
+                                placeholder="Минимум 6 символов"
+                                class="auth-input"
+                                autocomplete="new-password"
+                            >
+                        </div>
+
+                        <button type="submit" class="btn-amber py-3.5 text-base">
+                            Стать участником
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-500">Уже есть аккаунт?</p>
+                        <button onclick="showBuyerLogin()" class="text-amber-600 font-semibold hover:text-amber-700 text-sm">
+                            Войти →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Farmer Login Form -->
+                <div id="farmer-login-form" class="form-section">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Вход для фермеров</h3>
+                        <p class="text-gray-600 text-sm">Введите email для входа</p>
+                    </div>
+
+                    <form id="farmer-login-form-el" class="space-y-4" onsubmit="handleFarmerLogin(event)">
+                        <div>
+                            <label for="farmer-login-email" class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                            <input
+                                type="email"
+                                id="farmer-login-email"
+                                name="farmer-login-email"
+                                required
+                                placeholder="farm@example.com"
+                                class="auth-input"
+                                autocomplete="email"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="farmer-login-password" class="block text-sm font-medium text-gray-700 mb-1.5">Пароль</label>
+                            <input
+                                type="password"
+                                id="farmer-login-password"
+                                name="farmer-login-password"
+                                required
+                                minlength="6"
+                                placeholder="••••••"
+                                class="auth-input"
+                                autocomplete="current-password"
+                            >
+                        </div>
+
+                        <button type="submit" class="btn-olive py-3.5 text-base">
+                            Войти в кабинет
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-500 mb-3">Ещё нет аккаунта?</p>
+                        <button onclick="showFarmerRegister()" class="text-green-600 font-semibold hover:text-green-700 text-sm">
+                            Зарегистрироваться →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Farmer Register Form -->
+                <div id="farmer-register-form" class="form-section">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Регистрация фермера</h3>
+                        <p class="text-gray-600 text-sm">Начните продавать на BioMarket</p>
+                    </div>
+
+                    <form id="farmer-register-form-el" class="space-y-4" onsubmit="handleFarmerRegister(event)">
+                        <div>
+                            <label for="farmer-fullname" class="block text-sm font-medium text-gray-700 mb-1.5">ФИО</label>
+                            <input
+                                type="text"
+                                id="farmer-fullname"
+                                name="farmer-fullname"
+                                required
+                                placeholder="Иванов Иван Иванович"
+                                class="auth-input"
+                                autocomplete="name"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="farmer-email" class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                            <input
+                                type="email"
+                                id="farmer-email"
+                                name="farmer-email"
+                                required
+                                placeholder="farm@example.com"
+                                class="auth-input"
+                                autocomplete="email"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="farmer-phone" class="block text-sm font-medium text-gray-700 mb-1.5">Телефон</label>
+                            <input
+                                type="tel"
+                                id="farmer-phone"
+                                name="farmer-phone"
+                                required
+                                placeholder="+420 000 000 000"
+                                class="auth-input"
+                                autocomplete="tel"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="farm-name" class="block text-sm font-medium text-gray-700 mb-1.5">Название фермы</label>
+                            <input
+                                type="text"
+                                id="farm-name"
+                                name="farm-name"
+                                required
+                                placeholder="Зелёная Ферма"
+                                class="auth-input"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="farm-location" class="block text-sm font-medium text-gray-700 mb-1.5">Расположение фермы</label>
+                            <input
+                                type="text"
+                                id="farm-location"
+                                name="farm-location"
+                                required
+                                placeholder="Город, регион"
+                                class="auth-input"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="farmer-password" class="block text-sm font-medium text-gray-700 mb-1.5">Пароль</label>
+                            <input
+                                type="password"
+                                id="farmer-password"
+                                name="farmer-password"
+                                required
+                                minlength="6"
+                                placeholder="Минимум 6 символов"
+                                class="auth-input"
+                                autocomplete="new-password"
+                            >
+                        </div>
+
+                        <button type="submit" class="btn-olive py-3.5 text-base">
+                            Начать продавать
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-500">Уже зарегистрированы?</p>
+                        <button onclick="showFarmerLogin()" class="text-green-600 font-semibold hover:text-green-700 text-sm">
+                            Войти →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="js/register.js"></script>
+</body>
+</html>

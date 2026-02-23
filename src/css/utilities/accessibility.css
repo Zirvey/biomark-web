@@ -1,0 +1,45 @@
+/* src/css/utilities/accessibility.css */
+
+/* Focus styles для клавиатурной навигации */
+:focus-visible {
+    outline: 2px solid var(--olive);
+    outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+    body {
+        color: #000;
+    }
+
+    .btn-accent {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Dark mode поддержка (если нужна) */
+@media (prefers-color-scheme: dark) {
+    body {
+        @apply bg-gray-900 text-gray-100;
+    }
+
+    .card {
+        @apply bg-gray-800 border-gray-700;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Hover media query (для touch устройств) */
+@media (hover: none) {
+    button:hover {
+        transform: none;
+    }
+}

@@ -1,0 +1,532 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   DESIGN SYSTEM — BioMarket
+   Style: Eco-minimal, warm, organic, trustworthy
+   ============================================ */
+
+:root {
+  --olive: #84A93C;
+  --olive-dark: #6B8A31;
+  --earth: #5C4D3A;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    min-height: 100vh;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply font-sans antialiased text-gray-900;
+    background: linear-gradient(
+      to bottom,
+      #FFFEF7 0%,
+      #FDF4D6 50%,
+      #F5E6C8 100%
+    );
+    min-height: 100vh;
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Fixed background for desktop, scroll for mobile */
+  @media (min-width: 768px) {
+    body {
+      background-attachment: fixed;
+    }
+  }
+
+  /* Typography Hierarchy */
+  h1 {
+    @apply text-4xl md:text-6xl font-bold tracking-tight text-gray-900 mb-4;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl font-bold text-gray-900 mb-4;
+  }
+
+  h3 {
+    @apply text-xl md:text-2xl font-semibold text-gray-900 mb-2;
+  }
+
+  p {
+    @apply text-base md:text-lg text-gray-600 leading-relaxed;
+  }
+
+  /* All sections transparent to show body gradient */
+  section, .hero, .membership, .farmers, .how-it-works, .marketplace {
+    @apply bg-transparent;
+  }
+
+  /* Smooth transition to footer */
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 250px;
+    background: linear-gradient(to bottom, transparent, rgba(132, 169, 60, 0.15));
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+@layer components {
+  /* ============================================
+     BUTTON SYSTEM (2 variants only)
+     ============================================ */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-[#84A93C] text-white px-6 py-3 rounded-xl font-semibold;
+    @apply hover:bg-[#6B8A31] hover:shadow-lg hover:-translate-y-0.5;
+    @apply transition-all duration-200 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-transparent border-2 border-[#84A93C] text-[#84A93C] px-6 py-3 rounded-xl font-semibold;
+    @apply hover:bg-[#84A93C]/10 hover:shadow-lg hover:-translate-y-0.5;
+    @apply transition-all duration-200 active:scale-95;
+  }
+
+  /* Compact button for headers */
+  .btn-sm {
+    @apply px-4 py-2 text-sm rounded-lg;
+  }
+
+  /* Legacy button support */
+  .btn-accent {
+    @apply btn-primary;
+  }
+
+  .btn-outline-olive {
+    @apply btn-secondary;
+  }
+
+  .btn-wood {
+    @apply btn-primary;
+    background: linear-gradient(135deg, #7A6B5A 0%, #5C4D3A 100%);
+  }
+
+  /* ============================================
+     CARD SYSTEM
+     ============================================ */
+  .card {
+    @apply bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-lg border border-white/50;
+    @apply hover:shadow-xl hover:-translate-y-1;
+    @apply transition-all duration-300;
+  }
+
+  /* Popular/Featured card highlight */
+  .card-popular {
+    @apply ring-2 ring-[#84A93C] relative scale-[1.02] shadow-2xl;
+  }
+
+  .card-popular::before {
+    content: '🔥 Популярный';
+    @apply absolute -top-3 left-1/2 -translate-x-1/2 bg-[#84A93C] text-white px-4 py-1 rounded-full text-xs font-medium whitespace-nowrap;
+  }
+
+  /* Specific card types */
+  .membership-card,
+  .farmer-card,
+  .product-card {
+    @apply card;
+  }
+
+  .membership-card.popular,
+  .farmer-card.popular,
+  .product-card.popular {
+    @apply card-popular;
+  }
+
+  /* ============================================
+     INPUT FIELDS
+     ============================================ */
+  .input-field {
+    @apply w-full px-4 py-3.5 rounded-2xl border border-gray-200 focus:border-[#84A93C] focus:ring-2 focus:ring-[#84A93C]/20 transition-all outline-none text-gray-900 placeholder-gray-400;
+  }
+
+  /* ============================================
+     FILTER BUTTONS
+     ============================================ */
+  .filter-btn {
+    @apply px-4 py-2 rounded-full font-medium bg-white text-gray-700 border border-gray-200;
+    @apply hover:bg-[#84A93C]/5 hover:border-[#84A93C]/40 hover:text-[#84A93C];
+    @apply transition-all duration-200 ease-out;
+    @apply shadow-sm;
+  }
+
+  .filter-btn.active {
+    @apply bg-[#84A93C] text-white border-[#84A93C] shadow-md;
+  }
+
+  /* Disable hover scale on mobile */
+  @media (max-width: 767px) {
+    .filter-btn:hover {
+      transform: none;
+    }
+  }
+
+  /* ============================================
+     SECTIONS
+     ============================================ */
+  section {
+    @apply py-20 md:py-28;
+  }
+
+  /* Hero Section - прозрачный фон для градиента body */
+  .hero {
+    @apply bg-transparent relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-content {
+    @apply relative z-10;
+  }
+
+  /* Hero Typography */
+  .hero h1 {
+    @apply text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight;
+    color: #5C4D3A;
+  }
+
+  .hero p {
+    @apply text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed;
+  }
+
+  /* Hero Buttons */
+  .hero .btn-hero-primary {
+    @apply text-lg inline-flex items-center justify-center space-x-2 
+           bg-[#84A93C] text-white px-6 py-3 rounded-full font-semibold 
+           transition-all duration-300 hover:scale-105 hover:bg-[#6B8A31] 
+           shadow-lg hover:shadow-xl;
+  }
+
+  .hero .btn-hero-secondary {
+    @apply text-lg inline-flex items-center justify-center space-x-2 
+           border-2 border-[#84A93C] text-[#84A93C] px-6 py-3 rounded-full 
+           font-semibold transition-all duration-300 hover:scale-105 
+           hover:bg-[#84A93C] hover:text-white;
+  }
+
+  /* Trust badges in Hero */
+  .hero-trust-badges {
+    @apply flex flex-wrap justify-center gap-8 mt-16;
+  }
+
+  .hero-trust-badge {
+    @apply flex items-center space-x-2 text-gray-600;
+  }
+
+  .hero-trust-badge span:first-child {
+    @apply text-2xl;
+  }
+
+  /* ============================================
+     FOOTER TRANSITION
+     ============================================ */
+  .footer-transition {
+    @apply relative z-20;
+  }
+
+  /* ============================================
+     STICKY NAVIGATION
+     ============================================ */
+  .sticky-nav {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(132, 169, 60, 0.1);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Mobile header compact */
+  @media (max-width: 767px) {
+    .sticky-nav {
+      top: 0 !important;
+    }
+  }
+
+  .nav-link {
+    @apply text-gray-900 transition-colors duration-200;
+  }
+
+  .nav-link:hover {
+    color: #84A93C;
+  }
+
+  /* ============================================
+     STICKY FILTERS
+     ============================================ */
+  .sticky-filters {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 48px; /* Below mobile header (h-12 = 48px) */
+    z-index: 90;
+    border-y: 1px solid rgb(229, 231, 235);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Desktop filters offset */
+  @media (min-width: 768px) {
+    .sticky-filters {
+      top: 56px; /* Below desktop header (h-14 = 56px) */
+    }
+  }
+
+  /* ============================================
+     BADGES & TAGS
+     ============================================ */
+  .price-badge {
+    @apply text-xs font-semibold px-3 py-1 rounded-full bg-[#84A93C] text-white;
+  }
+
+  .tag-bio {
+    @apply text-xs font-semibold px-2 py-1 rounded bg-[#DCFCE7] text-[#166534];
+  }
+
+  .tag-local {
+    @apply text-xs font-semibold px-2 py-1 rounded bg-[#FEF3C7] text-[#92400E];
+  }
+
+  .tag-seasonal {
+    @apply text-xs font-semibold px-2 py-1 rounded bg-[#FED7AA] text-[#C2410C];
+  }
+
+  .tag-farm {
+    @apply text-xs font-semibold px-3 py-1 rounded-full bg-[#84A93C]/10 text-[#84A93C] border border-[#84A93C]/20;
+  }
+
+  /* ============================================
+     PRICING
+     ============================================ */
+  .price {
+    @apply text-4xl md:text-5xl font-bold text-[#84A93C];
+  }
+
+  .price-period {
+    @apply text-lg text-gray-500 font-medium;
+  }
+
+  .savings-badge {
+    @apply inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  /* ============================================
+     FARMER CARD
+     ============================================ */
+  .farmer-card {
+    @apply bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/50;
+    @apply hover:shadow-xl hover:-translate-y-1;
+    @apply transition-all duration-300;
+  }
+
+  .farmer-rating {
+    @apply flex items-center gap-1 text-yellow-500 font-semibold;
+  }
+
+  /* ============================================
+     BACKGROUND DECORATIONS
+     ============================================ */
+  .page-fruits {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .page-fruit {
+    position: absolute;
+    opacity: 0.12;
+    animation: floating 10s ease-in-out infinite;
+    user-select: none;
+  }
+
+  /* Mobile: fewer fruits, larger spacing */
+  @media (max-width: 768px) {
+    .page-fruit:nth-child(n+9) {
+      display: none;
+    }
+    .page-fruit:nth-child(odd) {
+      left: 5% !important;
+      right: auto !important;
+    }
+    .page-fruit:nth-child(even) {
+      right: 5% !important;
+      left: auto !important;
+    }
+  }
+
+  @keyframes floating {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-20px) rotate(5deg);
+    }
+  }
+
+  /* ============================================
+     SCROLL ANIMATIONS
+     ============================================ */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  .section-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+
+  .section-animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ============================================
+     UTILITIES
+     ============================================ */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .eco-box-highlight {
+    color: #84A93C;
+    font-weight: 700;
+  }
+
+  /* ============================================
+     HEADER BUTTONS
+     ============================================ */
+  .header-btn,
+  .role-badge,
+  .btn-logout {
+    @apply px-4 py-2 rounded-full font-semibold text-sm;
+    @apply inline-flex items-center justify-center gap-2;
+    @apply transition-all duration-200 min-h-[40px] whitespace-nowrap;
+  }
+
+  .role-badge {
+    @apply bg-[#84A93C] text-white;
+    box-shadow: 0 2px 8px rgba(132, 169, 60, 0.25);
+  }
+
+  .btn-logout {
+    @apply bg-transparent text-[#84A93C] border-2 border-[#84A93C];
+  }
+
+  .btn-logout:hover {
+    @apply bg-[#84A93C] text-white;
+  }
+
+  /* ============================================
+     STEP NUMBER
+     ============================================ */
+  .step-number {
+    @apply w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold text-white;
+    background: #84A93C;
+    box-shadow: 0 2px 10px rgba(132, 169, 60, 0.3);
+  }
+}
+
+/* ============================================
+   SCROLL ANIMATIONS FOR SECTIONS
+   ============================================ */
+section {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+section:nth-child(2) { animation-delay: 0.1s; }
+section:nth-child(3) { animation-delay: 0.2s; }
+section:nth-child(4) { animation-delay: 0.3s; }
+section:nth-child(5) { animation-delay: 0.4s; }
+section:nth-child(6) { animation-delay: 0.5s; }
+
+/* ============================================
+   MOBILE OPTIMIZATIONS
+   ============================================ */
+@media (max-width: 640px) {
+  html, body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    background-attachment: scroll;
+  }
+
+  h1 { @apply text-3xl; }
+  h2 { @apply text-2xl; }
+  h3 { @apply text-lg; }
+
+  section { @apply py-12; }
+
+  .card { @apply p-6 rounded-xl; }
+  .card-popular { @apply scale-100; }
+
+  .sticky-nav {
+    @apply py-1;
+  }
+
+  /* Disable hover scale on mobile */
+  .filter-btn:hover {
+    transform: none;
+  }
+
+  /* ============================================
+     LINE CLAMP (truncate text after N lines)
+     ============================================ */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Fixed height for farmer description (2 lines = ~2.5rem) */
+  .farmer-desc {
+    min-height: 2.5rem;
+  }
+
+  /* Fixed height for farmer name (2 lines max) */
+  .farmer-name {
+    min-height: 3.5rem;
+  }
+}

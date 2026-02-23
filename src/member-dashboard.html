@@ -183,18 +183,6 @@
 
         .dashboard-section.active {
             display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         /* Stats Grid */
@@ -626,7 +614,7 @@
             </div>
 
             <nav class="sidebar-nav">
-                <button type="button" class="nav-item active" data-section="overview">
+                <button type="button" class="nav-item" data-section="overview">
                     <span class="nav-item-icon">📊</span>
                     <span>Обзор</span>
                 </button>
@@ -648,7 +636,7 @@
         <!-- Main Content -->
         <main class="dashboard-main">
             <!-- Overview Section -->
-            <section id="overview" class="dashboard-section active">
+            <section id="overview" class="dashboard-section">
                 <div class="dashboard-header">
                     <h1 class="dashboard-title">Добро пожаловать, <span id="main-user-name">Участник</span>!</h1>
                     <p class="dashboard-subtitle">Обзор вашей активности и подписки</p>

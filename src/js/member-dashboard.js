@@ -15,6 +15,10 @@ function initializeDashboard() {
     
     // Прикрепить обработчики
     attachEventListeners();
+    
+    // Показать начальную секцию (overview)
+    const hash = window.location.hash.slice(1) || 'overview';
+    showSection(hash);
 }
 
 // ============================================
@@ -117,15 +121,21 @@ function attachEventListeners() {
 }
 
 function showSection(sectionId) {
+    console.log('Showing section:', sectionId);
+    
     // Скрыть все секции
     document.querySelectorAll('.dashboard-section').forEach(section => {
         section.classList.remove('active');
+        console.log('Hiding:', section.id);
     });
     
     // Показать нужную секцию
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
         targetSection.classList.add('active');
+        console.log('Showing:', sectionId);
+    } else {
+        console.error('Section not found:', sectionId);
     }
     
     // Обновить активный пункт меню

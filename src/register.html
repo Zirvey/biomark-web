@@ -11,7 +11,7 @@
     <style>
         /* Auth page specific styles */
         .auth-container {
-            min-height: calc(100vh - 64px);
+            min-height: calc(100vh - 56px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -247,15 +247,15 @@
     </style>
 </head>
 <body class="min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50" role="navigation" aria-label="Основная навигация">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <a href="index.html" class="flex items-center space-x-2">
-                    <span class="text-3xl" aria-hidden="true">🥕</span>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">BioMarket</span>
+    <!-- Header -->
+    <nav class="sticky-nav" role="navigation" aria-label="Основная навигация" style="position: -webkit-sticky; position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(132, 169, 60, 0.1);">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-12 sm:h-14">
+                <a href="index.html" class="flex items-center gap-1.5 flex-shrink-0">
+                    <span class="text-xl sm:text-2xl" aria-hidden="true">🥕</span>
+                    <span class="text-base sm:text-lg font-bold" style="color: var(--earth)">BioMarket</span>
                 </a>
-                <a href="index.html" class="text-gray-600 hover:text-green-600 transition-colors font-medium">← На главную</a>
+                <a href="index.html" class="text-gray-600 hover:text-[var(--olive)] transition-colors font-medium text-sm">← На главную</a>
             </div>
         </div>
     </nav>

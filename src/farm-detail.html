@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ферма — BioMarket</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-[#FDFBF7] min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50" role="navigation" aria-label="Основная навигация">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <span class="text-3xl" aria-hidden="true">🌿</span>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">BioMarket</span>
+                </a>
+                <div class="flex items-center space-x-4">
+                    <button
+                        onclick="toggleCart()"
+                        class="relative text-gray-600 hover:text-green-600 transition-colors"
+                        aria-label="Открыть корзину"
+                        aria-haspopup="dialog"
+                    >
+                        <span class="text-2xl" aria-hidden="true">🛒</span>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                    </button>
+                    <span class="text-gray-400" aria-hidden="true">|</span>
+                    <a href="index.html" class="text-gray-700 font-medium hover:text-green-600 transition-colors">← На главную</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50" role="dialog" aria-label="Корзина покупок" aria-modal="true">
+        <div class="h-full flex flex-col">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-gray-900"><span aria-hidden="true">🛒</span> Корзина</h2>
+                <button onclick="toggleCart()" class="text-gray-400 hover:text-gray-600 text-2xl" aria-label="Закрыть корзину">×</button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4">
+                <div class="text-center text-gray-400 mt-20">
+                    <div class="text-6xl mb-4" aria-hidden="true">🛒</div>
+                    <p>Корзина пуста</p>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-100">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-600">Итого:</span>
+                    <span id="cart-total" class="text-2xl font-bold text-gray-900">0 Kč</span>
+                </div>
+                <button class="w-full btn-primary py-4 text-lg">
+                    Оформить заказ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 hidden z-40" aria-hidden="true"></div>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Farm Header -->
+        <div class="mb-10">
+            <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                <a href="index.html" class="hover:text-green-600 transition-colors">Главная</a>
+                <span>/</span>
+                <a href="index.html#farmers" class="hover:text-green-600 transition-colors">Фермеры</a>
+                <span>/</span>
+                <span id="breadcrumb-farm-name" class="text-gray-900 font-medium">Ферма</span>
+            </div>
+            
+            <div class="bg-white rounded-3xl p-8 shadow-lg">
+                <div class="flex flex-col md:flex-row gap-8 items-start">
+                    <!-- Farm Icon/Banner -->
+                    <div id="farm-icon" class="w-32 h-32 bg-gradient-to-br from-green-100 to-emerald-200 rounded-2xl flex items-center justify-center text-6xl flex-shrink-0">
+                        🏡
+                    </div>
+                    
+                    <!-- Farm Info -->
+                    <div class="flex-1">
+                        <h1 id="farm-name" class="text-4xl font-bold text-gray-900 mb-2">Название фермы</h1>
+                        <p id="farm-location" class="text-lg text-gray-600 mb-4">📍 Расположение</p>
+                        
+                        <div class="flex items-center gap-6 mb-6">
+                            <div class="flex items-center gap-2">
+                                <span class="text-yellow-400 text-xl" aria-hidden="true">⭐</span>
+                                <span id="farm-rating" class="text-xl font-bold text-gray-900">4.9</span>
+                                <span id="farm-reviews" class="text-gray-500">(0 отзывов)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-green-600" aria-hidden="true">✓</span>
+                                <span class="text-green-700 font-medium">Проверенный фермер</span>
+                            </div>
+                        </div>
+                        
+                        <p id="farm-description" class="text-gray-700 text-lg leading-relaxed">
+                            Описание фермы
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Farm Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            <div class="bg-white rounded-2xl p-6 shadow-sm text-center">
+                <div class="text-3xl mb-2" aria-hidden="true">📦</div>
+                <div id="stat-products" class="text-2xl font-bold text-gray-900">0</div>
+                <div class="text-sm text-gray-500">Товаров</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm text-center">
+                <div class="text-3xl mb-2" aria-hidden="true">👥</div>
+                <div id="stat-followers" class="text-2xl font-bold text-gray-900">0</div>
+                <div class="text-sm text-gray-500">Подписчиков</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm text-center">
+                <div class="text-3xl mb-2" aria-hidden="true">📅</div>
+                <div id="stat-established" class="text-2xl font-bold text-gray-900">—</div>
+                <div class="text-sm text-gray-500">Основана</div>
+            </div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm text-center">
+                <div class="text-3xl mb-2" aria-hidden="true">🚚</div>
+                <div id="stat-delivery" class="text-2xl font-bold text-gray-900">Еженедельно</div>
+                <div class="text-sm text-gray-500">Доставка</div>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div class="mb-10">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Продукты от этой фермы</h2>
+            <div id="farm-products-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" role="list" aria-label="Список продуктов фермы">
+                <!-- Products will be rendered by JS -->
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="bg-white rounded-3xl p-8 shadow-lg">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Связаться с фермером</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Контактная информация</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 text-gray-700">
+                            <span class="text-xl" aria-hidden="true">📧</span>
+                            <span id="farm-email" class="text-gray-600">email@example.com</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-700">
+                            <span class="text-xl" aria-hidden="true">📱</span>
+                            <span id="farm-phone" class="text-gray-600">+420 XXX XXX XXX</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-700">
+                            <span class="text-xl" aria-hidden="true">🌐</span>
+                            <span id="farm-website" class="text-gray-600">www.example.com</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Социальные сети</h3>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-700 hover:bg-green-200 transition-colors" aria-label="Facebook">
+                            <span aria-hidden="true">📘</span>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-pink-700 hover:bg-pink-200 transition-colors" aria-label="Instagram">
+                            <span aria-hidden="true">📷</span>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 hover:bg-blue-200 transition-colors" aria-label="Twitter">
+                            <span aria-hidden="true">🐦</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#1a1a1a] text-white mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl" aria-hidden="true">🥕</span>
+                        <span class="text-xl font-bold">BioMarket</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Свежие продукты напрямую от фермеров с доставкой до двери.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Навигация</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="index.html" class="hover:text-white transition-colors">Главная</a></li>
+                        <li><a href="index.html#membership" class="hover:text-white transition-colors">Клуб</a></li>
+                        <li><a href="index.html#farmers" class="hover:text-white transition-colors">Фермеры</a></li>
+                        <li><a href="marketplace.html" class="hover:text-white transition-colors">Витрина</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Поддержка</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Контакты</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Доставка</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Юридическая информация</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Условия использования</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Конфиденциальность</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
+                <p>&copy; 2026 BioMarket. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/farm-detail.js"></script>
+</body>
+</html>

@@ -87,6 +87,12 @@
             z-index: 1;
         }
 
+        .auth-tab:hover:not(.active) {
+            color: #84A93C;
+            transform: translateY(-2px);
+            background: rgba(132, 169, 60, 0.05);
+        }
+
         .auth-tab.active {
             color: #84A93C;
         }
@@ -118,6 +124,15 @@
 
         .auth-tab.active .role-icon {
             transform: scale(1.2) rotate(5deg);
+        }
+
+        .auth-tab:hover:not(.active) .role-icon {
+            transform: scale(1.1) rotate(-3deg);
+        }
+
+        /* Subtle hover background */
+        .auth-tab:hover:not(.active) {
+            background: rgba(132, 169, 60, 0.05);
         }
 
         /* Text fade animation */

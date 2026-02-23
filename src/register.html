@@ -491,10 +491,28 @@
             event.preventDefault();
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
             
-            // TODO: Implement actual login logic
-            console.log('Login:', { email, password });
-            alert('Функция входа будет реализована в ближайшее время!');
+            // Создаём тестового пользователя
+            const user = {
+                fullname: email.split('@')[0] + ' ' + email.split('@')[0],
+                email: email,
+                phone: '+420 123 456 789',
+                address: 'Test Address 123, Prague'
+            };
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('biomarket_user', JSON.stringify(user));
+            localStorage.setItem('biomarket_user_role', 'buyer');
+            
+            if (rememberMe) {
+                localStorage.setItem('biomarket_remember', 'true');
+            }
+            
+            console.log('Login:', { email, password, rememberMe });
+            
+            // Перенаправляем в личный кабинет
+            window.location.href = 'member-dashboard.html';
         }
 
         function handleRegister(event) {
@@ -504,22 +522,27 @@
             const phone = document.getElementById('register-phone').value;
             const password = document.getElementById('register-password').value;
             const farm = document.getElementById('register-farm').value;
+            const agreeTerms = document.getElementById('agree-terms').checked;
             
-            const data = {
-                role: selectedRole,
-                name,
-                email,
-                phone,
-                password
+            const user = {
+                fullname: name,
+                email: email,
+                phone: phone,
+                address: farm ? farm : 'Prague, Czech Republic'
             };
 
+            // Сохраняем в localStorage
+            localStorage.setItem('biomarket_user', JSON.stringify(user));
+            localStorage.setItem('biomarket_user_role', selectedRole);
+            
+            console.log('Register:', { role: selectedRole, ...user });
+            
+            // Перенаправляем в личный кабинет в зависимости от роли
             if (selectedRole === 'farmer') {
-                data.farmName = farm;
+                window.location.href = 'farmer-dashboard.html';
+            } else {
+                window.location.href = 'member-dashboard.html';
             }
-
-            // TODO: Implement actual registration logic
-            console.log('Register:', data);
-            alert('Функция регистрации будет реализована в ближайшее время!');
         }
 
         // Initialize based on URL parameter

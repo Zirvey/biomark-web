@@ -201,6 +201,15 @@ function setupScrollAnimations() {
         });
         counterObserver.observe(ecoCounter);
     }
+
+    // Обработчик кнопки выхода
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('logout-btn') || e.target.closest('.logout-btn')) {
+            e.preventDefault();
+            authManager.logout();
+            window.location.href = 'index.html';
+        }
+    });
 }
 
 /**

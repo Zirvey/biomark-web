@@ -13,8 +13,13 @@ function initializeDashboard() {
     // Загрузить данные пользователя
     loadUserData();
     
-    // Обработать URL hash для навигации
-    handleHashChange();
+    // Установить начальную секцию
+    const hash = window.location.hash.slice(1) || 'overview';
+    const validSections = ['overview', 'orders', 'subscription', 'settings'];
+    const initialSection = validSections.includes(hash) ? hash : 'overview';
+    
+    // Переключить на начальную секцию
+    switchSection(initialSection);
     
     // Прикрепить обработчики
     attachEventListeners();
@@ -76,8 +81,8 @@ function loadStats() {
 // ============================================
 
 function navigateTo(section) {
-    // Обновить URL hash
-    window.location.hash = section;
+    // Обновить URL hash без вызова hashchange
+    window.history.pushState({ section }, '', `#${section}`);
     
     // Переключить секцию
     switchSection(section);
@@ -120,17 +125,6 @@ function updatePageTitle(section) {
     document.title = titles[section] || 'BioMarket';
 }
 
-function handleHashChange() {
-    const hash = window.location.hash.slice(1) || 'overview';
-    const validSections = ['overview', 'orders', 'subscription', 'settings'];
-    
-    if (validSections.includes(hash)) {
-        switchSection(hash);
-    } else {
-        switchSection('overview');
-    }
-}
-
 // ============================================
 // ОБРАБОТЧИКИ СОБЫТИЙ
 // ============================================
@@ -140,17 +134,26 @@ function attachEventListeners() {
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             const sectionId = item.dataset.section;
             navigateTo(sectionId);
         });
     });
     
-    // Обработка изменения hash в URL
-    window.addEventListener('hashchange', handleHashChange);
+    // Обработка кнопок назад/вперёд в браузере
+    window.addEventListener('popstate', (e) => {
+        if (e.state && e.state.section) {
+            switchSection(e.state.section);
+        } else {
+            const hash = window.location.hash.slice(1) || 'overview';
+            switchSection(hash);
+        }
+    });
     
-    // Форма настроек
+    // Форма настроек - предотвращаем отправку
     document.getElementById('settings-form').addEventListener('submit', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         saveSettings();
     });
     

@@ -13,14 +13,6 @@ function initializeDashboard() {
     // Загрузить данные пользователя
     loadUserData();
     
-    // Установить начальную секцию
-    const hash = window.location.hash.slice(1) || 'overview';
-    const validSections = ['overview', 'orders', 'subscription', 'settings'];
-    const initialSection = validSections.includes(hash) ? hash : 'overview';
-    
-    // Переключить на начальную секцию
-    switchSection(initialSection);
-    
     // Прикрепить обработчики
     attachEventListeners();
 }
@@ -80,41 +72,6 @@ function loadStats() {
 // НАВИГАЦИЯ
 // ============================================
 
-function navigateTo(section) {
-    // Обновить URL hash без вызова hashchange
-    window.history.pushState({ section }, '', `#${section}`);
-    
-    // Переключить секцию
-    switchSection(section);
-}
-
-function switchSection(sectionId) {
-    // Скрыть все секции
-    document.querySelectorAll('.dashboard-section').forEach(section => {
-        section.classList.remove('active');
-    });
-    
-    // Показать нужную секцию
-    const targetSection = document.getElementById(sectionId);
-    if (targetSection) {
-        targetSection.classList.add('active');
-        
-        // Прокрутка вверх
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    
-    // Обновить активный пункт меню
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-        if (item.dataset.section === sectionId) {
-            item.classList.add('active');
-        }
-    });
-    
-    // Обновить заголовок страницы
-    updatePageTitle(sectionId);
-}
-
 function updatePageTitle(section) {
     const titles = {
         'overview': 'Обзор — BioMarket',
@@ -132,21 +89,88 @@ function updatePageTitle(section) {
 function attachEventListeners() {
     // Навигация по секциям
     document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', (e) => {
+        item.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            const sectionId = item.dataset.section;
-            navigateTo(sectionId);
+            const sectionId = this.dataset.section;
+            
+            // Скрыть все секции
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Показать нужную секцию с небольшой задержкой
+            setTimeout(() => {
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+                
+                // Обновить активный пункт меню
+                document.querySelectorAll('.nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                    if (navItem.dataset.section === sectionId) {
+                        navItem.classList.add('active');
+                    }
+                });
+                
+                // Обновить URL
+                window.history.pushState({ section: sectionId }, '', `#${sectionId}`);
+                
+                // Обновить заголовок
+                updatePageTitle(sectionId);
+                
+                // Прокрутка вверх
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 10);
         });
     });
     
     // Обработка кнопок назад/вперёд в браузере
     window.addEventListener('popstate', (e) => {
         if (e.state && e.state.section) {
-            switchSection(e.state.section);
+            // Скрыть все секции
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Показать нужную секцию
+            const targetSection = document.getElementById(e.state.section);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Обновить активный пункт меню
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === e.state.section) {
+                    item.classList.add('active');
+                }
+            });
+            
+            updatePageTitle(e.state.section);
         } else {
             const hash = window.location.hash.slice(1) || 'overview';
-            switchSection(hash);
+            // Скрыть все секции
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Показать нужную секцию
+            const targetSection = document.getElementById(hash);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+            
+            // Обновить активный пункт меню
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.section === hash) {
+                    item.classList.add('active');
+                }
+            });
+            
+            updatePageTitle(hash);
         }
     });
     

@@ -559,20 +559,18 @@
 
             // Сохраняем в localStorage
             localStorage.setItem('biomarket_user', JSON.stringify(user));
-            
-            // Определяем роль по email (для теста)
-            // Если email содержит "farmer" - роль фермер, иначе - покупатель
-            const userRole = email.toLowerCase().includes('farmer') ? 'farmer' : 'buyer';
-            localStorage.setItem('biomarket_user_role', userRole);
+
+            // Используем выбранную роль из табов
+            localStorage.setItem('biomarket_user_role', selectedRole);
 
             if (rememberMe) {
                 localStorage.setItem('biomarket_remember', 'true');
             }
 
-            console.log('Login:', { email, password, rememberMe, role: userRole });
+            console.log('Login:', { email, password, rememberMe, role: selectedRole });
 
             // Перенаправляем в личный кабинет в зависимости от роли
-            if (userRole === 'farmer') {
+            if (selectedRole === 'farmer') {
                 window.location.href = 'farmer-dashboard.html';
             } else {
                 window.location.href = 'member-dashboard.html';

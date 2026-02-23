@@ -2,9 +2,10 @@
 import { getFarmById, getAllFarms } from './data/farms.js';
 import { productManager } from './modules/products.js';
 import { cartManager } from './modules/cart.js';
-import { updateCartUI, createProductCard } from './modules/ui.js';
+import { updateCartUI, createProductCard, updateAuthUI } from './modules/ui.js';
+import { authManager } from './modules/auth.js';
 import { toggle } from './utils/dom.js';
-import { SELECTORS, STORAGE_KEYS } from './utils/constants.js';
+import { SELECTORS, STORAGE_KEYS, USER_ROLES } from './utils/constants.js';
 import { getFromStorage } from './utils/storage.js';
 
 // ============================================
@@ -50,6 +51,9 @@ function initializeFarmPage() {
         total: cartManager.getTotalPrice(),
         items: cartManager.getCart()
     });
+
+    // Обновить UI авторизации
+    updateAuthUI(authManager.getUser(), authManager.getUserRole());
 
     // Прикрепить обработчики событий
     attachEventListeners();
@@ -228,16 +232,86 @@ window.removeFromCart = function(productId) {
 // ============================================
 
 function attachEventListeners() {
+    // Мобильное меню
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+            mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Закрыть меню при клике на ссылку
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    }
+
     // Закрыть корзину при нажатии на Escape
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             const cartSidebar = document.getElementById('cart-sidebar');
             const overlay = document.getElementById('overlay');
-            
+
             if (!cartSidebar?.classList.contains('translate-x-full')) {
                 toggle(cartSidebar, 'translate-x-full');
                 toggle(overlay, 'hidden');
             }
         }
     });
+
+    // Обработчик кнопки выхода
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('logout-btn') || e.target.closest('.logout-btn')) {
+            e.preventDefault();
+            authManager.logout();
+            window.location.href = 'index.html';
+        }
+    });
+
+    // Анимация эко-счетчика
+    setupEcoCounter();
+}
+
+/**
+ * Настроить анимацию эко-счетчика
+ */
+function setupEcoCounter() {
+    const ecoCounter = document.getElementById('eco-counter');
+    if (!ecoCounter) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+            animateCounter(ecoCounter);
+            observer.disconnect();
+        }
+    }, { threshold: 0.5 });
+
+    observer.observe(ecoCounter);
+}
+
+/**
+ * Анимировать счётчик с числами
+ * @param {HTMLElement} element
+ */
+function animateCounter(element) {
+    const target = 12450;
+    const duration = 2000;
+    const step = target / (duration / 16);
+    let current = 0;
+
+    const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+            element.textContent = target.toLocaleString();
+            clearInterval(timer);
+        } else {
+            element.textContent = Math.floor(current).toLocaleString();
+        }
+    }, 16);
 }

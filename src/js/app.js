@@ -24,6 +24,9 @@ function initializeApp() {
     const initialProducts = filterManager.applyFilters();
     renderProducts(initialProducts);
 
+    // Обновить UI авторизации
+    updateAuthUI(authManager.getUser(), authManager.getUserRole());
+
     // Обновить UI корзины с элементами
     updateCartUI({
         count: cartManager.getCount(),

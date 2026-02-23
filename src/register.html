@@ -244,51 +244,6 @@
         .checkbox-group a:hover {
             text-decoration: underline;
         }
-
-        /* Role selection for registration */
-        .role-selection {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .role-option {
-            padding: 1rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: white;
-        }
-
-        .role-option:hover {
-            border-color: #84A93C;
-            background: rgba(132, 169, 60, 0.05);
-        }
-
-        .role-option.active {
-            border-color: #84A93C;
-            background: rgba(132, 169, 60, 0.1);
-            box-shadow: 0 2px 8px rgba(132, 169, 60, 0.15);
-        }
-
-        .role-option-icon {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 0.25rem;
-        }
-
-        .role-option-label {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        .role-option.active .role-option-label {
-            color: #84A93C;
-        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -297,7 +252,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <a href="index.html" class="flex items-center space-x-2">
-                    <span class="text-3xl" aria-hidden="true">🌿</span>
+                    <span class="text-3xl" aria-hidden="true">🥕</span>
                     <span class="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">BioMarket</span>
                 </a>
                 <a href="index.html" class="text-gray-600 hover:text-green-600 transition-colors font-medium">← На главную</a>
@@ -317,67 +272,23 @@
                 </div>
 
                 <!-- Tabs -->
-                <div class="auth-tabs" role="tablist" aria-label="Переключение между входом и регистрацией">
-                    <button class="auth-tab active" onclick="switchAuth('login')" role="tab" aria-selected="true" aria-controls="login-form">
-                        Вход
+                <div class="auth-tabs" role="tablist" aria-label="Выберите вашу роль">
+                    <button class="auth-tab active" onclick="switchRole('buyer')" role="tab" aria-selected="true">
+                        <span class="flex items-center justify-center gap-2">
+                            <span aria-hidden="true">💚</span>
+                            <span>Участник</span>
+                        </span>
                     </button>
-                    <button class="auth-tab" onclick="switchAuth('register')" role="tab" aria-selected="false" aria-controls="register-form">
-                        Регистрация
+                    <button class="auth-tab" onclick="switchRole('farmer')" role="tab" aria-selected="false">
+                        <span class="flex items-center justify-center gap-2">
+                            <span aria-hidden="true">🚜</span>
+                            <span>Фермер</span>
+                        </span>
                     </button>
                 </div>
 
-                <!-- Login Form -->
-                <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label for="login-email" class="form-label">Email</label>
-                        <input 
-                            type="email" 
-                            id="login-email" 
-                            class="form-input" 
-                            placeholder="ivan@example.com"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="login-password" class="form-label">Пароль</label>
-                        <input 
-                            type="password" 
-                            id="login-password" 
-                            class="form-input" 
-                            placeholder="••••••••"
-                            required
-                        >
-                    </div>
-
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="remember-me">
-                        <label for="remember-me">Запомнить меня</label>
-                    </div>
-
-                    <button type="submit" class="btn-submit">
-                        Войти
-                    </button>
-
-                    <div class="auth-footer">
-                        <p>Нет аккаунта? <a href="#" onclick="switchAuth('register'); return false;">Зарегистрироваться</a></p>
-                    </div>
-                </form>
-
-                <!-- Register Form -->
-                <form id="register-form" class="auth-form" onsubmit="handleRegister(event)">
-                    <!-- Role Selection -->
-                    <div class="role-selection">
-                        <div class="role-option active" onclick="selectRole('buyer')" id="role-buyer">
-                            <span class="role-option-icon" aria-hidden="true">💚</span>
-                            <span class="role-option-label">Участник</span>
-                        </div>
-                        <div class="role-option" onclick="selectRole('farmer')" id="role-farmer">
-                            <span class="role-option-icon" aria-hidden="true">🚜</span>
-                            <span class="role-option-label">Фермер</span>
-                        </div>
-                    </div>
-
+                <!-- Registration Form -->
+                <form id="register-form" class="auth-form active" onsubmit="handleRegister(event)">
                     <div class="form-group">
                         <label for="register-name" class="form-label">ФИО</label>
                         <input 
@@ -443,8 +354,12 @@
                         Зарегистрироваться
                     </button>
 
-                    <div class="auth-footer">
-                        <p>Уже есть аккаунт? <a href="#" onclick="switchAuth('login'); return false;">Войти</a></p>
+                    <div class="auth-divider">
+                        <span>или</span>
+                    </div>
+
+                    <div class="auth-footer" style="border-top: none; margin-top: 0; padding-top: 0;">
+                        <p>Уже есть аккаунт? <a href="#" onclick="alert('Форма входа будет добавлена в ближайшее время!'); return false;">Войти</a></p>
                     </div>
                 </form>
             </div>
@@ -472,65 +387,31 @@
     <script>
         let selectedRole = 'buyer';
 
-        function switchAuth(type) {
-            const loginTab = document.querySelector('.auth-tab:first-child');
-            const registerTab = document.querySelector('.auth-tab:last-child');
-            const loginForm = document.getElementById('login-form');
-            const registerForm = document.getElementById('register-form');
-
-            if (type === 'login') {
-                loginTab.classList.add('active');
-                loginTab.setAttribute('aria-selected', 'true');
-                registerTab.classList.remove('active');
-                registerTab.setAttribute('aria-selected', 'false');
-                
-                loginForm.classList.add('active');
-                registerForm.classList.remove('active');
-            } else {
-                registerTab.classList.add('active');
-                registerTab.setAttribute('aria-selected', 'true');
-                loginTab.classList.remove('active');
-                loginTab.setAttribute('aria-selected', 'false');
-                
-                registerForm.classList.add('active');
-                loginForm.classList.remove('active');
-            }
-
-            // Update URL without reload
-            const url = new URL(window.location);
-            url.searchParams.set('mode', type);
-            window.history.pushState({}, '', url);
-        }
-
-        function selectRole(role) {
+        function switchRole(role) {
             selectedRole = role;
             
-            const buyerOption = document.getElementById('role-buyer');
-            const farmerOption = document.getElementById('role-farmer');
+            const buyerTab = document.querySelector('.auth-tab:first-child');
+            const farmerTab = document.querySelector('.auth-tab:last-child');
             const farmNameGroup = document.getElementById('farm-name-group');
             const farmInput = document.getElementById('register-farm');
 
             if (role === 'buyer') {
-                buyerOption.classList.add('active');
-                farmerOption.classList.remove('active');
+                buyerTab.classList.add('active');
+                buyerTab.setAttribute('aria-selected', 'true');
+                farmerTab.classList.remove('active');
+                farmerTab.setAttribute('aria-selected', 'false');
+                
                 farmNameGroup.style.display = 'none';
                 farmInput.removeAttribute('required');
             } else {
-                farmerOption.classList.add('active');
-                buyerOption.classList.remove('active');
+                farmerTab.classList.add('active');
+                farmerTab.setAttribute('aria-selected', 'true');
+                buyerTab.classList.remove('active');
+                buyerTab.setAttribute('aria-selected', 'false');
+                
                 farmNameGroup.style.display = 'block';
                 farmInput.setAttribute('required', 'true');
             }
-        }
-
-        function handleLogin(event) {
-            event.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            // TODO: Implement actual login logic
-            console.log('Login:', { email, password });
-            alert('Функция входа будет реализована в ближайшее время!');
         }
 
         function handleRegister(event) {
@@ -558,16 +439,9 @@
             alert('Функция регистрации будет реализована в ближайшее время!');
         }
 
-        // Initialize based on URL parameter
+        // Initialize buyer role as active
         document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const mode = urlParams.get('mode');
-            
-            if (mode === 'register') {
-                switchAuth('register');
-            } else {
-                switchAuth('login');
-            }
+            switchRole('buyer');
         });
     </script>
 </body>

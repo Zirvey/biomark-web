@@ -8,6 +8,288 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Auth page specific styles */
+        .auth-container {
+            min-height: calc(100vh - 64px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(132, 169, 60, 0.12);
+            border: 1px solid rgba(132, 169, 60, 0.1);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 16px rgba(132, 169, 60, 0.3);
+        }
+
+        .auth-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(132, 169, 60, 0.08);
+            border-radius: 1rem;
+            padding: 0.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #6b7280;
+            background: transparent;
+            border: none;
+        }
+
+        .auth-tab.active {
+            background: white;
+            color: #84A93C;
+            box-shadow: 0 2px 8px rgba(132, 169, 60, 0.15);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 1rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #84A93C;
+            box-shadow: 0 0 0 4px rgba(132, 169, 60, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(132, 169, 60, 0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(132, 169, 60, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .auth-divider span {
+            padding: 0 1rem;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .auth-footer p {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .auth-footer a {
+            color: #84A93C;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .auth-footer a:hover {
+            color: #6B8A31;
+            text-decoration: underline;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #84A93C;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .checkbox-group a {
+            color: #84A93C;
+            text-decoration: none;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        /* Role selection for registration */
+        .role-selection {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .role-option {
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .role-option:hover {
+            border-color: #84A93C;
+            background: rgba(132, 169, 60, 0.05);
+        }
+
+        .role-option.active {
+            border-color: #84A93C;
+            background: rgba(132, 169, 60, 0.1);
+            box-shadow: 0 2px 8px rgba(132, 169, 60, 0.15);
+        }
+
+        .role-option-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .role-option-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .role-option.active .role-option-label {
+            color: #84A93C;
+        }
+    </style>
 </head>
 <body class="min-h-screen">
     <!-- Navigation -->
@@ -24,315 +306,268 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-4 py-12">
-        <!-- Header -->
-        <div class="text-center mb-10">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Добро пожаловать в BioMarket</h1>
-            <p class="text-gray-600 text-lg">Выберите вашу роль для начала работы</p>
-        </div>
+    <div class="auth-container">
+        <div class="auth-wrapper">
+            <div class="auth-card">
+                <!-- Header -->
+                <div class="auth-header">
+                    <div class="auth-logo" aria-hidden="true">🥕</div>
+                    <h1 class="auth-title">С возвращением!</h1>
+                    <p class="auth-subtitle">Войдите или зарегистрируйтесь для продолжения</p>
+                </div>
 
-        <!-- Role Tabs -->
-        <div class="flex justify-center mb-8">
-            <div class="inline-flex bg-white/80 backdrop-blur-sm p-1.5 rounded-2xl shadow-sm border border-gray-100" role="radiogroup" aria-label="Выберите вашу роль">
-                <button class="role-tab active buyer px-6 py-3 rounded-xl font-semibold transition-all duration-200" onclick="switchRole('buyer')" role="radio" aria-checked="true">
-                    <span class="flex items-center gap-2">
-                        <span aria-hidden="true">💚</span>
-                        <span>Участник</span>
+                <!-- Tabs -->
+                <div class="auth-tabs" role="tablist" aria-label="Переключение между входом и регистрацией">
+                    <button class="auth-tab active" onclick="switchAuth('login')" role="tab" aria-selected="true" aria-controls="login-form">
+                        Вход
+                    </button>
+                    <button class="auth-tab" onclick="switchAuth('register')" role="tab" aria-selected="false" aria-controls="register-form">
+                        Регистрация
+                    </button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email" class="form-label">Email</label>
+                        <input 
+                            type="email" 
+                            id="login-email" 
+                            class="form-input" 
+                            placeholder="ivan@example.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password" class="form-label">Пароль</label>
+                        <input 
+                            type="password" 
+                            id="login-password" 
+                            class="form-input" 
+                            placeholder="••••••••"
+                            required
+                        >
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember-me">
+                        <label for="remember-me">Запомнить меня</label>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        Войти
+                    </button>
+
+                    <div class="auth-footer">
+                        <p>Нет аккаунта? <a href="#" onclick="switchAuth('register'); return false;">Зарегистрироваться</a></p>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="auth-form" onsubmit="handleRegister(event)">
+                    <!-- Role Selection -->
+                    <div class="role-selection">
+                        <div class="role-option active" onclick="selectRole('buyer')" id="role-buyer">
+                            <span class="role-option-icon" aria-hidden="true">💚</span>
+                            <span class="role-option-label">Участник</span>
+                        </div>
+                        <div class="role-option" onclick="selectRole('farmer')" id="role-farmer">
+                            <span class="role-option-icon" aria-hidden="true">🚜</span>
+                            <span class="role-option-label">Фермер</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-name" class="form-label">ФИО</label>
+                        <input 
+                            type="text" 
+                            id="register-name" 
+                            class="form-input" 
+                            placeholder="Иванов Иван Иванович"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="register-email" class="form-label">Email</label>
+                            <input 
+                                type="email" 
+                                id="register-email" 
+                                class="form-input" 
+                                placeholder="ivan@example.com"
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="register-phone" class="form-label">Телефон</label>
+                            <input 
+                                type="tel" 
+                                id="register-phone" 
+                                class="form-input" 
+                                placeholder="+420 XXX XXX XXX"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="farm-name-group" style="display: none;">
+                        <label for="register-farm" class="form-label">Название фермы</label>
+                        <input 
+                            type="text" 
+                            id="register-farm" 
+                            class="form-input" 
+                            placeholder="Ваша ферма"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-password" class="form-label">Пароль</label>
+                        <input 
+                            type="password" 
+                            id="register-password" 
+                            class="form-input" 
+                            placeholder="Минимум 8 символов"
+                            minlength="8"
+                            required
+                        >
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="agree-terms" required>
+                        <label for="agree-terms">Я согласен с <a href="#">условиями использования</a></label>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        Зарегистрироваться
+                    </button>
+
+                    <div class="auth-footer">
+                        <p>Уже есть аккаунт? <a href="#" onclick="switchAuth('login'); return false;">Войти</a></p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="text-center mt-6">
+                <div class="flex items-center justify-center gap-4 text-sm text-gray-500">
+                    <span class="flex items-center gap-1">
+                        <span aria-hidden="true">🔒</span>
+                        <span>Безопасно</span>
                     </span>
-                </button>
-                <button class="role-tab farmer px-6 py-3 rounded-xl font-semibold text-gray-600 transition-all duration-200" onclick="switchRole('farmer')" role="radio" aria-checked="false">
-                    <span class="flex items-center gap-2">
-                        <span aria-hidden="true">🚜</span>
-                        <span>Фермер</span>
+                    <span class="flex items-center gap-1">
+                        <span aria-hidden="true">✓</span>
+                        <span>Проверено</span>
                     </span>
-                </button>
-            </div>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-8">
-            <!-- Left Column: Benefits -->
-            <div class="space-y-6">
-                <!-- Buyer Benefits -->
-                <div id="buyer-benefits" class="form-section active">
-                    <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50">
-                        <div class="text-center mb-6">
-                            <div class="text-6xl mb-4" aria-hidden="true">🛒</div>
-                            <h2 class="text-2xl font-bold text-gray-900 mb-2">Для участников</h2>
-                            <p class="text-gray-600">Получайте свежие продукты с доставкой</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <div class="flex items-start gap-3">
-                                <span class="text-green-600 text-xl flex-shrink-0" aria-hidden="true">✓</span>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">Доступ к ценам фермеров</h3>
-                                    <p class="text-sm text-gray-600">Экономьте до 40% на продуктах</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-3">
-                                <span class="text-green-600 text-xl flex-shrink-0" aria-hidden="true">🚚</span>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">4 доставки в месяц</h3>
-                                    <p class="text-sm text-gray-600">Каждую пятницу свежий бокс</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-3">
-                                <span class="text-green-600 text-xl flex-shrink-0" aria-hidden="true">♻️</span>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">Эко-коробка</h3>
-                                    <p class="text-sm text-gray-600">Качественная деревянная тара</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-3">
-                                <span class="text-green-600 text-xl flex-shrink-0" aria-hidden="true">🥗</span>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">Консультации нутрициолога</h3>
-                                    <p class="text-sm text-gray-600">Планы питания для здоровья</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-6 p-4 bg-green-50 rounded-xl border border-green-100">
-                            <p class="text-sm text-gray-700">
-                                <strong class="text-green-700">5000+ участников</strong> уже получают свежие продукты через BioMarket
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Farmer Benefits -->
-                <div id="farmer-benefits" class="form-section">
-                    <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50">
-                        <div class="text-center mb-6">
-                            <div class="text-6xl mb-4" aria-hidden="true">🚜</div>
-                            <h2 class="text-2xl font-bold text-gray-900 mb-2">Для фермеров</h2>
-                            <p class="text-gray-600">Продавайте без комиссий и посредников</p>
-                        </div>
-
-                        <div class="space-y-4">
-                            <div class="flex items-start gap-3">
-                                <span class="text-green-600 text-xl flex-shrink-0" aria-hidden="true">✓</span>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">0% комиссии</h3>
-                                    <p class="text-sm text-gray-600">Продавайте напрямую без посредников</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-3">
-                                <span class="text-green-600 text-xl flex-shrink-0" aria-hidden="true">📦</span>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">Готовая логистика</h3>
-                                    <p class="text-sm text-gray-600">Доставка до пунктов выдачи в день поставки</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-3">
-                                <span class="text-green-600 text-xl flex-shrink-0" aria-hidden="true">📊</span>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">Планирование спроса</h3>
-                                    <p class="text-sm text-gray-600">Точные прогнозы на основе предзаказов</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-3">
-                                <span class="text-green-600 text-xl flex-shrink-0" aria-hidden="true">🤝</span>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">Лояльное сообщество</h3>
-                                    <p class="text-sm text-gray-600">Прямая связь с покупателями</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-6 p-4 bg-green-50 rounded-xl border border-green-100">
-                            <p class="text-sm text-gray-700">
-                                <strong class="text-green-700">50+ фермеров</strong> уже продают через BioMarket
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Forms -->
-            <div>
-                <!-- Buyer Form -->
-                <div id="buyer-form" class="form-section active">
-                    <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Регистрация участника</h2>
-                        
-                        <form class="space-y-5">
-                            <div>
-                                <label for="buyer-fullname" class="block text-sm font-medium text-gray-700 mb-2">ФИО</label>
-                                <input type="text" id="buyer-fullname" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none" placeholder="Иванов Иван Иванович" required>
-                            </div>
-
-                            <div>
-                                <label for="buyer-email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                <input type="email" id="buyer-email" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none" placeholder="ivan@example.com" required>
-                            </div>
-
-                            <div>
-                                <label for="buyer-phone" class="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
-                                <input type="tel" id="buyer-phone" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none" placeholder="+420 XXX XXX XXX" required>
-                            </div>
-
-                            <div>
-                                <label for="buyer-address" class="block text-sm font-medium text-gray-700 mb-2">Адрес доставки</label>
-                                <input type="text" id="buyer-address" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none" placeholder="Улица, дом, квартира" required>
-                            </div>
-
-                            <div>
-                                <label for="buyer-password" class="block text-sm font-medium text-gray-700 mb-2">Пароль</label>
-                                <input type="password" id="buyer-password" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none" placeholder="Минимум 8 символов" required>
-                            </div>
-
-                            <button type="submit" class="btn-primary w-full py-4 text-lg">
-                                Зарегистрироваться
-                            </button>
-
-                            <p class="text-center text-sm text-gray-500">
-                                Уже есть аккаунт? <a href="#" class="text-green-600 hover:underline font-medium">Войти</a>
-                            </p>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Farmer Form -->
-                <div id="farmer-form" class="form-section">
-                    <div class="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-lg border border-white/50">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Регистрация фермера</h2>
-                        
-                        <form class="space-y-5">
-                            <div>
-                                <label for="farmer-name" class="block text-sm font-medium text-gray-700 mb-2">Название фермы</label>
-                                <input type="text" id="farmer-name" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none" placeholder="Ваша ферма" required>
-                            </div>
-
-                            <div>
-                                <label for="farmer-fullname" class="block text-sm font-medium text-gray-700 mb-2">ФИО владельца</label>
-                                <input type="text" id="farmer-fullname" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none" placeholder="Иванов Иван Иванович" required>
-                            </div>
-
-                            <div>
-                                <label for="farmer-email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                                <input type="email" id="farmer-email" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none" placeholder="farm@example.com" required>
-                            </div>
-
-                            <div>
-                                <label for="farmer-phone" class="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
-                                <input type="tel" id="farmer-phone" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none" placeholder="+420 XXX XXX XXX" required>
-                            </div>
-
-                            <div>
-                                <label for="farmer-location" class="block text-sm font-medium text-gray-700 mb-2">Расположение фермы</label>
-                                <input type="text" id="farmer-location" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none" placeholder="Регион, район" required>
-                            </div>
-
-                            <div>
-                                <label for="farmer-products" class="block text-sm font-medium text-gray-700 mb-2">Какие продукты производите?</label>
-                                <textarea id="farmer-products" rows="3" class="input-field w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none resize-none" placeholder="Овощи, фрукты, молочные продукты..." required></textarea>
-                            </div>
-
-                            <button type="submit" class="btn-primary w-full py-4 text-lg">
-                                Отправить заявку
-                            </button>
-
-                            <p class="text-center text-sm text-gray-500">
-                                Уже есть аккаунт? <a href="#" class="text-green-600 hover:underline font-medium">Войти</a>
-                            </p>
-                        </form>
-                    </div>
+                    <span class="flex items-center gap-1">
+                        <span aria-hidden="true">🌿</span>
+                        <span>Экологично</span>
+                    </span>
                 </div>
             </div>
         </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-[#1a1a1a] text-white mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="grid md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center gap-2 mb-4">
-                        <span class="text-2xl" aria-hidden="true">🥕</span>
-                        <span class="text-xl font-bold">BioMarket</span>
-                    </div>
-                    <p class="text-gray-400 text-sm">Свежие продукты напрямую от фермеров с доставкой до двери.</p>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Навигация</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="index.html" class="hover:text-white transition-colors">Главная</a></li>
-                        <li><a href="index.html#membership" class="hover:text-white transition-colors">Клуб</a></li>
-                        <li><a href="index.html#farmers" class="hover:text-white transition-colors">Фермеры</a></li>
-                        <li><a href="marketplace.html" class="hover:text-white transition-colors">Витрина</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Поддержка</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Контакты</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Доставка</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Юридическая информация</h4>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Условия использования</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Конфиденциальность</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Cookies</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-                <p>&copy; 2026 BioMarket. Все права защищены.</p>
-            </div>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        function switchRole(role) {
-            const buyerTab = document.querySelector('.role-tab.buyer');
-            const farmerTab = document.querySelector('.role-tab.farmer');
-            const buyerBenefits = document.getElementById('buyer-benefits');
-            const farmerBenefits = document.getElementById('farmer-benefits');
-            const buyerForm = document.getElementById('buyer-form');
-            const farmerForm = document.getElementById('farmer-form');
+        let selectedRole = 'buyer';
+
+        function switchAuth(type) {
+            const loginTab = document.querySelector('.auth-tab:first-child');
+            const registerTab = document.querySelector('.auth-tab:last-child');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+
+            if (type === 'login') {
+                loginTab.classList.add('active');
+                loginTab.setAttribute('aria-selected', 'true');
+                registerTab.classList.remove('active');
+                registerTab.setAttribute('aria-selected', 'false');
+                
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+            } else {
+                registerTab.classList.add('active');
+                registerTab.setAttribute('aria-selected', 'true');
+                loginTab.classList.remove('active');
+                loginTab.setAttribute('aria-selected', 'false');
+                
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
+            }
+
+            // Update URL without reload
+            const url = new URL(window.location);
+            url.searchParams.set('mode', type);
+            window.history.pushState({}, '', url);
+        }
+
+        function selectRole(role) {
+            selectedRole = role;
+            
+            const buyerOption = document.getElementById('role-buyer');
+            const farmerOption = document.getElementById('role-farmer');
+            const farmNameGroup = document.getElementById('farm-name-group');
+            const farmInput = document.getElementById('register-farm');
 
             if (role === 'buyer') {
-                buyerTab.classList.add('active', 'bg-green-600', 'text-white');
-                buyerTab.classList.remove('text-gray-600');
-                farmerTab.classList.remove('active', 'bg-green-600', 'text-white');
-                farmerTab.classList.add('text-gray-600');
-                
-                buyerBenefits.classList.add('active');
-                farmerBenefits.classList.remove('active');
-                buyerForm.classList.add('active');
-                farmerForm.classList.remove('active');
-                
-                buyerTab.setAttribute('aria-checked', 'true');
-                farmerTab.setAttribute('aria-checked', 'false');
+                buyerOption.classList.add('active');
+                farmerOption.classList.remove('active');
+                farmNameGroup.style.display = 'none';
+                farmInput.removeAttribute('required');
             } else {
-                farmerTab.classList.add('active', 'bg-green-600', 'text-white');
-                farmerTab.classList.remove('text-gray-600');
-                buyerTab.classList.remove('active', 'bg-green-600', 'text-white');
-                buyerTab.classList.add('text-gray-600');
-                
-                farmerBenefits.classList.add('active');
-                buyerBenefits.classList.remove('active');
-                farmerForm.classList.add('active');
-                buyerForm.classList.remove('active');
-                
-                farmerTab.setAttribute('aria-checked', 'true');
-                buyerTab.setAttribute('aria-checked', 'false');
+                farmerOption.classList.add('active');
+                buyerOption.classList.remove('active');
+                farmNameGroup.style.display = 'block';
+                farmInput.setAttribute('required', 'true');
             }
         }
 
-        // Initialize buyer role as active
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // TODO: Implement actual login logic
+            console.log('Login:', { email, password });
+            alert('Функция входа будет реализована в ближайшее время!');
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const phone = document.getElementById('register-phone').value;
+            const password = document.getElementById('register-password').value;
+            const farm = document.getElementById('register-farm').value;
+            
+            const data = {
+                role: selectedRole,
+                name,
+                email,
+                phone,
+                password
+            };
+
+            if (selectedRole === 'farmer') {
+                data.farmName = farm;
+            }
+
+            // TODO: Implement actual registration logic
+            console.log('Register:', data);
+            alert('Функция регистрации будет реализована в ближайшее время!');
+        }
+
+        // Initialize based on URL parameter
         document.addEventListener('DOMContentLoaded', () => {
-            switchRole('buyer');
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            
+            if (mode === 'register') {
+                switchAuth('register');
+            } else {
+                switchAuth('login');
+            }
         });
     </script>
 </body>

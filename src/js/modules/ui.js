@@ -94,6 +94,7 @@ export function updateCartUI(cartData) {
     const countEl = document.querySelector(SELECTORS.CART_COUNT);
     const countHeaderEl = document.querySelector(SELECTORS.CART_COUNT_HEADER);
     const totalEl = document.querySelector(SELECTORS.CART_TOTAL);
+    const cartItemsEl = document.querySelector(SELECTORS.CART_ITEMS);
 
     const count = cartData.count || '0';
 
@@ -108,6 +109,52 @@ export function updateCartUI(cartData) {
     if (totalEl) {
         totalEl.textContent = `${cartData.total || 0} Kč`;
     }
+
+    // Отрисовать элементы корзины
+    if (cartItemsEl && cartData.items) {
+        renderCartItems(cartItemsEl, cartData.items);
+    }
+}
+
+/**
+ * Отрисовать элементы корзины
+ * @param {HTMLElement} container
+ * @param {Array} items
+ */
+function renderCartItems(container, items) {
+    if (!items || items.length === 0) {
+        container.innerHTML = `
+            <div class="text-center text-gray-400 mt-20">
+                <div class="text-6xl mb-4" aria-hidden="true">🛒</div>
+                <p>Корзина пуста</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = items.map(item => `
+        <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-3">
+            <div class="w-16 h-16 bg-gradient-to-br ${item.gradient || 'from-green-100 to-green-200'} rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
+                ${item.image || '📦'}
+            </div>
+            <div class="flex-1 min-w-0">
+                <h4 class="font-semibold text-gray-900 truncate">${item.name}</h4>
+                <p class="text-sm text-gray-500">${item.priceSubscription} Kč/${item.unit}</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="window.updateCartQuantity(${item.id}, -1)" class="w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-100" aria-label="Уменьшить количество">
+                    <span aria-hidden="true">−</span>
+                </button>
+                <span class="font-medium text-gray-900 w-6 text-center">${item.quantity}</span>
+                <button onclick="window.updateCartQuantity(${item.id}, 1)" class="w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-100" aria-label="Увеличить количество">
+                    <span aria-hidden="true">+</span>
+                </button>
+            </div>
+            <button onclick="window.removeFromCart(${item.id})" class="text-gray-400 hover:text-red-500 transition-colors" aria-label="Удалить товар">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+    `).join('');
 }
 
 /**

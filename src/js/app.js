@@ -24,11 +24,11 @@ function initializeApp() {
     const initialProducts = filterManager.applyFilters();
     renderProducts(initialProducts);
 
-    // Обновить UI
-    updateAuthUI(authManager.getUser(), authManager.getUserRole());
+    // Обновить UI корзины с элементами
     updateCartUI({
         count: cartManager.getCount(),
-        total: cartManager.getTotalPrice()
+        total: cartManager.getTotalPrice(),
+        items: cartManager.getCart()
     });
 
     // Прикрепить обработчики событий
@@ -84,11 +84,21 @@ function attachEventListeners() {
     const overlay = document.querySelector(SELECTORS.OVERLAY);
 
     window.toggleCart = function() {
+        const isClosed = cartSidebar?.classList.contains('translate-x-full');
+        
         if (cartSidebar) {
             cartSidebar.classList.toggle('translate-x-full');
         }
         if (overlay) {
             overlay.classList.toggle('hidden');
+        }
+        // Обновить отображение корзины при открытии
+        if (isClosed) {
+            updateCartUI({
+                count: cartManager.getCount(),
+                total: cartManager.getTotalPrice(),
+                items: cartManager.getCart()
+            });
         }
     };
 
@@ -110,7 +120,8 @@ window.addToCart = function(button) {
     if (product && cartManager.addItem(product)) {
         updateCartUI({
             count: cartManager.getCount(),
-            total: cartManager.getTotalPrice()
+            total: cartManager.getTotalPrice(),
+            items: cartManager.getCart()
         });
 
         // Визуальная обратная связь
@@ -120,6 +131,36 @@ window.addToCart = function(button) {
             button.innerHTML = originalText;
         }, 1500);
     }
+};
+
+/**
+ * Обновить количество товара в корзине
+ */
+window.updateCartQuantity = function(productId, change) {
+    const item = cartManager.getCart().find(i => i.id === productId);
+    if (!item) return;
+
+    const newQuantity = item.quantity + change;
+    cartManager.updateQuantity(productId, newQuantity);
+
+    updateCartUI({
+        count: cartManager.getCount(),
+        total: cartManager.getTotalPrice(),
+        items: cartManager.getCart()
+    });
+};
+
+/**
+ * Удалить товар из корзины
+ */
+window.removeFromCart = function(productId) {
+    cartManager.removeItem(productId);
+
+    updateCartUI({
+        count: cartManager.getCount(),
+        total: cartManager.getTotalPrice(),
+        items: cartManager.getCart()
+    });
 };
 
 /**

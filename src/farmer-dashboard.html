@@ -1256,22 +1256,19 @@
                 </div>
 
                 <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                    <!-- Logout -->
-                    <button type="button" onclick="logout()" class="inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-[#84A93C] hover:border-[#84A93C] hover:bg-[#84A93C] hover:text-white hover:scale-105 shadow-md hover:shadow-lg" aria-label="Выйти">
+                    <!-- Desktop Logout -->
+                    <button type="button" onclick="logout()" class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-[#84A93C] hover:border-[#84A93C] hover:bg-[#84A93C] hover:text-white hover:scale-105 shadow-md hover:shadow-lg" aria-label="Выйти">
                         <span aria-hidden="true">↪️</span>
                         <span>Выйти</span>
                     </button>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button type="button" id="mobile-menu-btn" class="md:hidden p-1.5 text-gray-600 hover:text-[var(--olive)] transition-colors" aria-label="Открыть меню" aria-expanded="false">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
                 </div>
-            </div>
-
-            <!-- Mobile Menu Button -->
-            <div class="flex items-center gap-0.5 md:hidden">
-                <!-- Hamburger -->
-                <button type="button" id="mobile-menu-btn" class="p-1.5 text-gray-600 hover:text-[var(--olive)] transition-colors" aria-label="Открыть меню" aria-expanded="false">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
             </div>
         </div>
 

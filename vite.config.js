@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
 export default defineConfig({
   root: './src',
@@ -7,16 +8,12 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: 'src/index.html',
-        register: 'src/register.html',
-        farmer: 'src/farmer-dashboard.html',
-        member: 'src/member-dashboard.html',
-        farmDetail: 'src/farm-detail.html'
-      },
-      output: {
-        entryFileNames: 'assets/[name]-[hash].js',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
+        main: resolve(__dirname, 'src/index.html'),
+        register: resolve(__dirname, 'src/register.html'),
+        farmer: resolve(__dirname, 'src/farmer-dashboard.html'),
+        member: resolve(__dirname, 'src/member-dashboard.html'),
+        farmDetail: resolve(__dirname, 'src/farm-detail.html'),
+        checkout: resolve(__dirname, 'src/checkout.html')
       }
     }
   }

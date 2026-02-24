@@ -1,5 +1,6 @@
 // src/js/farmer-dashboard.js
 import { STORAGE_KEYS } from './utils/constants.js';
+import { authManager } from './modules/auth.js';
 
 // ============================================
 // ИНИЦИАЛИЗАЦИЯ
@@ -29,11 +30,12 @@ function initializeDashboard() {
 // ============================================
 
 function loadFarmerData() {
-    const user = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER) || '{}');
-    const userRole = localStorage.getItem(STORAGE_KEYS.USER_ROLE);
+    // Используем authManager для получения данных
+    const user = authManager.getUser();
+    const userRole = authManager.getUserRole();
 
-    console.log('User data:', user);
-    console.log('User role:', userRole);
+    console.log('Farmer Dashboard - User data:', user);
+    console.log('Farmer Dashboard - User role:', userRole);
 
     if (!user || !user.fullname || userRole !== 'farmer') {
         console.log('Redirecting to index.html - no user or wrong role');
@@ -555,11 +557,15 @@ function attachEventListeners() {
         });
     }
 
-    // Обработчик выхода
+    // Обработчик выхода (только по клику)
     document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('logout-btn') || e.target.closest('.logout-btn')) {
+        const logoutBtn = e.target.closest('.logout-btn');
+        if (logoutBtn) {
             e.preventDefault();
-            logout();
+            e.stopPropagation();
+            console.log('Logout button clicked');
+            authManager.logout();
+            window.location.href = 'index.html';
         }
     });
 }

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата подписки — BioMarket</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .checkout-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem 1rem;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .checkout-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(132, 169, 60, 0.12);
+            border: 1px solid rgba(132, 169, 60, 0.1);
+        }
+
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .checkout-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+            box-shadow: 0 4px 16px rgba(132, 169, 60, 0.3);
+        }
+
+        .checkout-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .checkout-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .order-summary {
+            background: rgba(132, 169, 60, 0.05);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(132, 169, 60, 0.1);
+        }
+
+        .order-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-label {
+            color: #6b7280;
+            font-size: 0.9375rem;
+        }
+
+        .order-value {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .order-total {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(132, 169, 60, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-total .order-label {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .order-total .order-value {
+            font-size: 1.5rem;
+            color: #84A93C;
+        }
+
+        .payment-methods {
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 0.75rem;
+        }
+
+        .payment-method:hover {
+            border-color: #84A93C;
+            background: rgba(132, 169, 60, 0.05);
+        }
+
+        .payment-method.selected {
+            border-color: #84A93C;
+            background: rgba(132, 169, 60, 0.1);
+        }
+
+        .payment-method input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #84A93C;
+        }
+
+        .payment-method-info {
+            flex: 1;
+        }
+
+        .payment-method-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-method-desc {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .payment-method-icon {
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-size: 0.9375rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #84A93C;
+            box-shadow: 0 0 0 4px rgba(132, 169, 60, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-pay {
+            width: 100%;
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            font-size: 1.125rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(132, 169, 60, 0.3);
+        }
+
+        .btn-pay:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(132, 169, 60, 0.4);
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .security-badge span:first-child {
+            font-size: 1.25rem;
+        }
+
+        .plan-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF7] min-h-screen">
+    <!-- Header -->
+    <nav class="sticky-nav" role="navigation" aria-label="Основная навигация" style="position: -webkit-sticky; position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(132, 169, 60, 0.1);">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-12 sm:h-14">
+                <a href="index.html" class="flex items-center gap-1.5 flex-shrink-0">
+                    <span class="text-xl sm:text-2xl" aria-hidden="true">🥕</span>
+                    <span class="text-base sm:text-lg font-bold" style="color: var(--earth)">BioMarket</span>
+                </a>
+
+                <div class="hidden md:flex items-center space-x-8 flex-shrink-0">
+                    <a href="index.html#membership" class="nav-link font-medium text-sm">Клуб</a>
+                    <a href="index.html#farmers" class="nav-link font-medium text-sm">Фермеры</a>
+                    <a href="index.html#how-it-works" class="nav-link font-medium text-sm">Как работает</a>
+                    <a href="index.html#marketplace" class="nav-link font-medium text-sm">Витрина</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <button onclick="logout()" class="inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-[#84A93C] hover:border-[#84A93C] hover:bg-[#84A93C] hover:text-white hover:scale-105 shadow-md hover:shadow-lg" aria-label="Выйти">
+                        <span aria-hidden="true">↪️</span>
+                        <span>Выйти</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-0.5 md:hidden">
+                    <button id="mobile-menu-btn" class="p-1.5 text-gray-600 hover:text-[var(--olive)] transition-colors" aria-label="Открыть меню" aria-expanded="false">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 py-4">
+            <div class="flex flex-col space-y-3">
+                <a href="index.html#membership" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Клуб</a>
+                <a href="index.html#farmers" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Фермеры</a>
+                <a href="index.html#how-it-works" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Как работает</a>
+                <a href="index.html#marketplace" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Витрина</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Checkout Container -->
+    <div class="checkout-container">
+        <div class="checkout-grid">
+            <!-- Order Summary -->
+            <div class="checkout-card">
+                <div class="checkout-header">
+                    <div class="checkout-logo" aria-hidden="true">📦</div>
+                    <h1 class="checkout-title">Оформление подписки</h1>
+                    <p class="checkout-subtitle">Завершите оформление для доступа к ценам участников</p>
+                </div>
+
+                <div class="order-summary">
+                    <span class="plan-badge" id="plan-badge">1 месяц</span>
+                    
+                    <div class="order-row">
+                        <span class="order-label">План подписки</span>
+                        <span class="order-value" id="plan-name">1 месяц</span>
+                    </div>
+                    <div class="order-row">
+                        <span class="order-label">Период</span>
+                        <span class="order-value" id="plan-period">30 дней</span>
+                    </div>
+                    <div class="order-row">
+                        <span class="order-label">Экономия</span>
+                        <span class="order-value" id="plan-savings">0 Kč</span>
+                    </div>
+                    <div class="order-total">
+                        <span class="order-label">Итого к оплате</span>
+                        <span class="order-value" id="plan-price">0 Kč</span>
+                    </div>
+                </div>
+
+                <div class="security-badge">
+                    <span aria-hidden="true">🔒</span>
+                    <span>Безопасная оплата через зашифрованное соединение</span>
+                </div>
+            </div>
+
+            <!-- Payment Form -->
+            <div class="checkout-card">
+                <h2 class="checkout-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">Способ оплаты</h2>
+
+                <div class="payment-methods">
+                    <label class="payment-method selected">
+                        <input type="radio" name="payment" value="card" checked>
+                        <span class="payment-method-icon">💳</span>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">Банковская карта</div>
+                            <div class="payment-method-desc">Visa, Mastercard, Maestro</div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method">
+                        <input type="radio" name="payment" value="googlepay">
+                        <span class="payment-method-icon">📱</span>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">Google Pay</div>
+                            <div class="payment-method-desc">Быстрая оплата через Google</div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method">
+                        <input type="radio" name="payment" value="applepay">
+                        <span class="payment-method-icon">🍎</span>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">Apple Pay</div>
+                            <div class="payment-method-desc">Быстрая оплата через Apple</div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method">
+                        <input type="radio" name="payment" value="bank">
+                        <span class="payment-method-icon">🏦</span>
+                        <div class="payment-method-info">
+                            <div class="payment-method-name">Банковский перевод</div>
+                            <div class="payment-method-desc">Česká spořitelna, Komerční banka</div>
+                        </div>
+                    </label>
+                </div>
+
+                <form id="payment-form" onsubmit="handlePayment(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="card-number">Номер карты</label>
+                        <input type="text" id="card-number" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="card-name">Владелец карты</label>
+                        <input type="text" id="card-name" class="form-input" placeholder="IVAN IVANOV">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="card-expiry">Срок действия</label>
+                            <input type="text" id="card-expiry" class="form-input" placeholder="MM/YY" maxlength="5">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="card-cvv">CVV</label>
+                            <input type="text" id="card-cvv" class="form-input" placeholder="123" maxlength="3">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-pay">
+                        <span aria-hidden="true">🔒</span>
+                        <span>Оплатить <span id="btn-price">0 Kč</span></span>
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="member-dashboard.html" style="color: #6b7280; font-size: 0.875rem; text-decoration: none;">← Вернуться в кабинет</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/checkout.js"></script>
+</body>
+</html>

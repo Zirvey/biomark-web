@@ -17,6 +17,9 @@ function initializeDashboard() {
     // Загрузить данные пользователя
     loadUserData();
 
+    // Загрузить подписку
+    loadSubscription();
+
     // Обновить UI корзины
     updateCartUI({
         count: cartManager.getCount(),
@@ -77,10 +80,60 @@ function loadStats() {
     const orders = JSON.parse(localStorage.getItem('biomarket_orders') || '[]');
     const saved = orders.reduce((sum, order) => sum + (order.saved || 0), 0);
     const ecoPoints = orders.length * 10;
-    
+
     document.getElementById('stat-orders').textContent = orders.length;
     document.getElementById('stat-saved').textContent = `${saved} Kč`;
     document.getElementById('stat-eco').textContent = ecoPoints;
+}
+
+// ============================================
+// ПОДПИСКА
+// ============================================
+
+function loadSubscription() {
+    const subscription = JSON.parse(localStorage.getItem('biomarket_subscription') || 'null');
+    const activeSubscriptionEl = document.getElementById('active-subscription');
+    const noSubscriptionEl = document.getElementById('no-subscription-card');
+
+    if (!subscription || subscription.status !== 'active') {
+        // Нет активной подписки
+        if (activeSubscriptionEl) activeSubscriptionEl.style.display = 'none';
+        if (noSubscriptionEl) noSubscriptionEl.style.display = 'block';
+        return;
+    }
+
+    // Есть активная подписка
+    if (activeSubscriptionEl) activeSubscriptionEl.style.display = 'block';
+    if (noSubscriptionEl) noSubscriptionEl.style.display = 'none';
+
+    // Отобразить информацию
+    const planNames = {
+        '1month': '1 месяц',
+        '3months': '3 месяца',
+        '1year': '1 год'
+    };
+
+    document.getElementById('subscription-plan').textContent = planNames[subscription.plan] || subscription.planName;
+
+    // Рассчитать и отобразить дату окончания
+    const endDate = new Date(subscription.endDate);
+    const now = new Date();
+
+    if (endDate < now) {
+        // Подписка истекла
+        document.getElementById('subscription-status-badge').innerHTML = '<span>⏰</span><span>Истекла</span>';
+        document.getElementById('subscription-status-badge').style.background = 'rgba(249, 115, 22, 0.1)';
+        document.getElementById('subscription-status-badge').style.color = '#f97316';
+        document.getElementById('subscription-end-date').textContent = 'Истекла';
+    } else {
+        // Подписка активна
+        const formattedDate = endDate.toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+        document.getElementById('subscription-end-date').textContent = formattedDate;
+    }
 }
 
 // ============================================

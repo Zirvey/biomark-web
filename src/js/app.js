@@ -24,8 +24,11 @@ function initializeApp() {
     const initialProducts = filterManager.applyFilters();
     renderProducts(initialProducts);
 
-    // Обновить UI авторизации
-    updateAuthUI(authManager.getUser(), authManager.getUserRole());
+    // Обновить UI авторизации (с проверкой что пользователь есть)
+    const user = authManager.getUser();
+    const userRole = authManager.getUserRole();
+    console.log('App initialized - User:', user, 'Role:', userRole);
+    updateAuthUI(user, userRole);
 
     // Обновить UI корзины с элементами
     updateCartUI({
@@ -202,10 +205,13 @@ function setupScrollAnimations() {
         counterObserver.observe(ecoCounter);
     }
 
-    // Обработчик кнопки выхода
+    // Обработчик кнопки выхода (только по клику)
     document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('logout-btn') || e.target.closest('.logout-btn')) {
+        const logoutBtn = e.target.closest('.logout-btn');
+        if (logoutBtn) {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('Logout button clicked');
             authManager.logout();
             window.location.href = 'index.html';
         }
@@ -235,3 +241,25 @@ function animateCounter(element) {
 
 // Экспортировать для использования если нужно
 export { productManager, cartManager, filterManager, authManager };
+
+// ============================================
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ
+// ============================================
+
+/**
+ * Выбор плана подписки
+ * @param {string} planId - ID плана (1month, 3months, 1year)
+ */
+window.selectPlan = function(planId) {
+    const user = authManager.getUser();
+    const userRole = authManager.getUserRole();
+
+    if (!user || userRole !== 'buyer') {
+        // Не авторизован → сохранить план и редирект на регистрацию
+        localStorage.setItem('biomarket_selected_plan', planId);
+        window.location.href = 'register.html';
+    } else {
+        // Авторизован → переход на оплату
+        window.location.href = `checkout.html?plan=${planId}`;
+    }
+};

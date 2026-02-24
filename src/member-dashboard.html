@@ -592,7 +592,7 @@
                     <a href="index.html#membership" class="nav-link font-medium text-sm">Клуб</a>
                     <a href="index.html#farmers" class="nav-link font-medium text-sm">Фермеры</a>
                     <a href="index.html#how-it-works" class="nav-link font-medium text-sm">Как работает</a>
-                    <a href="marketplace.html" class="nav-link font-medium text-sm">Витрина</a>
+                    <a href="index.html#marketplace" class="nav-link font-medium text-sm">Витрина</a>
                 </div>
 
                 <div class="hidden md:flex items-center gap-2 sm:gap-3 flex-shrink-0">
@@ -632,7 +632,7 @@
                 <a href="index.html#membership" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Клуб</a>
                 <a href="index.html#farmers" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Фермеры</a>
                 <a href="index.html#how-it-works" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Как работает</a>
-                <a href="marketplace.html" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Витрина</a>
+                <a href="index.html#marketplace" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Витрина</a>
             </div>
         </div>
     </nav>
@@ -785,7 +785,7 @@
                             <div class="empty-icon">📦</div>
                             <div class="empty-title">Пока нет заказов</div>
                             <div class="empty-text">Закажите продукты из витрины</div>
-                            <a href="marketplace.html" class="btn-save" style="margin-top: 1rem; display: inline-flex;">
+                            <a href="index.html#marketplace" class="btn-save" style="margin-top: 1rem; display: inline-flex;">
                                 <span aria-hidden="true">🛒</span>
                                 <span>В магазин</span>
                             </a>
@@ -815,7 +815,7 @@
                             <span class="quick-action-icon">ℹ️</span>
                             <span>Как работает</span>
                         </a>
-                        <a href="marketplace.html" class="quick-action-btn">
+                        <a href="index.html#marketplace" class="quick-action-btn">
                             <span class="quick-action-icon">🛒</span>
                             <span>Витрина</span>
                         </a>
@@ -836,7 +836,7 @@
                             <div class="empty-icon">📦</div>
                             <div class="empty-title">Пока нет заказов</div>
                             <div class="empty-text">Закажите продукты из витрины</div>
-                            <a href="marketplace.html" class="btn-save" style="margin-top: 1rem; display: inline-flex;">
+                            <a href="index.html#marketplace" class="btn-save" style="margin-top: 1rem; display: inline-flex;">
                                 <span aria-hidden="true">🛒</span>
                                 <span>В магазин</span>
                             </a>
@@ -858,31 +858,48 @@
                             <span aria-hidden="true">💚</span>
                             Текущий план
                         </h2>
-                        <span class="subscription-badge">
+                        <span class="subscription-badge" id="subscription-status-badge">
                             <span>✓</span>
                             <span>Активна</span>
                         </span>
                     </div>
-                    
+
                     <div class="stats-grid" style="margin-bottom: 1.5rem;">
+                        <div>
+                            <div class="stat-label">План</div>
+                            <div class="stat-value" id="subscription-plan">1 месяц</div>
+                        </div>
+                        <div>
+                            <div class="stat-label">Дата окончания</div>
+                            <div class="stat-value" id="subscription-end-date">—</div>
+                        </div>
                         <div>
                             <div class="stat-label">Доставок в месяц</div>
                             <div class="stat-value">4</div>
                         </div>
-                        <div>
-                            <div class="stat-label">Следующая доставка</div>
-                            <div class="stat-value">Пятница</div>
-                        </div>
-                        <div>
-                            <div class="stat-label">Эко-коробка</div>
-                            <div class="stat-value">📦 Выдана</div>
-                        </div>
                     </div>
 
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                        <a href="index.html#membership" class="btn-save">
+                        <a href="checkout.html" class="btn-save" id="renew-subscription-btn">
                             <span aria-hidden="true">⭐</span>
-                            <span>Улучшить подписку</span>
+                            <span>Продлить подписку</span>
+                        </a>
+                        <a href="index.html#membership" class="btn-save" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);">
+                            <span aria-hidden="true">📦</span>
+                            <span>Изменить план</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- No Subscription -->
+                <div class="content-card" id="no-subscription-card" style="display: none;">
+                    <div class="empty-state">
+                        <div class="empty-icon">💚</div>
+                        <div class="empty-title">У вас нет активной подписки</div>
+                        <div class="empty-text">Оформите подписку для доступа к ценам фермеров и еженедельной доставке</div>
+                        <a href="index.html#membership" class="btn-save" style="margin-top: 1rem; display: inline-flex;">
+                            <span aria-hidden="true">🥕</span>
+                            <span>Выбрать план</span>
                         </a>
                     </div>
                 </div>

@@ -2,5 +2,15 @@
   "name": "biomarket",
   "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "routes": [
+    { "src": "/checkout", "dest": "/checkout.html" },
+    { "src": "/checkout.html", "dest": "/checkout.html" },
+    { "src": "/register", "dest": "/register.html" },
+    { "src": "/register.html", "dest": "/register.html" },
+    { "src": "/farmer-dashboard", "dest": "/farmer-dashboard.html" },
+    { "src": "/member-dashboard", "dest": "/member-dashboard.html" },
+    { "src": "/farm-detail", "dest": "/farm-detail.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
 }

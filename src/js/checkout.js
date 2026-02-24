@@ -66,36 +66,77 @@ function attachEventListeners() {
     // Выбор способа оплаты
     document.querySelectorAll('input[name="payment"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
+            const paymentMethod = e.target.value;
+            
+            // Обновить выделение
             document.querySelectorAll('.payment-method').forEach(method => {
                 method.classList.remove('selected');
             });
             e.target.closest('.payment-method').classList.add('selected');
+            
+            // Переключить форму
+            updatePaymentForm(paymentMethod);
         });
     });
 
     // Форматирование номера карты
     const cardNumber = document.getElementById('card-number');
-    cardNumber.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\D/g, '');
-        value = value.replace(/(.{4})/g, '$1 ').trim();
-        e.target.value = value.substring(0, 19);
-    });
+    if (cardNumber) {
+        cardNumber.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(.{4})/g, '$1 ').trim();
+            e.target.value = value.substring(0, 19);
+        });
+    }
 
     // Форматирование срока действия
     const cardExpiry = document.getElementById('card-expiry');
-    cardExpiry.addEventListener('input', (e) => {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length >= 2) {
-            value = value.substring(0, 2) + '/' + value.substring(2, 4);
-        }
-        e.target.value = value;
-    });
+    if (cardExpiry) {
+        cardExpiry.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
 
     // Только цифры для CVV
     const cardCvv = document.getElementById('card-cvv');
-    cardCvv.addEventListener('input', (e) => {
-        e.target.value = e.target.value.replace(/\D/g, '').substring(0, 3);
-    });
+    if (cardCvv) {
+        cardCvv.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '').substring(0, 3);
+        });
+    }
+}
+
+function updatePaymentForm(paymentMethod) {
+    const cardFields = document.getElementById('card-fields');
+    const bankFields = document.getElementById('bank-fields');
+    const walletFields = document.getElementById('wallet-fields');
+    const btnText = document.getElementById('btn-text');
+    const walletName = document.getElementById('wallet-name');
+    const bankAmount = document.getElementById('bank-amount');
+    const planPrice = document.getElementById('plan-price');
+    
+    // Скрыть все формы
+    if (cardFields) cardFields.style.display = 'none';
+    if (bankFields) bankFields.style.display = 'none';
+    if (walletFields) walletFields.style.display = 'none';
+    
+    // Показать нужную форму
+    if (paymentMethod === 'card') {
+        if (cardFields) cardFields.style.display = 'block';
+        if (btnText) btnText.innerHTML = 'Оплатить <span id="btn-price">' + (planPrice ? planPrice.textContent : '0 Kč') + '</span>';
+    } else if (paymentMethod === 'bank') {
+        if (bankFields) bankFields.style.display = 'block';
+        if (bankAmount && planPrice) bankAmount.textContent = planPrice.textContent;
+        if (btnText) btnText.innerHTML = 'Подтвердить';
+    } else if (paymentMethod === 'googlepay' || paymentMethod === 'applepay') {
+        if (walletFields) walletFields.style.display = 'block';
+        if (walletName) walletName.textContent = paymentMethod === 'googlepay' ? 'Google Pay' : 'Apple Pay';
+        if (btnText) btnText.innerHTML = 'Оплатить через ' + (paymentMethod === 'googlepay' ? 'Google Pay' : 'Apple Pay');
+    }
 }
 
 // ============================================

@@ -253,12 +253,16 @@ export { productManager, cartManager, filterManager, authManager };
 window.selectPlan = function(planId) {
     const user = authManager.getUser();
     const userRole = authManager.getUserRole();
+    
+    console.log('selectPlan called - User:', user, 'Role:', userRole);
 
     if (!user || userRole !== 'buyer') {
+        console.log('Not authenticated, redirecting to register');
         // Не авторизован → сохранить план и редирект на регистрацию
         localStorage.setItem('biomarket_selected_plan', planId);
         window.location.href = 'register.html';
     } else {
+        console.log('Authenticated, redirecting to checkout');
         // Авторизован → переход на оплату
         window.location.href = `checkout.html?plan=${planId}`;
     }

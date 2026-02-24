@@ -3,6 +3,7 @@ import { STORAGE_KEYS } from './utils/constants.js';
 import { cartManager } from './modules/cart.js';
 import { productManager } from './modules/products.js';
 import { updateCartUI } from './modules/ui.js';
+import { authManager } from './modules/auth.js';
 import { toggle } from './utils/dom.js';
 
 // ============================================
@@ -40,29 +41,33 @@ function initializeDashboard() {
 // ============================================
 
 function loadUserData() {
-    const user = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER) || '{}');
-    const userRole = localStorage.getItem(STORAGE_KEYS.USER_ROLE);
-    
-    if (!user || !user.fullname) {
-        // Если нет данных, перенаправить на главную
+    // Используем authManager для получения данных
+    const user = authManager.getUser();
+    const userRole = authManager.getUserRole();
+
+    console.log('loadUserData - User:', user, 'Role:', userRole);
+
+    if (!user || !user.fullname || userRole !== 'buyer') {
+        // Если нет данных или неправильная роль, перенаправить на главную
+        console.log('Redirecting to index.html - no user or wrong role');
         window.location.href = 'index.html';
         return;
     }
-    
+
     const firstName = user.fullname.split(' ')[0];
-    
+
     // Обновить UI
     document.getElementById('user-avatar').textContent = getAvatarEmoji(userRole);
     document.getElementById('sidebar-user-name').textContent = firstName;
     document.getElementById('sidebar-user-email').textContent = user.email || 'email@example.com';
     document.getElementById('main-user-name').textContent = firstName;
-    
+
     // Заполнить форму настроек
     document.getElementById('settings-name').value = user.fullname || '';
     document.getElementById('settings-email').value = user.email || '';
     document.getElementById('settings-phone').value = user.phone || '';
     document.getElementById('settings-address').value = user.address || '';
-    
+
     // Загрузить статистику
     loadStats();
 }
@@ -288,8 +293,24 @@ function toggleSwitch(element) {
 }
 
 function logout() {
+    console.log('Logout called from member-dashboard');
+    authManager.logout();
+    window.location.href = 'index.html';
+}
+
+function deleteAccount() {
+    if (!confirm('⚠️ Вы уверены, что хотите удалить аккаунт?\n\nЭто действие необратимо удалит:\n• Вашу подписку\n• Историю заказов\n• Все личные данные\n\nПродолжить?')) {
+        return;
+    }
+    
+    // Удалить все данные пользователя
     localStorage.removeItem(STORAGE_KEYS.USER);
     localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
+    localStorage.removeItem('biomarket_cart');
+    localStorage.removeItem('biomarket_subscription');
+    localStorage.removeItem('biomarket_orders');
+    
+    console.log('Account deleted');
     window.location.href = 'index.html';
 }
 
@@ -298,6 +319,7 @@ window.navigateTo = showSection;
 window.saveSettings = saveSettings;
 window.toggleSwitch = toggleSwitch;
 window.logout = logout;
+window.deleteAccount = deleteAccount;
 
 // ============================================
 // КОРЗИНА (ГЛОБАЛЬНЫЕ ФУНКЦИИ)

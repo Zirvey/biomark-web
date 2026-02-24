@@ -11,7 +11,6 @@ export default defineConfig({
         register: 'src/register.html',
         farmer: 'src/farmer-dashboard.html',
         member: 'src/member-dashboard.html',
-        marketplace: 'src/marketplace.html',
         farmDetail: 'src/farm-detail.html'
       },
       output: {

@@ -379,30 +379,76 @@
                 </div>
 
                 <form id="payment-form" onsubmit="handlePayment(event)">
-                    <div class="form-group">
-                        <label class="form-label" for="card-number">Номер карты</label>
-                        <input type="text" id="card-number" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="card-name">Владелец карты</label>
-                        <input type="text" id="card-name" class="form-input" placeholder="IVAN IVANOV">
-                    </div>
-
-                    <div class="form-row">
+                    <!-- Card Fields -->
+                    <div id="card-fields">
                         <div class="form-group">
-                            <label class="form-label" for="card-expiry">Срок действия</label>
-                            <input type="text" id="card-expiry" class="form-input" placeholder="MM/YY" maxlength="5">
+                            <label class="form-label" for="card-number">Номер карты</label>
+                            <input type="text" id="card-number" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
                         </div>
+
                         <div class="form-group">
-                            <label class="form-label" for="card-cvv">CVV</label>
-                            <input type="text" id="card-cvv" class="form-input" placeholder="123" maxlength="3">
+                            <label class="form-label" for="card-name">Владелец карты</label>
+                            <input type="text" id="card-name" class="form-input" placeholder="IVAN IVANOV">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="card-expiry">Срок действия</label>
+                                <input type="text" id="card-expiry" class="form-input" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="card-cvv">CVV</label>
+                                <input type="text" id="card-cvv" class="form-input" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bank Transfer Info -->
+                    <div id="bank-fields" style="display: none;">
+                        <div class="order-summary" style="background: rgba(59, 130, 246, 0.05);">
+                            <div class="order-row">
+                                <span class="order-label">🏦 Банк получателя</span>
+                                <span class="order-value">Česká spořitelna</span>
+                            </div>
+                            <div class="order-row">
+                                <span class="order-label">📋 Номер счёта</span>
+                                <span class="order-value">123456789/0100</span>
+                            </div>
+                            <div class="order-row">
+                                <span class="order-label">💳 SWIFT</span>
+                                <span class="order-value">GIBACZPX</span>
+                            </div>
+                            <div class="order-row">
+                                <span class="order-label">📝 Назначение</span>
+                                <span class="order-value">BioMarket Subscription</span>
+                            </div>
+                            <div class="order-total">
+                                <span class="order-label">Сумма</span>
+                                <span class="order-value" id="bank-amount">0 Kč</span>
+                            </div>
+                            <p style="margin-top: 1rem; font-size: 0.875rem; color: #6b7280;">
+                                💡 После нажатия кнопки "Подтвердить" вы получите инструкцию для оплаты на email
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Digital Wallet Info -->
+                    <div id="wallet-fields" style="display: none;">
+                        <div class="order-summary" style="background: rgba(132, 169, 60, 0.05);">
+                            <p style="font-size: 0.9375rem; color: #6b7280; margin-bottom: 1rem;">
+                                📱 Оплата через <span id="wallet-name">Digital Wallet</span> будет обработана безопасно
+                            </p>
+                            <ul style="font-size: 0.875rem; color: #6b7280; line-height: 1.8;">
+                                <li>✓ Быстрая оплата в один клик</li>
+                                <li>✓ Не нужно вводить данные карты</li>
+                                <li>✓ Защищено биометрией</li>
+                            </ul>
                         </div>
                     </div>
 
                     <button type="submit" class="btn-pay">
                         <span aria-hidden="true">🔒</span>
-                        <span>Оплатить <span id="btn-price">0 Kč</span></span>
+                        <span id="btn-text">Оплатить <span id="btn-price">0 Kč</span></span>
                     </button>
                 </form>
 

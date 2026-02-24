@@ -267,3 +267,95 @@ window.selectPlan = function(planId) {
         window.location.href = `checkout.html?plan=${planId}`;
     }
 };
+
+/**
+ * Оформление заказа из корзины
+ */
+window.checkoutOrder = function() {
+    const user = authManager.getUser();
+    const userRole = authManager.getUserRole();
+    
+    console.log('checkoutOrder called - User:', user, 'Role:', userRole);
+    
+    // Проверка авторизации
+    if (!user || userRole !== 'buyer') {
+        alert('Пожалуйста, войдите как участник клуба для оформления заказа');
+        window.location.href = 'register.html';
+        return;
+    }
+    
+    // Проверка корзины
+    const cartItems = cartManager.getCart();
+    if (!cartItems || cartItems.length === 0) {
+        alert('Ваша корзина пуста');
+        return;
+    }
+    
+    // Подтверждение заказа
+    const total = cartManager.getTotalPrice();
+    if (!confirm(`🛒 Оформить заказ на сумму ${total} Kč?\n\nТовары:\n${cartItems.map(i => `• ${i.name} (${i.quantity} кг)`).join('\n')}\n\nДоставка в пятницу!`)) {
+        return;
+    }
+    
+    // Создание заказа
+    const order = {
+        id: Date.now(),
+        userId: user.email,
+        items: cartItems.map(item => ({
+            id: item.id,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.priceSubscription,
+            image: item.image
+        })),
+        total: total,
+        status: 'pending', // pending, processing, delivered
+        deliveryDate: getNextFriday(),
+        createdAt: new Date().toISOString()
+    };
+    
+    // Сохранение заказа
+    const orders = JSON.parse(localStorage.getItem('biomarket_orders') || '[]');
+    orders.push(order);
+    localStorage.setItem('biomarket_orders', JSON.stringify(orders));
+    
+    console.log('Order created:', order);
+    
+    // Очистка корзины
+    cartManager.clearCart();
+    updateCartUI({
+        count: 0,
+        total: 0,
+        items: []
+    });
+    
+    // Закрытие корзины
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const overlay = document.getElementById('overlay');
+    if (cartSidebar) cartSidebar.classList.add('translate-x-full');
+    if (overlay) overlay.classList.add('hidden');
+    
+    // Уведомление
+    alert('✅ Заказ оформлен!\n\nДоставка в пятницу: ' + order.deliveryDate + '\n\nСумма: ' + total + ' Kč');
+    
+    // Редирект в кабинет
+    window.location.href = 'member-dashboard.html#orders';
+};
+
+/**
+ * Получить дату следующей пятницы
+ */
+function getNextFriday() {
+    const date = new Date();
+    const day = date.getDay();
+    
+    // Если сегодня пятница или позже, то следующая пятница
+    const daysUntilFriday = day === 5 ? 0 : (5 + 7 - day) % 7 || 7;
+    date.setDate(date.getDate() + daysUntilFriday);
+    
+    return date.toLocaleDateString('ru-RU', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+    });
+}

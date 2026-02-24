@@ -89,6 +89,87 @@ function loadStats() {
     document.getElementById('stat-orders').textContent = orders.length;
     document.getElementById('stat-saved').textContent = `${saved} Kč`;
     document.getElementById('stat-eco').textContent = ecoPoints;
+    
+    // Загрузить заказы
+    loadOrders();
+}
+
+function loadOrders() {
+    const orders = JSON.parse(localStorage.getItem('biomarket_orders') || '[]');
+    const container = document.getElementById('orders-list');
+    const recentOrdersContainer = document.getElementById('recent-orders');
+    
+    if (!container) return;
+    
+    // Сортировка по дате (новые сверху)
+    const sortedOrders = orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    
+    if (sortedOrders.length === 0) {
+        const emptyHtml = `
+            <div class="empty-state">
+                <div class="empty-icon">📦</div>
+                <div class="empty-title">Пока нет заказов</div>
+                <div class="empty-text">Закажите продукты из витрины</div>
+                <a href="index.html#marketplace" class="btn-save" style="margin-top: 1rem; display: inline-flex;">
+                    <span aria-hidden="true">🛒</span>
+                    <span>В магазин</span>
+                </a>
+            </div>
+        `;
+        container.innerHTML = emptyHtml;
+        if (recentOrdersContainer) recentOrdersContainer.innerHTML = emptyHtml;
+        return;
+    }
+    
+    // Статусы заказов
+    const statusLabels = {
+        'pending': { text: 'Ожидает', class: 'pending' },
+        'processing': { text: 'В пути', class: 'processing' },
+        'delivered': { text: 'Доставлен', class: 'delivered' }
+    };
+    
+    const ordersHtml = sortedOrders.map(order => {
+        const status = statusLabels[order.status] || statusLabels.pending;
+        const orderDate = new Date(order.createdAt).toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        });
+        
+        return `
+            <div class="order-item">
+                <div class="order-icon">📦</div>
+                <div class="order-details">
+                    <div class="order-name">Заказ #${order.id.toString().slice(-6)}</div>
+                    <div class="order-meta">${order.items.length} товаров • ${orderDate}</div>
+                    <div class="order-meta">🚚 Доставка: ${order.deliveryDate}</div>
+                </div>
+                <div class="order-price">${order.total} Kč</div>
+                <div class="order-status ${status.class}">${status.text}</div>
+            </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = ordersHtml;
+    
+    // Последние 3 заказа для главной
+    if (recentOrdersContainer) {
+        const recentHtml = sortedOrders.slice(0, 3).map(order => {
+            const status = statusLabels[order.status] || statusLabels.pending;
+            return `
+                <div class="order-item">
+                    <div class="order-icon">📦</div>
+                    <div class="order-details">
+                        <div class="order-name">Заказ #${order.id.toString().slice(-6)}</div>
+                        <div class="order-meta">${order.items.length} товаров</div>
+                    </div>
+                    <div class="order-price">${order.total} Kč</div>
+                    <div class="order-status ${status.class}">${status.text}</div>
+                </div>
+            `;
+        }).join('');
+        recentOrdersContainer.innerHTML = recentHtml;
+    }
 }
 
 // ============================================

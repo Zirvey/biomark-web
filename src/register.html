@@ -73,11 +73,11 @@
 
         .auth-tab {
             flex: 1;
-            padding: 0.75rem 1rem;
+            padding: 0.75rem 0.5rem;
             text-align: center;
             border-radius: 0.75rem;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.875rem;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: #6b7280;
@@ -85,6 +85,20 @@
             border: none;
             position: relative;
             z-index: 1;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .auth-tab span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .auth-tab .role-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
         }
 
         .auth-tab:hover:not(.active) {
@@ -103,7 +117,7 @@
             position: absolute;
             top: 0.25rem;
             left: 0.25rem;
-            width: calc(50% - 0.125rem);
+            width: calc(50% - 0.5rem);
             height: calc(100% - 0.5rem);
             background: white;
             border-radius: 0.625rem;
@@ -113,7 +127,7 @@
         }
 
         .auth-tabs[data-active="farmer"]::before {
-            transform: translateX(100%);
+            transform: translateX(calc(100% + 1rem));
         }
 
         /* Emoji animation */

@@ -168,10 +168,13 @@ function renderFarmProducts(farmName) {
 window.toggleCart = function() {
     const cartSidebar = document.getElementById('cart-sidebar');
     const overlay = document.getElementById('overlay');
-    const isClosed = cartSidebar?.classList.contains('translate-x-full');
+    
+    if (!cartSidebar || !overlay) return;
+    
+    const isClosed = cartSidebar.classList.contains('translate-x-full');
 
-    toggle(cartSidebar, 'translate-x-full');
-    toggle(overlay, 'hidden');
+    cartSidebar.classList.toggle('translate-x-full');
+    overlay.classList.toggle('hidden');
 
     // Обновить отображение корзины при открытии
     if (isClosed) {
@@ -258,9 +261,9 @@ function attachEventListeners() {
             const cartSidebar = document.getElementById('cart-sidebar');
             const overlay = document.getElementById('overlay');
 
-            if (!cartSidebar?.classList.contains('translate-x-full')) {
-                toggle(cartSidebar, 'translate-x-full');
-                toggle(overlay, 'hidden');
+            if (cartSidebar && overlay && !cartSidebar.classList.contains('translate-x-full')) {
+                cartSidebar.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
             }
         }
     });

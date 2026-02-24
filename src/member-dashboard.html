@@ -596,11 +596,76 @@
                 </div>
 
                 <div class="hidden md:flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                    <div id="auth-buttons" class="flex-shrink-0"></div>
+                    <!-- Cart -->
+                    <button onclick="toggleCart()" class="relative inline-flex items-center justify-center px-4 py-2 rounded-full font-semibold text-xs whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-[#84A93C] hover:border-[#84A93C] hover:bg-[#84A93C] hover:text-white hover:scale-105 shadow-md hover:shadow-lg flex-shrink-0" aria-label="Открыть корзину">
+                        <span class="text-sm" aria-hidden="true">🛒</span>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                    </button>
+
+                    <!-- Logout -->
+                    <button onclick="logout()" class="inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-[#84A93C] hover:border-[#84A93C] hover:bg-[#84A93C] hover:text-white hover:scale-105 shadow-md hover:shadow-lg flex-shrink-0" aria-label="Выйти">
+                        <span aria-hidden="true">↪️</span>
+                        <span>Выйти</span>
+                    </button>
                 </div>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="flex items-center gap-0.5 md:hidden">
+                <!-- Mobile Cart -->
+                <button onclick="toggleCart()" class="relative p-1.5 text-gray-600 hover:text-[var(--olive)] transition-colors" aria-label="Открыть корзину">
+                    <span class="text-xl" aria-hidden="true">🛒</span>
+                    <span id="mobile-cart-count-header" class="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+                <!-- Hamburger -->
+                <button id="mobile-menu-btn" class="p-1.5 text-gray-600 hover:text-[var(--olive)] transition-colors" aria-label="Открыть меню" aria-expanded="false">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 py-4">
+            <div class="flex flex-col space-y-3">
+                <a href="index.html#membership" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Клуб</a>
+                <a href="index.html#farmers" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Фермеры</a>
+                <a href="index.html#how-it-works" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Как работает</a>
+                <a href="marketplace.html" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Витрина</a>
             </div>
         </div>
     </nav>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-[#FDFBF7] transform translate-x-full transition-transform duration-300 z-[200]" role="dialog" aria-label="Корзина покупок" aria-modal="true" style="box-shadow: -4px 0 24px rgba(128, 153, 79, 0.08);">
+        <div class="h-full flex flex-col">
+            <div class="p-5 sm:p-6 border-b border-[var(--olive)]/10 flex justify-between items-center bg-white/50">
+                <h2 class="text-xl font-bold text-gray-900 tracking-tight"><span aria-hidden="true" class="opacity-90">🛒</span> Корзина</h2>
+                <button onclick="toggleCart()" class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-[var(--olive)] hover:bg-[var(--olive)]/05 transition-all duration-200 text-xl font-light" aria-label="Закрыть корзину">×</button>
+            </div>
+            <div id="cart-items" class="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
+                <div class="text-center py-16 px-4">
+                    <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-[var(--olive)]/10 flex items-center justify-center text-4xl" aria-hidden="true">🛒</div>
+                    <p class="text-gray-500 font-medium">Корзина пуста</p>
+                    <p class="text-sm text-gray-400 mt-1">Добавьте продукты из витрины — цены для участников клуба</p>
+                </div>
+            </div>
+            <div class="p-5 sm:p-6 border-t border-[var(--olive)]/10 bg-white/30">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-600 font-medium">Итого</span>
+                    <span id="cart-total" class="text-xl font-bold text-[var(--olive)]">0 Kč</span>
+                </div>
+                <button class="w-full btn-accent py-3.5 text-base font-semibold">
+                    Оформить заказ
+                </button>
+                <p class="text-xs text-gray-500 text-center mt-3">🚚 Доставка каждую пятницу</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/50 hidden z-[150]" aria-hidden="true"></div>
 
     <!-- Main Dashboard -->
     <div class="dashboard-container">
@@ -728,31 +793,31 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
-                <div class="content-card">
+                <!-- Quick Actions (Mobile only) -->
+                <div class="content-card md:hidden">
                     <div class="card-header">
                         <h2 class="card-title">
                             <span aria-hidden="true">⚡</span>
                             Быстрые действия
                         </h2>
                     </div>
-                    
+
                     <div class="quick-actions">
-                        <a href="marketplace.html" class="quick-action-btn">
-                            <span class="quick-action-icon">🛒</span>
-                            <span>В магазин</span>
-                        </a>
-                        <a href="javascript:void(0)" class="quick-action-btn" onclick="navigateTo('subscription'); return false;">
-                            <span class="quick-action-icon">⭐</span>
-                            <span>Подписка</span>
+                        <a href="index.html#membership" class="quick-action-btn">
+                            <span class="quick-action-icon">🥕</span>
+                            <span>Клуб</span>
                         </a>
                         <a href="index.html#farmers" class="quick-action-btn">
                             <span class="quick-action-icon">👨‍🌾</span>
                             <span>Фермеры</span>
                         </a>
-                        <a href="javascript:void(0)" class="quick-action-btn" onclick="navigateTo('settings'); return false;">
-                            <span class="quick-action-icon">📍</span>
-                            <span>Адрес</span>
+                        <a href="index.html#how-it-works" class="quick-action-btn">
+                            <span class="quick-action-icon">ℹ️</span>
+                            <span>Как работает</span>
+                        </a>
+                        <a href="marketplace.html" class="quick-action-btn">
+                            <span class="quick-action-icon">🛒</span>
+                            <span>Витрина</span>
                         </a>
                     </div>
                 </div>
@@ -970,6 +1035,77 @@
             </section>
         </main>
     </div>
+
+    <!-- Footer -->
+    <footer class="py-16 footer-transition" style="background: linear-gradient(135deg, var(--olive) 0%, var(--olive-dark) 100%); color: white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <span class="text-3xl" aria-hidden="true">🥕</span>
+                        <span class="text-2xl font-bold">BioMarket Club</span>
+                    </div>
+                    <p class="text-white/80 text-sm">
+                        Прямой доступ к чешским фермерам. Свежие овощи и фрукты без посредников.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Клуб</h4>
+                    <ul class="space-y-2 text-white/80 text-sm">
+                        <li><a href="index.html#membership" class="hover:text-white transition-colors">Членство</a></li>
+                        <li><a href="index.html#farmers" class="hover:text-white transition-colors">Фермеры</a></li>
+                        <li><a href="index.html#how-it-works" class="hover:text-white transition-colors">Как работает</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Информация</h4>
+                    <ul class="space-y-2 text-white/80 text-sm">
+                        <li><a href="index.html" class="hover:text-white transition-colors">О нас</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Доставка</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Контакты</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Районы доставки</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="inline-flex items-center space-x-1 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-white">
+                            <span>📍</span>
+                            <span>Holešovice</span>
+                        </span>
+                        <span class="inline-flex items-center space-x-1 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-white">
+                            <span>📍</span>
+                            <span>Vinohrady</span>
+                        </span>
+                        <span class="inline-flex items-center space-x-1 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-white">
+                            <span>📍</span>
+                            <span>Žižkov</span>
+                        </span>
+                        <span class="inline-flex items-center space-x-1 bg-white/15 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-medium text-white">
+                            <span>📍</span>
+                            <span>Dejvice</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eco Counter -->
+            <div class="border-t border-white/20 pt-8">
+                <div class="bg-white/10 backdrop-blur-sm rounded-3xl p-8 text-center">
+                    <div class="text-5xl mb-4" aria-hidden="true">♻️</div>
+                    <h3 class="text-2xl font-bold mb-2">Эко-счетчик</h3>
+                    <p class="text-white/80 mb-4">Наши клиенты в Праге уже сэкономили</p>
+                    <div class="text-6xl font-extrabold" style="color: #C5D1A8">
+                        <span id="eco-counter">12450</span>
+                    </div>
+                    <p class="text-lg text-white/80 mt-2">пластиковых пакетов 🌍</p>
+                </div>
+            </div>
+
+            <div class="border-t border-white/20 mt-8 pt-8 text-center text-white/60 text-sm">
+                <p>© 2026 BioMarket Praha. Všechna práva vyhrazena. S láskou 💚 pro farmáře a zákazníky.</p>
+            </div>
+        </div>
+    </footer>
 
     <script type="module" src="js/member-dashboard.js"></script>
 </body>

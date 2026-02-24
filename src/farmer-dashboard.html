@@ -176,6 +176,22 @@
             font-size: 1rem;
         }
 
+        /* Nav Badge */
+        .nav-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            font-size: 0.625rem;
+            font-weight: 700;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            margin-left: auto;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .nav-badge.hidden {
+            display: none;
+        }
+
         /* Section styles */
         .dashboard-section {
             display: none;
@@ -513,37 +529,6 @@
             font-size: 0.9375rem;
         }
 
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-
-        .quick-action-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1.25rem;
-            background: rgba(132, 169, 60, 0.05);
-            border-radius: 1rem;
-            text-decoration: none;
-            color: #1a1a1a;
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-        }
-
-        .quick-action-btn:hover {
-            background: rgba(132, 169, 60, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .quick-action-icon {
-            font-size: 2rem;
-        }
-
         /* Settings */
         .form-row {
             display: grid;
@@ -627,11 +612,635 @@
         .toggle-switch.active::after {
             transform: translateX(24px);
         }
+
+        /* Product Item */
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            background: rgba(132, 169, 60, 0.05);
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .product-item:hover {
+            background: rgba(132, 169, 60, 0.08);
+            transform: translateX(4px);
+        }
+
+        .product-icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .product-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .product-meta {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .product-price {
+            font-weight: 700;
+            color: #84A93C;
+            font-size: 1.125rem;
+            margin-right: 1rem;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 0.5rem;
+            border: none;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-icon:hover {
+            background: rgba(132, 169, 60, 0.1);
+            transform: scale(1.1);
+        }
+
+        .btn-icon.delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Form Select */
+        .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #84A93C;
+            box-shadow: 0 0 0 4px rgba(132, 169, 60, 0.1);
+        }
+
+        /* Add Product Button */
+        .btn-add {
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(132, 169, 60, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(132, 169, 60, 0.4);
+        }
+
+        /* Cancel Edit Button */
+        .btn-cancel-edit {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cancel-edit:hover {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Pickup Status */
+        .pickup-status {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(132, 169, 60, 0.1);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .status-confirmed {
+            background: rgba(132, 169, 60, 0.1);
+            color: #84A93C;
+        }
+
+        .status-pending {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+        }
+
+        /* Pickup Calendar */
+        .pickup-calendar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .calendar-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .calendar-text {
+            color: #6b7280;
+            font-size: 0.9375rem;
+        }
+
+        .calendar-text strong {
+            color: #1a1a1a;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem 0.5rem;
+            background: rgba(132, 169, 60, 0.05);
+            border-radius: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day.active {
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            color: white;
+        }
+
+        .day-name {
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .day-number {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 640px) {
+            .calendar-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 0.25rem;
+            }
+
+            .calendar-day {
+                padding: 0.75rem 0.25rem;
+            }
+
+            .day-name {
+                font-size: 0.625rem;
+            }
+
+            .day-number {
+                font-size: 1rem;
+            }
+        }
+
+        /* Rating Overview */
+        .rating-overview {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        @media (max-width: 640px) {
+            .rating-overview {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        .rating-main {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(132, 169, 60, 0.05);
+            border-radius: 1.5rem;
+        }
+
+        .rating-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #84A93C;
+            line-height: 1;
+        }
+
+        .rating-stars {
+            font-size: 1.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .rating-count {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .rating-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .rating-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .rating-bar-label {
+            width: 40px;
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .rating-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(132, 169, 60, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .rating-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #84A93C 0%, #6B8A31 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .rating-bar-count {
+            width: 40px;
+            text-align: right;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        /* Review Item */
+        .review-item {
+            padding: 1.5rem;
+            border-radius: 1rem;
+            background: rgba(132, 169, 60, 0.05);
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .review-item:hover {
+            background: rgba(132, 169, 60, 0.08);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .reviewer-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .review-date {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .review-rating {
+            font-size: 1.25rem;
+        }
+
+        .review-text {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .review-product {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(132, 169, 60, 0.1);
+            font-size: 0.875rem;
+            color: #84A93C;
+            font-weight: 500;
+        }
+
+        /* Farm Preview */
+        .farm-preview {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            padding: 1.5rem;
+            background: rgba(132, 169, 60, 0.05);
+            border-radius: 1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .farm-preview {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+
+        /* Products Toolbar */
+        .products-toolbar {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        @media (max-width: 640px) {
+            .products-toolbar {
+                flex-direction: column;
+            }
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-size: 0.9375rem;
+            transition: all 0.2s ease;
+            background: white;
+            box-sizing: border-box;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #84A93C;
+            box-shadow: 0 0 0 4px rgba(132, 169, 60, 0.1);
+        }
+
+        .filter-box {
+            min-width: 180px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            font-size: 0.9375rem;
+            transition: all 0.2s ease;
+            background: white;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #84A93C;
+            box-shadow: 0 0 0 4px rgba(132, 169, 60, 0.1);
+        }
+
+        .farm-preview-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #84A93C 0%, #6B8A31 100%);
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+
+        .farm-preview-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .farm-preview-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .farm-preview-location {
+            color: #6b7280;
+            font-size: 0.9375rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .farm-preview-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+        }
+
+        .farm-preview-rating-value {
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .farm-preview-reviews {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .farm-preview-description {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Add Product Form Layout */
+        .add-product-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .add-product-form .form-group {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .add-product-form .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .add-product-form .form-input,
+        .add-product-form .form-select {
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Fix form layout on mobile */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr !important;
+            }
+
+            .add-product-form {
+                display: flex !important;
+                flex-direction: column !important;
+            }
+
+            .add-product-form .form-group {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .add-product-form .form-row {
+                grid-template-columns: 1fr !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1rem;
+                width: 100% !important;
+            }
+
+            .add-product-form .form-input,
+            .add-product-form .form-select {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .products-toolbar {
+                flex-direction: column !important;
+                width: 100% !important;
+            }
+
+            .filter-box {
+                min-width: 100% !important;
+                width: 100% !important;
+            }
+
+            .search-box {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .search-input {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+
+        /* Fix form layout on mobile */
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr !important;
+            }
+
+            .calendar-grid {
+                gap: 0.25rem;
+            }
+
+            .calendar-day {
+                padding: 0.5rem 0.25rem;
+            }
+
+            .day-name {
+                font-size: 0.625rem;
+            }
+
+            .day-number {
+                font-size: 0.875rem;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen">
     <!-- Header -->
-    <nav class="sticky-nav" role="navigation" aria-label="Основная навигация" style="position: -webkit-sticky; position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(132, 169, 60, 0.1);">
+    <nav class="sticky-nav" role="navigation" aria-label="Основная навигация" style="position: -webkit-sticky; position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(132, 169, 60, 0.1);">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-12 sm:h-14">
                 <a href="index.html" class="flex items-center gap-1.5 flex-shrink-0">
@@ -646,9 +1255,33 @@
                     <a href="marketplace.html" class="nav-link font-medium text-sm">Витрина</a>
                 </div>
 
-                <div class="hidden md:flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                    <div id="auth-buttons" class="flex-shrink-0"></div>
+                <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <!-- Logout -->
+                    <button type="button" onclick="logout()" class="inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all duration-300 border border-[#84A93C]/20 bg-white text-[#84A93C] hover:border-[#84A93C] hover:bg-[#84A93C] hover:text-white hover:scale-105 shadow-md hover:shadow-lg" aria-label="Выйти">
+                        <span aria-hidden="true">↪️</span>
+                        <span>Выйти</span>
+                    </button>
                 </div>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="flex items-center gap-0.5 md:hidden">
+                <!-- Hamburger -->
+                <button type="button" id="mobile-menu-btn" class="p-1.5 text-gray-600 hover:text-[var(--olive)] transition-colors" aria-label="Открыть меню" aria-expanded="false">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-100 py-4">
+            <div class="flex flex-col space-y-3">
+                <a href="index.html#membership" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Клуб</a>
+                <a href="index.html#farmers" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Фермеры</a>
+                <a href="index.html#how-it-works" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Как работает</a>
+                <a href="marketplace.html" class="mobile-nav-link px-4 py-2 text-gray-700 hover:text-[var(--olive)] hover:bg-[var(--olive)]/5 rounded-lg transition-colors">Витрина</a>
             </div>
         </div>
     </nav>
@@ -675,7 +1308,12 @@
                 </button>
                 <button type="button" class="nav-item" data-section="pickup">
                     <span class="nav-item-icon">🚚</span>
-                    <span>Забор груза</span>
+                    <span>Поставки</span>
+                </button>
+                <button type="button" class="nav-item" data-section="reviews">
+                    <span class="nav-item-icon">⭐</span>
+                    <span>Отзывы</span>
+                    <span class="nav-badge hidden" id="reviews-badge">0</span>
                 </button>
                 <button type="button" class="nav-item" data-section="settings">
                     <span class="nav-item-icon">⚙️</span>
@@ -745,35 +1383,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Quick Actions -->
-                <div class="content-card">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <span aria-hidden="true">⚡</span>
-                            Быстрые действия
-                        </h2>
-                    </div>
-                    
-                    <div class="quick-actions">
-                        <a href="marketplace.html" class="quick-action-btn">
-                            <span class="quick-action-icon">🛒</span>
-                            <span>Витрина</span>
-                        </a>
-                        <a href="javascript:void(0)" class="quick-action-btn" onclick="navigateTo('products'); return false;">
-                            <span class="quick-action-icon">➕</span>
-                            <span>Добавить товар</span>
-                        </a>
-                        <a href="index.html#farmers" class="quick-action-btn">
-                            <span class="quick-action-icon">👨‍🌾</span>
-                            <span>Страница фермы</span>
-                        </a>
-                        <a href="javascript:void(0)" class="quick-action-btn" onclick="navigateTo('settings'); return false;">
-                            <span class="quick-action-icon">⚙️</span>
-                            <span>Настройки</span>
-                        </a>
-                    </div>
-                </div>
             </section>
 
             <!-- Products Section -->
@@ -783,31 +1392,16 @@
                     <p class="dashboard-subtitle">Управление ассортиментом</p>
                 </div>
 
-                <!-- Add Product Form -->
+                <!-- Search & Filters -->
                 <div class="content-card">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <span aria-hidden="true">➕</span>
-                            Добавить товар
-                        </h2>
-                    </div>
-                    
-                    <div id="add-product-form" class="add-product-form">
-                        <div class="form-group">
-                            <label class="form-label" for="product-name">Название</label>
-                            <input type="text" id="product-name" class="form-input" placeholder="Морковь">
+                    <div class="products-toolbar">
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="product-search" class="search-input" placeholder="Поиск товаров..." oninput="filterProducts()">
                         </div>
-                        <div class="form-group">
-                            <label class="form-label" for="product-quantity">Кол-во (кг)</label>
-                            <input type="number" id="product-quantity" class="form-input" placeholder="50" min="1">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="product-price">Цена (Kč/кг)</label>
-                            <input type="number" id="product-price" class="form-input" placeholder="18" min="1">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="product-category">Категория</label>
-                            <select id="product-category" class="form-select">
+                        <div class="filter-box">
+                            <select id="category-filter" class="filter-select" onchange="filterProducts()">
+                                <option value="">Все категории</option>
                                 <option value="vegetables">🥬 Овощи</option>
                                 <option value="fruits">🍎 Фрукты</option>
                                 <option value="berries">🍓 Ягоды</option>
@@ -815,9 +1409,65 @@
                                 <option value="potatoes">🥔 Корнеплоды</option>
                             </select>
                         </div>
-                        <button type="button" class="btn-add" onclick="addProduct()">
+                    </div>
+                </div>
+
+                <!-- Add/Edit Product Form -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">➕</span>
+                            <span id="form-title">Добавить товар</span>
+                        </h2>
+                        <button type="button" id="cancel-edit-btn" class="btn-cancel-edit hidden" onclick="cancelEdit()">
+                            <span aria-hidden="true">✕</span>
+                            <span>Отмена</span>
+                        </button>
+                    </div>
+
+                    <div id="add-product-form" class="add-product-form">
+                        <input type="hidden" id="product-edit-index" value="-1">
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="product-name">Название</label>
+                                <input type="text" id="product-name" class="form-input" placeholder="Морковь">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="product-category">Категория</label>
+                                <select id="product-category" class="form-select">
+                                    <option value="vegetables">🥬 Овощи</option>
+                                    <option value="fruits">🍎 Фрукты</option>
+                                    <option value="berries">🍓 Ягоды</option>
+                                    <option value="herbs">🌿 Зелень</option>
+                                    <option value="potatoes">🥔 Корнеплоды</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="product-quantity">Кол-во (кг)</label>
+                                <input type="number" id="product-quantity" class="form-input" placeholder="50" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="product-price">Цена (Kč/кг)</label>
+                                <input type="number" id="product-price" class="form-input" placeholder="18" min="1">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="product-description">Описание</label>
+                            <textarea id="product-description" class="form-input" placeholder="Свежая морковь с нашей фермы..." rows="3"></textarea>
+                        </div>
+                        
+                        <button type="button" class="btn-add" id="add-product-btn" onclick="addProduct()">
                             <span aria-hidden="true">✓</span>
                             <span>Добавить</span>
+                        </button>
+                        <button type="button" class="btn-add" id="save-edit-btn" onclick="saveEdit()" style="display: none;">
+                            <span aria-hidden="true">✓</span>
+                            <span>Сохранить</span>
                         </button>
                     </div>
                 </div>
@@ -831,7 +1481,7 @@
                         </h2>
                         <span class="badge badge-green" id="products-count">0 позиций</span>
                     </div>
-                    
+
                     <div class="products-grid" id="products-list">
                         <div class="empty-state" style="grid-column: 1 / -1;">
                             <div class="empty-icon">📦</div>
@@ -849,46 +1499,182 @@
                     <p class="dashboard-subtitle">График забора урожая с вашей фермы</p>
                 </div>
 
+                <!-- Next Pickup -->
                 <div class="content-card pickup-card">
                     <div class="pickup-header">
                         <div class="pickup-icon">🚚</div>
                         <div class="pickup-info">
-                            <h2 class="pickup-title">Забор груза на этой неделе</h2>
+                            <h2 class="pickup-title">Следующий забор груза</h2>
                             <p class="pickup-description">Наша машина приедет к вам на ферму для забора урожая</p>
                             <div class="pickup-details">
                                 <div class="pickup-detail">
-                                    <span class="pickup-detail-label">Дата</span>
-                                    <span class="pickup-detail-value">Четверг, 26 февраля</span>
+                                    <span class="pickup-detail-label">📅 Дата</span>
+                                    <span class="pickup-detail-value" id="next-pickup-date">Четверг, 26 февраля</span>
                                 </div>
                                 <div class="pickup-detail">
-                                    <span class="pickup-detail-label">Время</span>
-                                    <span class="pickup-detail-value">08:00 - 12:00</span>
+                                    <span class="pickup-detail-label">🕐 Время</span>
+                                    <span class="pickup-detail-value" id="next-pickup-time">08:00 - 12:00</span>
                                 </div>
                                 <div class="pickup-detail">
-                                    <span class="pickup-detail-label">Адрес</span>
-                                    <span class="pickup-detail-value">Ваша ферма</span>
+                                    <span class="pickup-detail-label">📍 Адрес</span>
+                                    <span class="pickup-detail-value" id="next-pickup-address">Ваша ферма</span>
                                 </div>
                             </div>
                         </div>
                         <div class="pickup-weight">
-                            <div class="pickup-weight-value">150 кг</div>
+                            <div class="pickup-weight-value" id="next-pickup-weight">150 кг</div>
                             <div class="pickup-weight-label">к забору</div>
                         </div>
                     </div>
+                    <div class="pickup-status">
+                        <div class="status-badge status-confirmed">✓ Подтверждён</div>
+                    </div>
                 </div>
 
+                <!-- Pickup History -->
                 <div class="content-card">
                     <div class="card-header">
                         <h2 class="card-title">
                             <span aria-hidden="true">📋</span>
-                            Предстоящие заборы
+                            История заборов
                         </h2>
                     </div>
-                    
-                    <div class="empty-state">
-                        <div class="empty-icon">📅</div>
-                        <div class="empty-title">Нет запланированных заборов</div>
-                        <div class="empty-text">Информация появится после добавления товаров</div>
+
+                    <div id="pickup-history">
+                        <div class="empty-state">
+                            <div class="empty-icon">📅</div>
+                            <div class="empty-title">История пуста</div>
+                            <div class="empty-text">Здесь появятся записи после первых заборов</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pickup Calendar -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">📅</span>
+                            Календарь поставок
+                        </h2>
+                    </div>
+
+                    <div class="pickup-calendar">
+                        <div class="calendar-info">
+                            <p class="calendar-text">🚚 Забор груза происходит каждый <strong>четверг</strong></p>
+                            <p class="calendar-text">📦 Товары должны быть готовы к <strong>08:00</strong></p>
+                            <p class="calendar-text">⏰ Время забора: <strong>08:00 - 12:00</strong></p>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day">
+                                <span class="day-name">Пн</span>
+                                <span class="day-number">—</span>
+                            </div>
+                            <div class="calendar-day">
+                                <span class="day-name">Вт</span>
+                                <span class="day-number">—</span>
+                            </div>
+                            <div class="calendar-day">
+                                <span class="day-name">Ср</span>
+                                <span class="day-number">—</span>
+                            </div>
+                            <div class="calendar-day active">
+                                <span class="day-name">Чт</span>
+                                <span class="day-number">🚚</span>
+                            </div>
+                            <div class="calendar-day">
+                                <span class="day-name">Пт</span>
+                                <span class="day-number">—</span>
+                            </div>
+                            <div class="calendar-day">
+                                <span class="day-name">Сб</span>
+                                <span class="day-number">—</span>
+                            </div>
+                            <div class="calendar-day">
+                                <span class="day-name">Вс</span>
+                                <span class="day-number">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reviews Section -->
+            <section id="reviews" class="dashboard-section">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Отзывы и рейтинги</h1>
+                    <p class="dashboard-subtitle">Что говорят клиенты о вашей ферме</p>
+                </div>
+
+                <!-- Rating Overview -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">⭐</span>
+                            Общий рейтинг
+                        </h2>
+                    </div>
+
+                    <div class="rating-overview">
+                        <div class="rating-main">
+                            <div class="rating-value" id="overall-rating">4.9</div>
+                            <div class="rating-stars" id="rating-stars">⭐⭐⭐⭐⭐</div>
+                            <div class="rating-count" id="rating-count">0 отзывов</div>
+                        </div>
+                        <div class="rating-bars">
+                            <div class="rating-bar-row">
+                                <span class="rating-bar-label">5 ★</span>
+                                <div class="rating-bar">
+                                    <div class="rating-bar-fill" id="rating-5" style="width: 0%"></div>
+                                </div>
+                                <span class="rating-bar-count" id="count-5">0</span>
+                            </div>
+                            <div class="rating-bar-row">
+                                <span class="rating-bar-label">4 ★</span>
+                                <div class="rating-bar">
+                                    <div class="rating-bar-fill" id="rating-4" style="width: 0%"></div>
+                                </div>
+                                <span class="rating-bar-count" id="count-4">0</span>
+                            </div>
+                            <div class="rating-bar-row">
+                                <span class="rating-bar-label">3 ★</span>
+                                <div class="rating-bar">
+                                    <div class="rating-bar-fill" id="rating-3" style="width: 0%"></div>
+                                </div>
+                                <span class="rating-bar-count" id="count-3">0</span>
+                            </div>
+                            <div class="rating-bar-row">
+                                <span class="rating-bar-label">2 ★</span>
+                                <div class="rating-bar">
+                                    <div class="rating-bar-fill" id="rating-2" style="width: 0%"></div>
+                                </div>
+                                <span class="rating-bar-count" id="count-2">0</span>
+                            </div>
+                            <div class="rating-bar-row">
+                                <span class="rating-bar-label">1 ★</span>
+                                <div class="rating-bar">
+                                    <div class="rating-bar-fill" id="rating-1" style="width: 0%"></div>
+                                </div>
+                                <span class="rating-bar-count" id="count-1">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews List -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <span aria-hidden="true">💬</span>
+                            Отзывы клиентов
+                        </h2>
+                    </div>
+
+                    <div id="reviews-list">
+                        <div class="empty-state">
+                            <div class="empty-icon">💬</div>
+                            <div class="empty-title">Пока нет отзывов</div>
+                            <div class="empty-text">Отзывы появятся после первых продаж</div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -897,7 +1683,7 @@
             <section id="settings" class="dashboard-section">
                 <div class="dashboard-header">
                     <h1 class="dashboard-title">Настройки</h1>
-                    <p class="dashboard-subtitle">Управление профилем фермы</p>
+                    <p class="dashboard-subtitle">Управление профилем фермы и аккаунтом</p>
                 </div>
 
                 <div class="content-card">
@@ -907,13 +1693,40 @@
                             Информация о ферме
                         </h2>
                     </div>
-                    
+
                     <div id="settings-form">
-                        <div class="form-group">
-                            <label class="form-label" for="settings-farm-name">Название фермы</label>
-                            <input type="text" id="settings-farm-name" class="form-input" placeholder="Ваша ферма">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="settings-farm-name">Название фермы</label>
+                                <input type="text" id="settings-farm-name" class="form-input" placeholder="Ваша ферма">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="settings-farm-icon">Иконка</label>
+                                <select id="settings-farm-icon" class="form-select">
+                                    <option value="🏡">🏡 Ферма</option>
+                                    <option value="🥕">🥕 Овощи</option>
+                                    <option value="🍎">🍎 Фрукты</option>
+                                    <option value="🥬">🥬 Зелень</option>
+                                    <option value="🐄">🐄 Животные</option>
+                                    <option value="🥚">🥚 Яйца</option>
+                                    <option value="🍯">🍯 Мёд</option>
+                                    <option value="🌾">🌾 Зерно</option>
+                                </select>
+                            </div>
                         </div>
-                        
+
+                        <div class="form-group">
+                            <label class="form-label" for="settings-farm-description">Описание</label>
+                            <textarea id="settings-farm-description" class="form-input" placeholder="Расскажите о вашей ферме..." rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="settings-farm-website">Сайт</label>
+                            <input type="url" id="settings-farm-website" class="form-input" placeholder="https://example.com">
+                        </div>
+
+                        <h3 style="margin: 1.5rem 0 1rem; font-size: 1.125rem; font-weight: 600; color: #1a1a1a;">👤 Личная информация</h3>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="settings-name">ФИО</label>
@@ -924,7 +1737,7 @@
                                 <input type="email" id="settings-email" class="form-input" placeholder="farm@example.com">
                             </div>
                         </div>
-                        
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="settings-phone">Телефон</label>
@@ -935,7 +1748,7 @@
                                 <input type="text" id="settings-location" class="form-input" placeholder="Регион, район">
                             </div>
                         </div>
-                        
+
                         <button type="button" class="btn-save" onclick="saveSettings()">
                             <span aria-hidden="true">✓</span>
                             <span>Сохранить изменения</span>

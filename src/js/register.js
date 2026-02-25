@@ -143,8 +143,16 @@ function checkDemoCredentials(email, password) {
  * @param {string} redirectUrl
  */
 function handleSuccessfulLogin(user, redirectUrl) {
-    // Используем sessionStorage для консистентности с authService
-    sessionStorage.setItem('biomarket_user', JSON.stringify(user));
+    // Используем те же ключи что и в api.js для консистентности
+    const TOKEN_KEY = 'biomarket_token';
+    const TOKEN_DATA_KEY = 'biomarket_token_data';
+    
+    // Создаём mock токен
+    const mockToken = 'mock-token-' + Date.now();
+    
+    // Сохраняем токен и данные пользователя
+    sessionStorage.setItem(TOKEN_KEY, mockToken);
+    sessionStorage.setItem(TOKEN_DATA_KEY, JSON.stringify(user));
     sessionStorage.setItem('biomarket_user_role', user.role);
 
     return redirectUrl;

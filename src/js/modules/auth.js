@@ -26,16 +26,37 @@ export class AuthManager {
             return this._userCache;
         }
 
+        // Сначала пробуем синхронно из sessionStorage (для демо-режима)
+        const syncUser = this.getUserSync();
+        if (syncUser) {
+            this._userCache = syncUser;
+            this._cacheExpiry = Date.now() + this._CACHE_TTL;
+            return syncUser;
+        }
+
         try {
             const user = await authService.getCurrentUser();
-            
+
             // Кэшируем
             this._userCache = user;
             this._cacheExpiry = Date.now() + this._CACHE_TTL;
-            
+
             return user;
         } catch (error) {
             console.error('AuthManager.getUser() error:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Получить пользователя синхронно (из sessionStorage)
+     * @returns {Object|null}
+     */
+    getUserSync() {
+        try {
+            const user = sessionStorage.getItem('biomarket_token_data');
+            return user ? JSON.parse(user) : null;
+        } catch {
             return null;
         }
     }
@@ -45,6 +66,12 @@ export class AuthManager {
      * @returns {Promise<string|null>}
      */
     async getUserRole() {
+        // Сначала пробуем синхронно из sessionStorage (для демо-режима)
+        const syncRole = this.getUserRoleSync();
+        if (syncRole) {
+            return syncRole;
+        }
+
         try {
             return await authService.getUserRole();
         } catch (error) {
@@ -54,16 +81,47 @@ export class AuthManager {
     }
 
     /**
+     * Получить роль синхронно (из sessionStorage)
+     * @returns {string|null}
+     */
+    getUserRoleSync() {
+        return sessionStorage.getItem('biomarket_user_role');
+    }
+
+    /**
      * Проверить, авторизован ли пользователь
      * @returns {Promise<boolean>}
      */
     async isAuthenticated() {
+        // Сначала пробуем синхронную проверку (для демо-режима)
+        const syncAuth = this.isAuthenticatedSync();
+        if (syncAuth !== null) {
+            return syncAuth;
+        }
+
         try {
             return await authService.isAuthenticated();
         } catch (error) {
             console.error('AuthManager.isAuthenticated() error:', error);
             return false;
         }
+    }
+
+    /**
+     * Проверить авторизацию синхронно
+     * @returns {boolean|null} true/false или null если нужно проверять через API
+     */
+    isAuthenticatedSync() {
+        const token = sessionStorage.getItem('biomarket_token');
+        const user = sessionStorage.getItem('biomarket_token_data');
+        
+        // Если есть токен и данные пользователя - считаем авторизованным
+        if (token && user) {
+            return true;
+        }
+        
+        // Если ничего нет - проверяем через API
+        return null;
     }
 
     /**

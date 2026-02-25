@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  fullname  String
+  phone     String?
+  address   String?
+  role      String   @default("buyer") // buyer | farmer
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  orders         Order[]
+  subscriptions  Subscription[]
+  payments       Payment[]
+  
+  @@map("users")
+}
+
+model Subscription {
+  id        String   @id @default(uuid())
+  userId    String
+  plan      String   // 1month | 3months | 1year
+  status    String   @default("active") // active | expired | cancelled
+  startDate DateTime @default(now())
+  endDate   DateTime
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("subscriptions")
+}
+
+model Order {
+  id            Int      @id @default(autoincrement())
+  userId        String
+  total         Decimal  @db.Decimal(10, 2)
+  status        String   @default("pending") // pending | processing | delivered | cancelled
+  deliveryDate  String
+  createdAt     DateTime @default(now())
+  
+  items OrderItem[]
+  user  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int             @id @default(autoincrement())
+  orderId   Int
+  productId String
+  name      String
+  quantity  Int
+  price     Decimal         @db.Decimal(10, 2)
+  total     Decimal         @db.Decimal(10, 2)
+  
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  @@map("order_items")
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  userId        String
+  transactionId String   @unique
+  amount        Decimal  @db.Decimal(10, 2)
+  currency      String   @default("CZK")
+  status        String   @default("pending") // pending | success | failed
+  createdAt     DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("payments")
+}

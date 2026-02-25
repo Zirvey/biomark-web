@@ -9,14 +9,14 @@
 
 const API_CONFIG = {
     // Переключатель режимов: 'mock' | 'real'
-    MODE: 'mock',
-    
+    MODE: import.meta.env.VITE_API_MODE || 'mock',
+
     // Base URL для реального API
     BASE_URL: import.meta.env.VITE_API_URL || 'https://api.biomarket.cz',
-    
+
     // Таймаут запросов (мс)
     TIMEOUT: 10000,
-    
+
     // Версия API
     VERSION: 'v1',
 };

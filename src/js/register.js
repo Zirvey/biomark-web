@@ -143,9 +143,9 @@ function checkDemoCredentials(email, password) {
  * @param {string} redirectUrl
  */
 function handleSuccessfulLogin(user, redirectUrl) {
-    // В реальном приложении здесь будет вызов authService.login()
-    localStorage.setItem('biomarket_user', JSON.stringify(user));
-    localStorage.setItem('biomarket_user_role', user.role);
+    // Используем sessionStorage для консистентности с authService
+    sessionStorage.setItem('biomarket_user', JSON.stringify(user));
+    sessionStorage.setItem('biomarket_user_role', user.role);
 
     return redirectUrl;
 }

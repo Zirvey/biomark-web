@@ -1,106 +1,198 @@
 // src/js/modules/auth.js
-import { getFromStorage, setInStorage, removeFromStorage } from '../utils/storage.js';
-import { isValidUser } from '../utils/validation.js';
 import { STORAGE_KEYS, USER_ROLES } from '../utils/constants.js';
+import { authService, checkAuth, initAuthGuard } from '../services/authService.js';
+import { userService } from '../services/userService.js';
 
+/**
+ * @class AuthManager
+ * @description Обёртка над authService для обратной совместимости
+ * @deprecated Используйте напрямую authService из services/authService.js
+ */
 export class AuthManager {
     constructor() {
-        // Не кэшируем - всегда читаем из localStorage
+        // Кэш для данных пользователя
+        this._userCache = null;
+        this._cacheExpiry = null;
+        this._CACHE_TTL = 5 * 60 * 1000; // 5 минут
     }
 
     /**
-     * Получить текущего пользователя (всегда из localStorage)
-     * @returns {Object|null}
+     * Получить текущего пользователя
+     * @returns {Promise<Object|null>}
      */
-    getUser() {
+    async getUser() {
+        // Проверяем кэш
+        if (this._userCache && this._cacheExpiry && Date.now() < this._cacheExpiry) {
+            return this._userCache;
+        }
+
         try {
-            const user = localStorage.getItem(STORAGE_KEYS.USER);
-            console.log('AuthManager.getUser() raw:', user);
-            return user ? JSON.parse(user) : null;
+            const user = await authService.getCurrentUser();
+            
+            // Кэшируем
+            this._userCache = user;
+            this._cacheExpiry = Date.now() + this._CACHE_TTL;
+            
+            return user;
         } catch (error) {
-            console.error('Error reading user:', error);
+            console.error('AuthManager.getUser() error:', error);
             return null;
         }
     }
 
     /**
-     * Получить роль текущего пользователя (всегда из localStorage)
-     * @returns {string|null}
+     * Получить роль текущего пользователя
+     * @returns {Promise<string|null>}
      */
-    getUserRole() {
+    async getUserRole() {
         try {
-            const role = localStorage.getItem(STORAGE_KEYS.USER_ROLE);
-            console.log('AuthManager.getUserRole() raw:', role);
-            // Роль хранится как простая строка, не JSON
-            return role || null;
+            return await authService.getUserRole();
         } catch (error) {
-            console.error('Error reading role:', error);
+            console.error('AuthManager.getUserRole() error:', error);
             return null;
         }
     }
 
     /**
      * Проверить, авторизован ли пользователь
-     * @returns {boolean}
+     * @returns {Promise<boolean>}
      */
-    isAuthenticated() {
-        const user = this.getUser();
-        const userRole = this.getUserRole();
-        return user !== null && userRole !== null;
+    async isAuthenticated() {
+        try {
+            return await authService.isAuthenticated();
+        } catch (error) {
+            console.error('AuthManager.isAuthenticated() error:', error);
+            return false;
+        }
     }
 
     /**
      * Проверить, является ли текущий пользователь покупателем
-     * @returns {boolean}
+     * @returns {Promise<boolean>}
      */
-    isBuyer() {
-        return this.getUserRole() === USER_ROLES.BUYER;
+    async isBuyer() {
+        const role = await this.getUserRole();
+        return role === USER_ROLES.BUYER;
     }
 
     /**
      * Проверить, является ли текущий пользователь фермером
-     * @returns {boolean}
+     * @returns {Promise<boolean>}
      */
-    isFarmer() {
-        return this.getUserRole() === USER_ROLES.FARMER;
+    async isFarmer() {
+        const role = await this.getUserRole();
+        return role === USER_ROLES.FARMER;
     }
 
     /**
      * Логин пользователя
-     * @param {Object} user
-     * @param {string} role
-     * @returns {boolean}
+     * @param {string} email
+     * @param {string} password
+     * @param {boolean} rememberMe
+     * @returns {Promise<Object>} Данные пользователя
      */
-    login(user, role) {
-        if (!isValidUser({ ...user, role })) {
-            console.error('Invalid user data for login');
-            return false;
-        }
-
+    async login(email, password, rememberMe = false) {
         try {
-            localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
-            // Сохраняем роль как простую строку, не JSON
-            localStorage.setItem(STORAGE_KEYS.USER_ROLE, role);
-            console.log('User logged in:', user, 'Role:', role);
-            return true;
+            const result = await authService.login({ email, password }, rememberMe);
+            
+            // Очищаем кэш
+            this._userCache = null;
+            this._cacheExpiry = null;
+            
+            console.log('User logged in:', result.user);
+            return result.user;
         } catch (error) {
-            console.error('Error saving user:', error);
-            return false;
+            console.error('AuthManager.login() error:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Регистрация пользователя
+     * @param {Object} data - Данные регистрации
+     * @param {string} data.email
+     * @param {string} data.password
+     * @param {string} data.fullname
+     * @returns {Promise<Object>} Данные пользователя
+     */
+    async register(data) {
+        try {
+            const result = await authService.register(data);
+            
+            // Очищаем кэш
+            this._userCache = null;
+            this._cacheExpiry = null;
+            
+            console.log('User registered:', result.user);
+            return result.user;
+        } catch (error) {
+            console.error('AuthManager.register() error:', error);
+            throw error;
         }
     }
 
     /**
      * Логаут пользователя
+     * @returns {Promise<void>}
      */
-    logout() {
+    async logout() {
         try {
-            localStorage.removeItem(STORAGE_KEYS.USER);
-            localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
+            await authService.logout();
+            
+            // Очищаем кэш
+            this._userCache = null;
+            this._cacheExpiry = null;
+            
             console.log('User logged out');
         } catch (error) {
-            console.error('Error during logout:', error);
+            console.error('AuthManager.logout() error:', error);
         }
+    }
+
+    /**
+     * Обновить данные пользователя в кэше
+     * @param {Object} user
+     */
+    updateUserCache(user) {
+        this._userCache = user;
+        this._cacheExpiry = Date.now() + this._CACHE_TTL;
+    }
+
+    /**
+     * Очистить кэш
+     */
+    clearCache() {
+        this._userCache = null;
+        this._cacheExpiry = null;
     }
 }
 
+// Экземпляр для обратной совместимости
 export const authManager = new AuthManager();
+
+// ============================================
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ============================================
+
+/**
+ * Проверка доступа к странице (для использования в HTML)
+ * @param {string} requiredRole - Требуемая роль
+ */
+window.checkAuth = async (requiredRole = null) => {
+    return await checkAuth(requiredRole);
+};
+
+/**
+ * Инициализация защиты роутов
+ * @param {string} requiredRole - Требуемая роль
+ */
+window.initAuthGuard = (requiredRole = null) => {
+    initAuthGuard(requiredRole);
+};
+
+/**
+ * Получить профиль пользователя
+ */
+window.getUserProfile = async () => {
+    return await userService.getProfile();
+};

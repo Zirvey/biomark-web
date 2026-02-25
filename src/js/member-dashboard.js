@@ -1,224 +1,442 @@
-// src/js/member-dashboard.js
-import { STORAGE_KEYS } from './utils/constants.js';
+/**
+ * @file member-dashboard.js — Личный кабинет участника
+ * @description Отображение заказов, подписки, настроек профиля
+ */
+
 import { cartManager } from './modules/cart.js';
 import { productManager } from './modules/products.js';
 import { updateCartUI } from './modules/ui.js';
 import { authManager } from './modules/auth.js';
-import { toggle } from './utils/dom.js';
+import { userService } from './services/userService.js';
+import { orderService, ORDER_STATUS } from './services/orderService.js';
+import { subscriptionService, SUBSCRIPTION_STATUS } from './services/subscriptionService.js';
+import { sanitize } from './services/api.js';
+import { validator } from './utils/validator.js';
+import { toastManager } from './utils/toast.js';
+import { parseISO, format, formatDistanceToNow } from 'date-fns';
+import { ru } from 'date-fns/locale';
+
+// ============================================
+// КОНСТАНТЫ
+// ============================================
+
+const SECTIONS = {
+    OVERVIEW: 'overview',
+    ORDERS: 'orders',
+    SUBSCRIPTION: 'subscription',
+    SETTINGS: 'settings',
+};
+
+const UI_STATE = {
+    isLoading: false,
+    user: null,
+    orders: [],
+    subscription: null,
+};
+
+// ============================================
+// LOADING STATES
+// ============================================
+
+/**
+ * Показать skeleton loader
+ * @param {string} containerId
+ */
+function showLoading(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="loading-skeleton" style="
+            display: grid;
+            gap: 1rem;
+            padding: 1.5rem;
+        ">
+            <div class="skeleton-line" style="
+                height: 24px;
+                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+                border-radius: 0.5rem;
+                width: 60%;
+            "></div>
+            <div class="skeleton-line" style="
+                height: 16px;
+                background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+                border-radius: 0.5rem;
+                width: 40%;
+            "></div>
+            <style>
+                @keyframes shimmer {
+                    0% { background-position: 200% 0; }
+                    100% { background-position: -200% 0; }
+                }
+            </style>
+        </div>
+    `;
+}
+
+/**
+ * Скрыть skeleton loader
+ * @param {string} containerId
+ */
+function hideLoading(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const skeleton = container.querySelector('.loading-skeleton');
+    if (skeleton) {
+        skeleton.remove();
+    }
+}
+
+/**
+ * Показать состояние загрузки для кнопки
+ * @param {HTMLButtonElement} button
+ * @param {string} loadingText
+ */
+function setButtonLoading(button, loadingText = 'Загрузка...') {
+    if (!button) return;
+
+    button.disabled = true;
+    button.dataset.originalText = button.innerHTML;
+    button.innerHTML = `<span aria-hidden="true">⏳</span><span>${loadingText}</span>`;
+}
+
+/**
+ * Восстановить кнопку после загрузки
+ * @param {HTMLButtonElement} button
+ */
+function resetButton(button) {
+    if (!button) return;
+
+    button.disabled = false;
+    if (button.dataset.originalText) {
+        button.innerHTML = button.dataset.originalText;
+        delete button.dataset.originalText;
+    }
+}
 
 // ============================================
 // ИНИЦИАЛИЗАЦИЯ
 // ============================================
 
-document.addEventListener('DOMContentLoaded', () => {
-    initializeDashboard();
+document.addEventListener('DOMContentLoaded', async () => {
+    await initializeDashboard();
 });
 
-function initializeDashboard() {
-    // Загрузить данные пользователя
-    loadUserData();
+async function initializeDashboard() {
+    try {
+        // Показать loading state
+        UI_STATE.isLoading = true;
 
-    // Загрузить подписку
-    loadSubscription();
+        // Проверка авторизации
+        const isAuthenticated = await authManager.isAuthenticated();
+        const userRole = await authManager.getUserRole();
 
-    // Обновить UI корзины
-    updateCartUI({
-        count: cartManager.getCount(),
-        total: cartManager.getTotalPrice(),
-        items: cartManager.getCart()
-    });
+        if (!isAuthenticated || userRole !== 'buyer') {
+            window.location.href = 'index.html';
+            return;
+        }
 
-    // Прикрепить обработчики
-    attachEventListeners();
+        // Загрузка данных пользователя (с loading state)
+        await loadUserData();
 
-    // Показать начальную секцию (overview)
-    const hash = window.location.hash.slice(1) || 'overview';
-    showSection(hash);
+        // Загрузка подписки (с loading state)
+        await loadSubscription();
+
+        // Загрузка заказов (с loading state)
+        await loadOrders();
+
+        // Обновление UI корзины
+        updateCartUI({
+            count: cartManager.getCount(),
+            total: cartManager.getTotalPrice(),
+            items: cartManager.getCart(),
+        });
+
+        // Прикрепление обработчиков
+        attachEventListeners();
+
+        // Показать начальную секцию
+        const hash = window.location.hash.slice(1) || SECTIONS.OVERVIEW;
+        showSection(hash);
+
+        // Скрыть loading state
+        UI_STATE.isLoading = false;
+    } catch (error) {
+        console.error('Dashboard initialization error:', error);
+        showError('Не удалось загрузить страницу. Перезагрузите...');
+    }
 }
 
 // ============================================
 // ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
 // ============================================
 
-function loadUserData() {
-    // Используем authManager для получения данных
-    const user = authManager.getUser();
-    const userRole = authManager.getUserRole();
+async function loadUserData() {
+    try {
+        const user = await userService.getProfile();
 
-    console.log('loadUserData - User:', user, 'Role:', userRole);
+        if (!user) {
+            console.warn('User not found, redirecting...');
+            window.location.href = 'index.html';
+            return;
+        }
 
-    if (!user || !user.fullname || userRole !== 'buyer') {
-        // Если нет данных или неправильная роль, перенаправить на главную
-        console.log('Redirecting to index.html - no user or wrong role');
-        window.location.href = 'index.html';
-        return;
+        UI_STATE.user = user;
+        const firstName = userService.getFirstName(user);
+
+        // Обновление UI
+        document.getElementById('user-avatar').textContent = userService.getAvatar(user);
+        document.getElementById('sidebar-user-name').textContent = sanitize(firstName);
+        document.getElementById('sidebar-user-email').textContent = sanitize(user.email || 'email@example.com');
+        document.getElementById('main-user-name').textContent = sanitize(firstName);
+
+        // Заполнение формы настроек
+        document.getElementById('settings-name').value = sanitize(user.fullname || '');
+        document.getElementById('settings-email').value = sanitize(user.email || '');
+        document.getElementById('settings-phone').value = sanitize(user.phone || '');
+        document.getElementById('settings-address').value = sanitize(user.address || '');
+
+        // Загрузка статистики
+        await loadStats();
+    } catch (error) {
+        console.error('loadUserData error:', error);
+        
+        // Разные сообщения для разных ошибок
+        let errorMessage = 'Не удалось загрузить профиль. ';
+        
+        if (error.code === 'UNAUTHORIZED' || error.status === 401) {
+            errorMessage += 'Сессия истекла. Выполните вход заново.';
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        } else if (error.code === 'NETWORK_ERROR') {
+            errorMessage += 'Проверьте подключение к интернету.';
+        } else if (error.code === 'USER_NOT_FOUND' || error.status === 404) {
+            errorMessage += 'Пользователь не найден.';
+        } else {
+            errorMessage += 'Попробуйте обновить страницу.';
+        }
+        
+        showError(errorMessage);
+        
+        // Показать error state для профиля
+        const avatarEl = document.getElementById('user-avatar');
+        if (avatarEl) {
+            avatarEl.textContent = '⚠️';
+        }
     }
-
-    const firstName = user.fullname.split(' ')[0];
-
-    // Обновить UI
-    document.getElementById('user-avatar').textContent = getAvatarEmoji(userRole);
-    document.getElementById('sidebar-user-name').textContent = firstName;
-    document.getElementById('sidebar-user-email').textContent = user.email || 'email@example.com';
-    document.getElementById('main-user-name').textContent = firstName;
-
-    // Заполнить форму настроек
-    document.getElementById('settings-name').value = user.fullname || '';
-    document.getElementById('settings-email').value = user.email || '';
-    document.getElementById('settings-phone').value = user.phone || '';
-    document.getElementById('settings-address').value = user.address || '';
-
-    // Загрузить статистику
-    loadStats();
 }
 
-function getAvatarEmoji(role) {
-    const emojis = {
-        'buyer': '🥕',
-        'farmer': '👨‍🌾'
-    };
-    return emojis[role] || '👤';
+async function loadStats() {
+    try {
+        const orders = UI_STATE.orders;
+        const totalSpent = orderService.calculateTotalSpent(orders);
+        const orderCount = orderService.countOrders(orders);
+        
+        // Эко-очки (упрощённо: 10 за каждый заказ)
+        const ecoPoints = orderCount * 10;
+
+        // Примерная экономия (15% от суммы)
+        const saved = Math.round(totalSpent * 0.15);
+
+        document.getElementById('stat-orders').textContent = orderCount;
+        document.getElementById('stat-saved').textContent = `${saved} Kč`;
+        document.getElementById('stat-eco').textContent = ecoPoints;
+    } catch (error) {
+        console.error('loadStats error:', error);
+    }
 }
 
-function loadStats() {
-    // Имитация загрузки статистики
-    const orders = JSON.parse(localStorage.getItem('biomarket_orders') || '[]');
-    const saved = orders.reduce((sum, order) => sum + (order.saved || 0), 0);
-    const ecoPoints = orders.length * 10;
+// ============================================
+// ЗАКАЗЫ
+// ============================================
 
-    document.getElementById('stat-orders').textContent = orders.length;
-    document.getElementById('stat-saved').textContent = `${saved} Kč`;
-    document.getElementById('stat-eco').textContent = ecoPoints;
-    
-    // Загрузить заказы
-    loadOrders();
-}
-
-function loadOrders() {
-    const orders = JSON.parse(localStorage.getItem('biomarket_orders') || '[]');
+async function loadOrders() {
     const container = document.getElementById('orders-list');
     const recentOrdersContainer = document.getElementById('recent-orders');
-    
+
     if (!container) return;
-    
-    // Сортировка по дате (новые сверху)
-    const sortedOrders = orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    
-    if (sortedOrders.length === 0) {
-        const emptyHtml = `
-            <div class="empty-state">
-                <div class="empty-icon">📦</div>
-                <div class="empty-title">Пока нет заказов</div>
-                <div class="empty-text">Закажите продукты из витрины</div>
-                <a href="index.html#marketplace" class="btn-save" style="margin-top: 1rem; display: inline-flex;">
-                    <span aria-hidden="true">🛒</span>
-                    <span>В магазин</span>
-                </a>
-            </div>
-        `;
-        container.innerHTML = emptyHtml;
-        if (recentOrdersContainer) recentOrdersContainer.innerHTML = emptyHtml;
-        return;
-    }
-    
-    // Статусы заказов
-    const statusLabels = {
-        'pending': { text: 'Ожидает', class: 'pending' },
-        'processing': { text: 'В пути', class: 'processing' },
-        'delivered': { text: 'Доставлен', class: 'delivered' }
-    };
-    
-    const ordersHtml = sortedOrders.map(order => {
-        const status = statusLabels[order.status] || statusLabels.pending;
-        const orderDate = new Date(order.createdAt).toLocaleDateString('ru-RU', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
+
+    // Показать loading state
+    showLoading('orders-list');
+
+    try {
+        // Загрузка заказов через сервис
+        const orders = await orderService.getOrders();
+        UI_STATE.orders = orders;
+
+        // Сортировка по дате (новые сверху)
+        const sortedOrders = orderService.sortByDate(orders);
+
+        if (sortedOrders.length === 0) {
+            const emptyHtml = createEmptyStateHTML();
+            container.innerHTML = emptyHtml;
+            if (recentOrdersContainer) recentOrdersContainer.innerHTML = emptyHtml;
+            return;
+        }
+
+        // Отображение всех заказов
+        const ordersHtml = sortedOrders.map(order => createOrderItemHTML(order)).join('');
+        container.innerHTML = ordersHtml;
+
+        // Последние 3 заказа для главной
+        if (recentOrdersContainer) {
+            const recentHtml = sortedOrders.slice(0, 3).map(order => createOrderItemHTML(order, true)).join('');
+            recentOrdersContainer.innerHTML = recentHtml;
+        }
+    } catch (error) {
+        console.error('loadOrders error:', error);
+        showError('Не удалось загрузить заказы. Попробуйте снова.');
         
-        return `
-            <div class="order-item">
-                <div class="order-icon">📦</div>
-                <div class="order-details">
-                    <div class="order-name">Заказ #${order.id.toString().slice(-6)}</div>
-                    <div class="order-meta">${order.items.length} товаров • ${orderDate}</div>
-                    <div class="order-meta">🚚 Доставка: ${order.deliveryDate}</div>
-                </div>
-                <div class="order-price">${order.total} Kč</div>
-                <div class="order-status ${status.class}">${status.text}</div>
-            </div>
-        `;
-    }).join('');
-    
-    container.innerHTML = ordersHtml;
-    
-    // Последние 3 заказа для главной
-    if (recentOrdersContainer) {
-        const recentHtml = sortedOrders.slice(0, 3).map(order => {
-            const status = statusLabels[order.status] || statusLabels.pending;
-            return `
-                <div class="order-item">
-                    <div class="order-icon">📦</div>
-                    <div class="order-details">
-                        <div class="order-name">Заказ #${order.id.toString().slice(-6)}</div>
-                        <div class="order-meta">${order.items.length} товаров</div>
-                    </div>
-                    <div class="order-price">${order.total} Kč</div>
-                    <div class="order-status ${status.class}">${status.text}</div>
+        // Показать error state
+        if (container) {
+            container.innerHTML = `
+                <div class="error-state" style="text-align: center; padding: 3rem 1rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;" aria-hidden="true">⚠️</div>
+                    <div style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">Не удалось загрузить заказы</div>
+                    <div style="color: #6b7280; font-size: 0.9375rem; margin-bottom: 1.5rem;">Проверьте подключение к интернету</div>
+                    <button onclick="loadOrders()" class="btn-save" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <span aria-hidden="true">🔄</span>
+                        <span>Попробовать снова</span>
+                    </button>
                 </div>
             `;
-        }).join('');
-        recentOrdersContainer.innerHTML = recentHtml;
+        }
     }
+}
+
+/**
+ * Создать HTML для заказа
+ * @param {Object} order
+ * @param {boolean} isCompact - Компактный режим для recent
+ * @returns {string}
+ */
+function createOrderItemHTML(order, isCompact = false) {
+    const statusMeta = orderService.getStatusMeta(order.status);
+    
+    // Форматирование даты с помощью date-fns
+    const orderDate = format(parseISO(order.createdAt), 'dd MMMM yyyy', { locale: ru });
+    const orderDistance = formatDistanceToNow(parseISO(order.createdAt), { locale: ru, addSuffix: true });
+
+    return `
+        <div class="order-item">
+            <div class="order-icon">📦</div>
+            <div class="order-details">
+                <div class="order-name">${sanitize(`Заказ #${order.id.toString().slice(-6)}`)}</div>
+                <div class="order-meta">${sanitize(order.items.length)} товаров • ${sanitize(orderDistance)}</div>
+                <div class="order-meta" style="font-size: 0.8125rem; color: #9ca3af;">${sanitize(orderDate)}</div>
+                ${!isCompact ? `<div class="order-meta">🚚 Доставка: ${sanitize(order.deliveryDate)}</div>` : ''}
+            </div>
+            <div class="order-price">${sanitize(order.total)} Kč</div>
+            <div class="order-status ${sanitize(statusMeta.class)}" style="color: ${sanitize(statusMeta.color)}">${sanitize(statusMeta.label)}</div>
+        </div>
+    `;
+}
+
+/**
+ * Создать HTML пустого состояния
+ * @returns {string}
+ */
+function createEmptyStateHTML() {
+    return `
+        <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <div class="empty-title">Пока нет заказов</div>
+            <div class="empty-text">Закажите продукты из витрины</div>
+            <a href="index.html#marketplace" class="btn-save" style="margin-top: 1rem; display: inline-flex;">
+                <span aria-hidden="true">🛒</span>
+                <span>В магазин</span>
+            </a>
+        </div>
+    `;
 }
 
 // ============================================
 // ПОДПИСКА
 // ============================================
 
-function loadSubscription() {
-    const subscription = JSON.parse(localStorage.getItem('biomarket_subscription') || 'null');
-    const activeSubscriptionEl = document.getElementById('active-subscription');
-    const noSubscriptionEl = document.getElementById('no-subscription-card');
+async function loadSubscription() {
+    try {
+        const activeSubscriptionEl = document.getElementById('active-subscription-card');
+        const noSubscriptionEl = document.getElementById('no-subscription-card');
 
-    if (!subscription || subscription.status !== 'active') {
-        // Нет активной подписки
-        if (activeSubscriptionEl) activeSubscriptionEl.style.display = 'none';
-        if (noSubscriptionEl) noSubscriptionEl.style.display = 'block';
-        return;
-    }
+        // Загрузка подписки через сервис
+        const subscription = await subscriptionService.getSubscription();
+        UI_STATE.subscription = subscription;
 
-    // Есть активная подписка
-    if (activeSubscriptionEl) activeSubscriptionEl.style.display = 'block';
-    if (noSubscriptionEl) noSubscriptionEl.style.display = 'none';
+        const isActive = subscriptionService.isActive(subscription);
 
-    // Отобразить информацию
-    const planNames = {
-        '1month': '1 месяц',
-        '3months': '3 месяца',
-        '1year': '1 год'
-    };
+        if (!isActive) {
+            // Нет активной подписки
+            if (activeSubscriptionEl) activeSubscriptionEl.style.display = 'none';
+            if (noSubscriptionEl) noSubscriptionEl.style.display = 'block';
+            return;
+        }
 
-    document.getElementById('subscription-plan').textContent = planNames[subscription.plan] || subscription.planName;
+        // Есть активная подписка
+        if (activeSubscriptionEl) activeSubscriptionEl.style.display = 'block';
+        if (noSubscriptionEl) noSubscriptionEl.style.display = 'none';
 
-    // Рассчитать и отобразить дату окончания
-    const endDate = new Date(subscription.endDate);
-    const now = new Date();
+        // Отобразить информацию
+        const plan = subscriptionService.getPlan(subscription.plan);
+        document.getElementById('subscription-plan').textContent = plan?.name || subscription.plan;
 
-    if (endDate < now) {
-        // Подписка истекла
-        document.getElementById('subscription-status-badge').innerHTML = '<span>⏰</span><span>Истекла</span>';
-        document.getElementById('subscription-status-badge').style.background = 'rgba(249, 115, 22, 0.1)';
-        document.getElementById('subscription-status-badge').style.color = '#f97316';
-        document.getElementById('subscription-end-date').textContent = 'Истекла';
-    } else {
-        // Подписка активна
-        const formattedDate = endDate.toLocaleDateString('ru-RU', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
-        document.getElementById('subscription-end-date').textContent = formattedDate;
+        // Дата окончания с помощью date-fns
+        const endDate = parseISO(subscription.endDate);
+        const daysRemaining = subscriptionService.getDaysRemaining(subscription);
+        
+        if (daysRemaining !== null && daysRemaining <= 0) {
+            // Подписка истекла
+            const statusBadgeEl = document.getElementById('subscription-status-badge');
+            if (statusBadgeEl) {
+                statusBadgeEl.innerHTML = '<span>⏰</span><span>Истекла</span>';
+                statusBadgeEl.style.background = 'rgba(249, 115, 22, 0.1)';
+                statusBadgeEl.style.color = '#f97316';
+            }
+            document.getElementById('subscription-end-date').textContent = 'Истекла';
+        } else {
+            // Подписка активна - показываем дату и сколько осталось
+            const formattedDate = format(endDate, 'dd MMMM yyyy', { locale: ru });
+            const distanceText = formatDistanceToNow(endDate, { locale: ru, addSuffix: true });
+            document.getElementById('subscription-end-date').innerHTML = `
+                <span>${formattedDate}</span>
+                <span style="font-size: 0.875rem; color: #6b7280; display: block; margin-top: 0.25rem;">
+                    (ещё ${daysRemaining} дн. / ${distanceText})
+                </span>
+            `;
+        }
+    } catch (error) {
+        console.error('loadSubscription error:', error);
+        
+        // Разные сообщения для разных ошибок
+        let errorMessage = 'Не удалось загрузить подписку. ';
+        
+        if (error.code === 'UNAUTHORIZED' || error.status === 401) {
+            errorMessage += 'Сессия истекла.';
+        } else if (error.code === 'NETWORK_ERROR') {
+            errorMessage += 'Проверьте подключение к интернету.';
+        } else {
+            errorMessage += 'Попробуйте обновить страницу.';
+        }
+        
+        showError(errorMessage);
+        
+        // Показать error state
+        const activeSubscriptionEl = document.getElementById('active-subscription-card');
+        if (activeSubscriptionEl) {
+            activeSubscriptionEl.innerHTML = `
+                <div class="error-state" style="text-align: center; padding: 2rem 1rem;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.75rem;" aria-hidden="true">⚠️</div>
+                    <div style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">Не удалось загрузить подписку</div>
+                    <div style="color: #6b7280; font-size: 0.875rem;">${errorMessage}</div>
+                </div>
+            `;
+        }
     }
 }
 
@@ -228,10 +446,10 @@ function loadSubscription() {
 
 function updatePageTitle(section) {
     const titles = {
-        'overview': 'Обзор — BioMarket',
-        'orders': 'Заказы — BioMarket',
-        'subscription': 'Подписка — BioMarket',
-        'settings': 'Настройки — BioMarket'
+        [SECTIONS.OVERVIEW]: 'Обзор — BioMarket',
+        [SECTIONS.ORDERS]: 'Заказы — BioMarket',
+        [SECTIONS.SUBSCRIPTION]: 'Подписка — BioMarket',
+        [SECTIONS.SETTINGS]: 'Настройки — BioMarket',
     };
     document.title = titles[section] || 'BioMarket';
 }
@@ -243,7 +461,7 @@ function updatePageTitle(section) {
 function attachEventListeners() {
     // Навигация по секциям
     document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', function(e) {
+        item.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             const sectionId = this.dataset.section;
@@ -256,7 +474,7 @@ function attachEventListeners() {
         if (e.state && e.state.section) {
             showSection(e.state.section);
         } else {
-            const hash = window.location.hash.slice(1) || 'overview';
+            const hash = window.location.hash.slice(1) || SECTIONS.OVERVIEW;
             showSection(hash);
         }
     });
@@ -281,11 +499,40 @@ function attachEventListeners() {
         });
     }
 
-    // Обработчик выхода
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('logout-btn') || e.target.closest('.logout-btn')) {
-            e.preventDefault();
-            logout();
+    // Глобальный обработчик действий (data-action)
+    document.addEventListener('click', function (e) {
+        const target = e.target.closest('[data-action]');
+        if (!target) return;
+
+        const action = target.dataset.action;
+
+        switch (action) {
+            case 'toggle-cart':
+                e.preventDefault();
+                window.toggleCart();
+                break;
+            case 'logout':
+                e.preventDefault();
+                window.logout();
+                break;
+            case 'navigate':
+                e.preventDefault();
+                if (target.dataset.target) {
+                    showSection(target.dataset.target);
+                }
+                break;
+            case 'save-settings':
+                e.preventDefault();
+                window.saveSettings();
+                break;
+            case 'toggle-switch':
+                e.preventDefault();
+                window.toggleSwitch(target);
+                break;
+            case 'delete-account':
+                e.preventDefault();
+                window.deleteAccount();
+                break;
         }
     });
 
@@ -304,23 +551,20 @@ function attachEventListeners() {
 }
 
 function showSection(sectionId) {
-    console.log('Showing section:', sectionId);
-    
     // Скрыть все секции
     document.querySelectorAll('.dashboard-section').forEach(section => {
         section.classList.remove('active');
-        console.log('Hiding:', section.id);
     });
-    
+
     // Показать нужную секцию
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
         targetSection.classList.add('active');
-        console.log('Showing:', sectionId);
     } else {
         console.error('Section not found:', sectionId);
+        return;
     }
-    
+
     // Обновить активный пункт меню
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
@@ -328,13 +572,13 @@ function showSection(sectionId) {
             item.classList.add('active');
         }
     });
-    
+
     // Обновить URL
     window.history.pushState({ section: sectionId }, '', `#${sectionId}`);
-    
+
     // Обновить заголовок
     updatePageTitle(sectionId);
-    
+
     // Прокрутка вверх
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -343,75 +587,156 @@ function showSection(sectionId) {
 // ФУНКЦИИ
 // ============================================
 
-function saveSettings() {
-    const user = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER) || '{}');
-    
-    user.fullname = document.getElementById('settings-name').value;
-    user.email = document.getElementById('settings-email').value;
-    user.phone = document.getElementById('settings-phone').value;
-    user.address = document.getElementById('settings-address').value;
-    
-    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
-    
-    // Обновить отображение
-    document.getElementById('sidebar-user-name').textContent = user.fullname.split(' ')[0];
-    document.getElementById('sidebar-user-email').textContent = user.email;
-    
-    // Анимация успеха
+async function saveSettings() {
     const btn = document.querySelector('#settings-form .btn-save');
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<span aria-hidden="true">✓</span><span>Сохранено!</span>';
-    btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-    
-    setTimeout(() => {
-        btn.innerHTML = originalText;
-        btn.style.background = '';
-    }, 2000);
+
+    // Сбор данных формы
+    const formData = {
+        fullname: document.getElementById('settings-name').value,
+        phone: document.getElementById('settings-phone').value,
+        address: document.getElementById('settings-address').value,
+    };
+
+    // Валидация
+    const validationRules = {
+        fullname: (value) => validator.name(value),
+        address: (value) => validator.address(value),
+    };
+
+    // Phone опционален, но если заполнен — должен быть валидным
+    if (formData.phone && formData.phone.trim()) {
+        validationRules.phone = (value) => validator.phone(value);
+    }
+
+    const validation = validator.validateForm(formData, validationRules);
+
+    if (!validation.valid) {
+        // Показать первую ошибку
+        const firstError = Object.values(validation.errors)[0];
+        showError(firstError);
+        return;
+    }
+
+    // Блокировка кнопки
+    btn.disabled = true;
+    btn.innerHTML = '<span aria-hidden="true">⏳</span><span>Сохранение...</span>';
+
+    try {
+        // Обновление через сервис
+        const updatedUser = await userService.updateProfile({
+            fullname: formData.fullname,
+            phone: formData.phone,
+            address: formData.address,
+        });
+
+        UI_STATE.user = updatedUser;
+
+        // Обновление отображения
+        const firstName = userService.getFirstName(updatedUser);
+        document.getElementById('sidebar-user-name').textContent = sanitize(firstName);
+        document.getElementById('sidebar-user-email').textContent = sanitize(updatedUser.email);
+
+        // Успех
+        showSuccess('Настройки сохранены!');
+
+        btn.innerHTML = '<span aria-hidden="true">✓</span><span>Сохранено!</span>';
+        btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+            btn.disabled = false;
+        }, 2000);
+    } catch (error) {
+        console.error('saveSettings error:', error);
+        btn.innerHTML = '<span aria-hidden="true">✗</span><span>Ошибка</span>';
+        btn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+            btn.disabled = false;
+        }, 2000);
+
+        showError(error.message || 'Не удалось сохранить настройки');
+    }
 }
 
 function toggleSwitch(element) {
     element.classList.toggle('active');
+    // Здесь можно добавить отправку предпочтений на сервер
 }
 
-function logout() {
-    console.log('Logout called from member-dashboard');
-    authManager.logout();
-    window.location.href = 'index.html';
-}
-
-function deleteAccount() {
-    if (!confirm('⚠️ Вы уверены, что хотите удалить аккаунт?\n\nЭто действие необратимо удалит:\n• Вашу подписку\n• Историю заказов\n• Все личные данные\n\nПродолжить?')) {
-        return;
+async function logout() {
+    try {
+        await authManager.logout();
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Logout error:', error);
+        window.location.href = 'index.html';
     }
-    
-    // Удалить все данные пользователя
-    localStorage.removeItem(STORAGE_KEYS.USER);
-    localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
-    localStorage.removeItem('biomarket_cart');
-    localStorage.removeItem('biomarket_subscription');
-    localStorage.removeItem('biomarket_orders');
-    
-    console.log('Account deleted');
-    window.location.href = 'index.html';
 }
 
-// Экспортировать для глобального доступа
+async function deleteAccount() {
+    const confirmed = confirm(
+        '⚠️ Вы уверены, что хотите удалить аккаунт?\n\n' +
+            'Это действие необратимо удалит:\n' +
+            '• Вашу подписку\n' +
+            '• Историю заказов\n' +
+            '• Все личные данные\n\n' +
+            'Продолжить?'
+    );
+
+    if (!confirmed) return;
+
+    try {
+        // Удаление через сервис
+        await userService.deleteAccount();
+
+        // Очистка локальных данных
+        localStorage.removeItem('biomarket_cart');
+
+        console.log('Account deleted');
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Delete account error:', error);
+        showError('Не удалось удалить аккаунт. Попробуйте позже.');
+    }
+}
+
+/**
+ * Показать ошибку пользователю
+ * @param {string} message
+ */
+function showError(message) {
+    toastManager.error(message, { duration: 5000, closable: true });
+}
+
+/**
+ * Показать успех
+ * @param {string} message
+ */
+function showSuccess(message) {
+    toastManager.success(message, { duration: 3000, closable: true });
+}
+
+// ============================================
+// ГЛОБАЛЬНЫЕ ФУНКЦИИ
+// ============================================
+
 window.navigateTo = showSection;
 window.saveSettings = saveSettings;
 window.toggleSwitch = toggleSwitch;
 window.logout = logout;
 window.deleteAccount = deleteAccount;
 
-// ============================================
-// КОРЗИНА (ГЛОБАЛЬНЫЕ ФУНКЦИИ)
-// ============================================
-
-window.toggleCart = function() {
+window.toggleCart = function () {
     const cartSidebar = document.getElementById('cart-sidebar');
     const overlay = document.getElementById('overlay');
-    
+
     if (!cartSidebar || !overlay) return;
-    
+
     const isClosed = cartSidebar.classList.contains('translate-x-full');
 
     cartSidebar.classList.toggle('translate-x-full');
@@ -422,12 +747,12 @@ window.toggleCart = function() {
         updateCartUI({
             count: cartManager.getCount(),
             total: cartManager.getTotalPrice(),
-            items: cartManager.getCart()
+            items: cartManager.getCart(),
         });
     }
 };
 
-window.addToCart = function(button) {
+window.addToCart = function (button) {
     const productId = parseInt(button.dataset.productId);
     const product = productManager.getProductById(productId);
 
@@ -435,7 +760,7 @@ window.addToCart = function(button) {
         updateCartUI({
             count: cartManager.getCount(),
             total: cartManager.getTotalPrice(),
-            items: cartManager.getCart()
+            items: cartManager.getCart(),
         });
 
         // Визуальная обратная связь
@@ -447,8 +772,8 @@ window.addToCart = function(button) {
     }
 };
 
-window.updateCartQuantity = function(productId, change) {
-    const item = cartManager.getCart().find(i => i.id === productId);
+window.updateCartQuantity = function (productId, change) {
+    const item = cartManager.getCart().find((i) => i.id === productId);
     if (!item) return;
 
     const newQuantity = item.quantity + change;
@@ -457,16 +782,16 @@ window.updateCartQuantity = function(productId, change) {
     updateCartUI({
         count: cartManager.getCount(),
         total: cartManager.getTotalPrice(),
-        items: cartManager.getCart()
+        items: cartManager.getCart(),
     });
 };
 
-window.removeFromCart = function(productId) {
+window.removeFromCart = function (productId) {
     cartManager.removeItem(productId);
 
     updateCartUI({
         count: cartManager.getCount(),
         total: cartManager.getTotalPrice(),
-        items: cartManager.getCart()
+        items: cartManager.getCart(),
     });
 };

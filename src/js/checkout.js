@@ -1,13 +1,31 @@
-// src/js/checkout.js
+/**
+ * @file checkout.js — Оформление подписки и оплата
+ * @description Выбор плана, оплата, активация подписки
+ */
+
 import { STORAGE_KEYS } from './utils/constants.js';
 import { authManager } from './modules/auth.js';
+import { paymentService, PAYMENT_STATUS } from './services/paymentService.js';
+import { subscriptionService } from './services/subscriptionService.js';
+import { sanitize } from './services/api.js';
+import { validator } from './utils/validator.js';
+import { toastManager } from './utils/toast.js';
+import { getStripeManager } from './services/stripe.js';
+import { setTextContent } from './utils/dom.js';
 
-// Планы подписок
+// ============================================
+// КОНСТАНТЫ
+// ============================================
+
 const PLANS = {
     '1month': { name: '1 месяц', period: '30 дней', price: 590, savings: 0 },
     '3months': { name: '3 месяца', period: '90 дней', price: 1500, savings: 270 },
-    '1year': { name: '1 год', period: '365 дней', price: 4900, savings: 2180 }
+    '1year': { name: '1 год', period: '365 дней', price: 4900, savings: 2180 },
 };
+
+// Stripe manager (mock или real)
+const stripeManager = getStripeManager();
+let cardElement = null;
 
 // ============================================
 // ИНИЦИАЛИЗАЦИЯ
@@ -17,28 +35,62 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeCheckout();
 });
 
-function initializeCheckout() {
-    // Проверка авторизации
-    const user = authManager.getUser();
-    const userRole = authManager.getUserRole();
+async function initializeCheckout() {
+    try {
+        // ========================================
+        // ПРОВЕРКА АВТОРИЗАЦИИ
+        // ========================================
+        const isAuthenticated = await authManager.isAuthenticated();
+        const userRole = await authManager.getUserRole();
 
-    if (!user || userRole !== 'buyer') {
-        // Не авторизован или не buyer → редирект на регистрацию
-        const selectedPlan = localStorage.getItem('biomarket_selected_plan') || '1month';
-        localStorage.setItem('biomarket_redirect_plan', selectedPlan);
-        window.location.href = 'register.html';
-        return;
+        if (!isAuthenticated) {
+            // Не авторизован → редирект на регистрацию с сохранением плана
+            const selectedPlan = localStorage.getItem('biomarket_selected_plan') || '1month';
+            localStorage.setItem('biomarket_redirect_plan', selectedPlan);
+            window.location.href = 'register.html';
+            return;
+        }
+
+        if (userRole !== 'buyer') {
+            // Не buyer → редирект на главную
+            toastManager.warning('Доступно только для участников клуба', { duration: 3000 });
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // ========================================
+        // ПРОВЕРКА ПОДПИСКИ (не должна быть активна)
+        // ========================================
+        const subscription = await subscriptionService.getSubscription();
+        
+        if (subscriptionService.isActive(subscription)) {
+            // Уже есть активная подписка → редирект в dashboard
+            toastManager.info('У вас уже есть активная подписка', { duration: 3000 });
+            window.location.href = 'member-dashboard.html#subscription';
+            return;
+        }
+
+        // ========================================
+        // Получить выбранный план
+        // ========================================
+        const planId = getPlanFromURL() || localStorage.getItem('biomarket_selected_plan') || '1month';
+        const plan = PLANS[planId] || PLANS['1month'];
+
+        // Отобразить информацию о плане
+        displayPlan(planId, plan);
+
+        // Инициализация Stripe
+        await initializeStripe();
+
+        // Загрузить доступные методы оплаты
+        await loadPaymentMethods();
+
+        // Прикрепить обработчики
+        attachEventListeners();
+    } catch (error) {
+        console.error('Checkout initialization error:', error);
+        showError('Не удалось загрузить страницу оплаты');
     }
-
-    // Получить выбранный план
-    const planId = getPlanFromURL() || localStorage.getItem('biomarket_selected_plan') || '1month';
-    const plan = PLANS[planId] || PLANS['1month'];
-
-    // Отобразить информацию о плане
-    displayPlan(planId, plan);
-
-    // Прикрепить обработчики
-    attachEventListeners();
 }
 
 // ============================================
@@ -51,15 +103,71 @@ function getPlanFromURL() {
 }
 
 function displayPlan(planId, plan) {
-    document.getElementById('plan-badge').textContent = plan.name;
-    document.getElementById('plan-name').textContent = plan.name;
-    document.getElementById('plan-period').textContent = plan.period;
-    document.getElementById('plan-savings').textContent = `💰 ${plan.savings} Kč`;
-    document.getElementById('plan-price').textContent = `${plan.price} Kč`;
-    document.getElementById('btn-price').textContent = `${plan.price} Kč`;
+    const elements = {
+        'plan-badge': plan.name,
+        'plan-name': plan.name,
+        'plan-period': plan.period,
+        'plan-savings': `💰 ${plan.savings} Kč`,
+        'plan-price': `${plan.price} Kč`,
+        'btn-price': `${plan.price} Kč`,
+    };
+
+    Object.entries(elements).forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if (el) setTextContent(el, value);
+    });
 
     // Сохранить текущий план
     localStorage.setItem('biomarket_checkout_plan', planId);
+}
+
+/**
+ * Инициализация Stripe Elements
+ */
+async function initializeStripe() {
+    try {
+        await stripeManager.initialize();
+        cardElement = await stripeManager.createCardElement('card-element');
+
+        // Обработка ошибок Stripe
+        cardElement.on('change', (event) => {
+            const errorDisplay = document.getElementById('card-errors');
+            if (event.error) {
+                setTextContent(errorDisplay, event.error.message);
+                errorDisplay.classList.add('visible');
+            } else {
+                errorDisplay.classList.remove('visible');
+            }
+        });
+    } catch (error) {
+        console.error('Stripe initialization error:', error);
+        showError('Не удалось загрузить форму оплаты');
+    }
+}
+
+async function loadPaymentMethods() {
+    try {
+        const methods = await paymentService.getAvailablePaymentMethods();
+        renderPaymentMethods(methods);
+    } catch (error) {
+        console.error('Load payment methods error:', error);
+        // Используем дефолтные методы
+        renderPaymentMethods(Object.values(paymentService.PAYMENT_METHODS));
+    }
+}
+
+function renderPaymentMethods(methods) {
+    methods.forEach(method => {
+        const radio = document.querySelector(`input[name="payment"][value="${method.id}"]`);
+        if (radio) {
+            radio.disabled = !method.available;
+            const label = radio.closest('.payment-method');
+            if (label && !method.available) {
+                label.style.opacity = '0.5';
+                label.style.pointerEvents = 'none';
+            }
+        }
+    });
 }
 
 function attachEventListeners() {
@@ -67,14 +175,6 @@ function attachEventListeners() {
     document.querySelectorAll('input[name="payment"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
             const paymentMethod = e.target.value;
-            
-            // Обновить выделение
-            document.querySelectorAll('.payment-method').forEach(method => {
-                method.classList.remove('selected');
-            });
-            e.target.closest('.payment-method').classList.add('selected');
-            
-            // Переключить форму
             updatePaymentForm(paymentMethod);
         });
     });
@@ -108,6 +208,12 @@ function attachEventListeners() {
             e.target.value = e.target.value.replace(/\D/g, '').substring(0, 3);
         });
     }
+
+    // Обработка формы оплаты
+    const paymentForm = document.getElementById('payment-form');
+    if (paymentForm) {
+        paymentForm.addEventListener('submit', handlePayment);
+    }
 }
 
 function updatePaymentForm(paymentMethod) {
@@ -118,16 +224,16 @@ function updatePaymentForm(paymentMethod) {
     const walletName = document.getElementById('wallet-name');
     const bankAmount = document.getElementById('bank-amount');
     const planPrice = document.getElementById('plan-price');
-    
+
     // Скрыть все формы
     if (cardFields) cardFields.style.display = 'none';
     if (bankFields) bankFields.style.display = 'none';
     if (walletFields) walletFields.style.display = 'none';
-    
+
     // Показать нужную форму
     if (paymentMethod === 'card') {
         if (cardFields) cardFields.style.display = 'block';
-        if (btnText) btnText.innerHTML = 'Оплатить <span id="btn-price">' + (planPrice ? planPrice.textContent : '0 Kč') + '</span>';
+        if (btnText) btnText.innerHTML = `Оплатить <span id="btn-price">${planPrice ? planPrice.textContent : '0 Kč'}</span>`;
     } else if (paymentMethod === 'bank') {
         if (bankFields) bankFields.style.display = 'block';
         if (bankAmount && planPrice) bankAmount.textContent = planPrice.textContent;
@@ -135,7 +241,7 @@ function updatePaymentForm(paymentMethod) {
     } else if (paymentMethod === 'googlepay' || paymentMethod === 'applepay') {
         if (walletFields) walletFields.style.display = 'block';
         if (walletName) walletName.textContent = paymentMethod === 'googlepay' ? 'Google Pay' : 'Apple Pay';
-        if (btnText) btnText.innerHTML = 'Оплатить через ' + (paymentMethod === 'googlepay' ? 'Google Pay' : 'Apple Pay');
+        if (btnText) btnText.innerHTML = `Оплатить через ${paymentMethod === 'googlepay' ? 'Google Pay' : 'Apple Pay'}`;
     }
 }
 
@@ -143,34 +249,100 @@ function updatePaymentForm(paymentMethod) {
 // ОБРАБОТКА ОПЛАТЫ
 // ============================================
 
-window.handlePayment = function(event) {
+async function handlePayment(event) {
     event.preventDefault();
 
     const planId = localStorage.getItem('biomarket_checkout_plan');
     const plan = PLANS[planId];
-    const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
+    const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
 
-    // Получить данные карты
-    const cardNumber = document.getElementById('card-number').value;
-    const cardName = document.getElementById('card-name').value;
-    const cardExpiry = document.getElementById('card-expiry').value;
-
-    // Валидация
-    if (!cardNumber || !cardName || !cardExpiry) {
-        alert('Пожалуйста, заполните все поля карты');
+    if (!paymentMethod) {
+        showError('Выберите способ оплаты');
         return;
     }
 
-    // Имитация обработки платежа
+    // ========================================
+    // ВАЛИДАЦИЯ ДЛЯ КАРТЫ (STRIPE)
+    // ========================================
+    if (paymentMethod === 'card') {
+        // Валидация через Stripe
+        const validation = await stripeManager.validateCard();
+        if (!validation.valid) {
+            showError(validation.message);
+            return;
+        }
+
+        // Валидация имени владельца
+        const cardName = document.getElementById('card-name')?.value;
+        const nameValidation = validator.name(cardName);
+        if (!nameValidation.valid) {
+            showError(nameValidation.message);
+            return;
+        }
+    }
+
+    // ========================================
+    // LOADING STATE
+    // ========================================
     const btn = event.target.querySelector('button[type="submit"]');
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<span>⏳</span><span>Обработка...</span>';
+    
+    // Блокировка кнопки + спиннер
     btn.disabled = true;
+    btn.innerHTML = `
+        <span style="display: inline-block; animation: spin 1s linear infinite;" aria-hidden="true">⏳</span>
+        <span>Обработка платежа...</span>
+        <style>
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    `;
 
-    setTimeout(() => {
-        // Успешная оплата
-        activateSubscription(planId, plan);
+    try {
+        // ========================================
+        // ОБРАБОТКА ЧЕРЕЗ STRIPE
+        // ========================================
+        let paymentResponse;
 
+        if (paymentMethod === 'card') {
+            // Создаём Payment Intent на бэкенде
+            const paymentIntent = await stripeManager.createPaymentIntent({
+                amount: plan.price * 100, // Копейки
+                currency: 'czk',
+                planId,
+            });
+
+            // Подтверждаем платёж через Stripe
+            const result = await stripeManager.confirmPayment({
+                returnUrl: window.location.origin + '/payment-success',
+                paymentIntentClientSecret: paymentIntent.client_secret,
+            });
+
+            paymentResponse = {
+                status: 'success',
+                transactionId: result.paymentIntent.id,
+                isMock: !result.paymentIntent.id.startsWith('pi_'),
+            };
+        } else {
+            // Другие методы оплаты (через paymentService)
+            paymentResponse = await paymentService.processPayment({
+                planId,
+                paymentMethod,
+            });
+        }
+
+        // Проверка статуса платежа
+        if (paymentResponse.status !== 'success') {
+            throw new Error('Платёж не прошёл. Попробуйте ещё раз.');
+        }
+
+        // Активация подписки после успешного платежа
+        await activateSubscription(planId, plan, paymentResponse);
+
+        // Успех
+        showSuccess('Оплата прошла успешно!');
         btn.innerHTML = '<span>✓</span><span>Оплачено!</span>';
         btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
 
@@ -178,43 +350,74 @@ window.handlePayment = function(event) {
         setTimeout(() => {
             window.location.href = 'member-dashboard.html#subscription';
         }, 2000);
-    }, 2000);
-};
+    } catch (error) {
+        console.error('Payment error:', error);
 
-function activateSubscription(planId, plan) {
-    const user = authManager.getUser();
-    const startDate = new Date();
-    const endDate = new Date();
+        // Восстановление кнопки
+        btn.innerHTML = originalText;
+        btn.disabled = false;
 
-    // Рассчитать дату окончания
-    if (planId === '1month') {
-        endDate.setMonth(endDate.getMonth() + 1);
-    } else if (planId === '3months') {
-        endDate.setMonth(endDate.getMonth() + 3);
-    } else if (planId === '1year') {
-        endDate.setFullYear(endDate.getFullYear() + 1);
+        // Показать ошибку
+        showError(error.message || 'Не удалось обработать платёж. Попробуйте ещё раз.');
     }
-
-    // Сохранить подписку
-    const subscription = {
-        plan: planId,
-        planName: plan.name,
-        price: plan.price,
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
-        status: 'active',
-        paymentMethod: document.querySelector('input[name="payment"]:checked').value
-    };
-
-    localStorage.setItem('biomarket_subscription', JSON.stringify(subscription));
-
-    // Очистить временные данные
-    localStorage.removeItem('biomarket_selected_plan');
-    localStorage.removeItem('biomarket_checkout_plan');
 }
 
-window.logout = function() {
-    localStorage.removeItem(STORAGE_KEYS.USER);
-    localStorage.removeItem(STORAGE_KEYS.USER_ROLE);
-    window.location.href = 'index.html';
+async function activateSubscription(planId, plan, paymentResponse) {
+    try {
+        // Создаём подписку через сервис
+        const subscription = await subscriptionService.createSubscription(planId);
+
+        // Сохраняем информацию о платеже
+        const subscriptionData = {
+            ...subscription,
+            transactionId: paymentResponse.transactionId,
+            paymentMethod: document.querySelector('input[name="payment"]:checked')?.value,
+            amount: paymentResponse.amount,
+            currency: paymentResponse.currency,
+        };
+
+        // В mock режиме сохраняем в localStorage для совместимости
+        if (paymentResponse.isMock) {
+            localStorage.setItem('biomarket_subscription', JSON.stringify(subscriptionData));
+        }
+
+        // Очистить временные данные
+        localStorage.removeItem('biomarket_selected_plan');
+        localStorage.removeItem('biomarket_checkout_plan');
+
+        console.log('Subscription activated:', subscriptionData);
+    } catch (error) {
+        console.error('Activate subscription error:', error);
+        throw new Error('Не удалось активировать подписку. Обратитесь в поддержку.');
+    }
+}
+
+/**
+ * Показать ошибку пользователю
+ * @param {string} message
+ */
+function showError(message) {
+    toastManager.error(message, { duration: 5000, closable: true });
+}
+
+/**
+ * Показать успех
+ * @param {string} message
+ */
+function showSuccess(message) {
+    toastManager.success(message, { duration: 3000, closable: true });
+}
+
+// ============================================
+// ВЫХОД
+// ============================================
+
+window.logout = async function() {
+    try {
+        await authManager.logout();
+        window.location.href = 'index.html';
+    } catch (error) {
+        console.error('Logout error:', error);
+        window.location.href = 'index.html';
+    }
 };

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeDashboard();
 });
 
-function initializeDashboard() {
+async function initializeDashboard() {
     // Загрузить отзывы
     loadReviews();
 
@@ -18,7 +18,7 @@ function initializeDashboard() {
     attachEventListeners();
 
     // Загрузить данные фермера (после reviews чтобы не блокировать)
-    loadFarmerData();
+    await loadFarmerData();
 
     // Показать начальную секцию (overview)
     const hash = window.location.hash.slice(1) || 'overview';
@@ -29,10 +29,10 @@ function initializeDashboard() {
 // ДАННЫЕ ФЕРМЕРА
 // ============================================
 
-function loadFarmerData() {
+async function loadFarmerData() {
     // Используем authManager для получения данных
-    const user = authManager.getUser();
-    const userRole = authManager.getUserRole();
+    const user = await authManager.getUser();
+    const userRole = await authManager.getUserRole();
 
     console.log('Farmer Dashboard - User data:', user);
     console.log('Farmer Dashboard - User role:', userRole);

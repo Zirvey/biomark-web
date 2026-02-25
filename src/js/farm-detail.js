@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeFarmPage();
 });
 
-function initializeFarmPage() {
+async function initializeFarmPage() {
     // Получить ID фермы из URL параметра
     const urlParams = new URLSearchParams(window.location.search);
     const farmId = urlParams.get('id');
@@ -53,7 +53,9 @@ function initializeFarmPage() {
     });
 
     // Обновить UI авторизации
-    updateAuthUI(authManager.getUser(), authManager.getUserRole());
+    const user = await authManager.getUser();
+    const userRole = await authManager.getUserRole();
+    updateAuthUI(user, userRole);
 
     // Прикрепить обработчики событий
     attachEventListeners();

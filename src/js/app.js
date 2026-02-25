@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
 });
 
-function initializeApp() {
+async function initializeApp() {
     // Инициализировать фильтрацию
     const allProducts = productManager.getAllProducts();
     filterManager.allProducts = allProducts;
@@ -25,8 +25,8 @@ function initializeApp() {
     renderProducts(initialProducts);
 
     // Обновить UI авторизации (с проверкой что пользователь есть)
-    const user = authManager.getUser();
-    const userRole = authManager.getUserRole();
+    const user = await authManager.getUser();
+    const userRole = await authManager.getUserRole();
     console.log('App initialized - User:', user, 'Role:', userRole);
     updateAuthUI(user, userRole);
 
@@ -250,10 +250,10 @@ export { productManager, cartManager, filterManager, authManager };
  * Выбор плана подписки
  * @param {string} planId - ID плана (1month, 3months, 1year)
  */
-window.selectPlan = function(planId) {
-    const user = authManager.getUser();
-    const userRole = authManager.getUserRole();
-    
+window.selectPlan = async function(planId) {
+    const user = await authManager.getUser();
+    const userRole = await authManager.getUserRole();
+
     console.log('selectPlan called - User:', user, 'Role:', userRole);
 
     if (!user || userRole !== 'buyer') {
@@ -271,12 +271,12 @@ window.selectPlan = function(planId) {
 /**
  * Оформление заказа из корзины
  */
-window.checkoutOrder = function() {
-    const user = authManager.getUser();
-    const userRole = authManager.getUserRole();
-    
+window.checkoutOrder = async function() {
+    const user = await authManager.getUser();
+    const userRole = await authManager.getUserRole();
+
     console.log('checkoutOrder called - User:', user, 'Role:', userRole);
-    
+
     // Проверка авторизации
     if (!user || userRole !== 'buyer') {
         alert('Пожалуйста, войдите как участник клуба для оформления заказа');

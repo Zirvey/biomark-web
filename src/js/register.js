@@ -154,6 +154,13 @@ function handleSuccessfulLogin(user, redirectUrl) {
     sessionStorage.setItem(TOKEN_KEY, mockToken);
     sessionStorage.setItem(TOKEN_DATA_KEY, JSON.stringify(user));
     sessionStorage.setItem('biomarket_user_role', user.role);
+    
+    // Логирование для отладки
+    console.log('handleSuccessfulLogin - Saved to sessionStorage:', {
+        token: sessionStorage.getItem(TOKEN_KEY),
+        user: sessionStorage.getItem(TOKEN_DATA_KEY),
+        role: sessionStorage.getItem('biomarket_user_role')
+    });
 
     return redirectUrl;
 }
@@ -197,12 +204,30 @@ window.handleLogin = async function (e) {
                 '⚠️ DEMO LOGIN USED - Remove before production!',
                 demoUser.email
             );
+            
+            console.log('Before handleSuccessfulLogin - sessionStorage:', {
+                length: sessionStorage.length,
+                keys: Object.keys(sessionStorage)
+            });
 
             const redirectUrl = handleSuccessfulLogin(demoUser, 'index.html');
+            
+            console.log('After handleSuccessfulLogin - sessionStorage:', {
+                length: sessionStorage.length,
+                keys: Object.keys(sessionStorage),
+                token: sessionStorage.getItem('biomarket_token'),
+                user: sessionStorage.getItem('biomarket_token_data'),
+                role: sessionStorage.getItem('biomarket_user_role')
+            });
 
             btn.innerHTML = '<span>✓</span><span>Вход выполнен!</span>';
 
             setTimeout(() => {
+                console.log('Before redirect - sessionStorage:', {
+                    token: sessionStorage.getItem('biomarket_token'),
+                    user: sessionStorage.getItem('biomarket_token_data'),
+                    role: sessionStorage.getItem('biomarket_user_role')
+                });
                 window.location.href = redirectUrl;
             }, 1000);
             return;

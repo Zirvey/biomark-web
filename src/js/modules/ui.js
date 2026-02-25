@@ -79,7 +79,7 @@ export function renderProducts(productsToRender) {
         return card;
     });
 
-    appendElements(grid, cards);
+    appendElements(grid, ...cards);
 
     // Обновить счётчик
     const countEl = document.querySelector(SELECTORS.VISIBLE_COUNT);

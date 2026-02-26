@@ -199,3 +199,68 @@ if (passwordLower === DEMO_CREDENTIALS.ADMIN.password.toLowerCase()) { ... }
 const emailLower = email.toLowerCase().trim();
 // ❌ Пароль сравниваем как есть:
 if (password === DEMO_CREDENTIALS.ADMIN.password) { ... }
+
+##UPDATE FIX КРИТИЧЕСКИЙ БАГ: Разные хранилища и ключи при логине и регистрации
+Что происходит в коде:
+✅ При ЛОГИНЕ (handleSuccessfulLogin в register.js):
+// Сохраняет в sessionStorage с ключами:
+sessionStorage.setItem('biomarket_token', mockToken);
+sessionStorage.setItem('biomarket_token_data', JSON.stringify(user)); // ← ключ: biomarket_token_data
+sessionStorage.setItem('biomarket_user_role', user.role);
+❌ При РЕГИСТРАЦИИ (handleRegister в register.js):
+// Сохраняет в localStorage с ДРУГИМИ ключами:
+localStorage.setItem('biomarket_user', JSON.stringify(formData)); // ← ключ: biomarket_user (ДРУГОЙ!)
+localStorage.setItem('biomarket_user_role', 'buyer');
+В app.js:
+import { authManager } from './modules/auth.js';
+const user = await authManager.getUser(); // ← скорее всего читает из sessionStorage['biomarket_token_data']
+🎯 Результат:
+Действие
+Где сохраняется
+Ключ
+authManager.getUser() находит?
+Логин
+sessionStorage
+biomarket_token_data
+✅ Да
+Регистрация
+localStorage
+biomarket_user
+❌ Нет!
+Поэтому после регистрации пользователя "выкидывает" — данные есть, но в другом месте и под другим именем!
+
+✅ РЕШЕНИЕ: Унифицировать хранение данных
+Замените код в функциях handleRegister и handleFarmerRegister в файле src/js/register.js:
+📝 Исправленная функция handleRegister:
+javascript
+// Было ❌:
+localStorage.setItem('biomarket_user', JSON.stringify(formData));
+localStorage.setItem('biomarket_user_role', 'buyer');
+
+// Стало ✅:
+const TOKEN_KEY = 'biomarket_token';
+const TOKEN_DATA_KEY = 'biomarket_token_data';
+
+const mockToken = 'mock-token-' + Date.now();
+sessionStorage.setItem(TOKEN_KEY, mockToken);
+sessionStorage.setItem(TOKEN_DATA_KEY, JSON.stringify(formData));
+sessionStorage.setItem('biomarket_user_role', 'buyer');
+🔧 Дополнительно: проверьте src/js/modules/auth.js
+Убедитесь, что authManager читает из того же хранилища и с теми же ключами:
+// src/js/modules/auth.js (пример правильной реализации)
+export const authManager = {
+  getUser: async () => {
+    const data = sessionStorage.getItem('biomarket_token_data');
+    return data ? JSON.parse(data) : null;
+  },
+  
+  getUserRole: async () => {
+    return sessionStorage.getItem('biomarket_user_role');
+  },
+  
+  logout: () => {
+    sessionStorage.removeItem('biomarket_token');
+    sessionStorage.removeItem('biomarket_token_data');
+    sessionStorage.removeItem('biomarket_user_role');
+  }
+};

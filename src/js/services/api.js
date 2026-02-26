@@ -188,16 +188,16 @@ export async function apiRequest(endpoint, options = {}) {
         });
         
         clearTimeout(timeoutId);
-        
+
         const data = await response.json();
-        
+
         if (!response.ok) {
-            throw createApiError(data.message || 'Request failed', response.status, data.code);
+            throw createApiError(data?.message || 'Request failed', response.status, data?.code);
         }
-        
+
         return {
-            data,
-            message: data.message || 'Success',
+            data: data ?? null,
+            message: data?.message || 'Success',
             status: response.status,
         };
     } catch (error) {

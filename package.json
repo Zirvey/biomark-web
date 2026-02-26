@@ -17,6 +17,9 @@
   "keywords": ["biomarket", "farmers", "organic"],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "date-fns": "^4.1.0"
+  },
   "devDependencies": {
     "vite": "^6.1.0"
   }

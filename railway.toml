@@ -1,0 +1,16 @@
+# Railway Configuration for BioMarket Backend
+
+[build]
+# Use the server directory for backend
+rootDirectory = "server"
+
+# Build command
+buildCommand = "cd server && npm install && npx prisma generate"
+
+# Start command
+startCommand = "cd server && node src/index.js"
+
+# Environment
+[build.env]
+NODE_ENV = "production"
+PORT = "8080"

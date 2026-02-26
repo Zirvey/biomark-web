@@ -1,26 +1,20 @@
 {
-  "name": "biomarket",
+  "name": "biomark-web",
   "version": "1.0.0",
   "description": "BioMarket - Fresh products from farmers",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest",
-    "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "server:dev": "cd server && npm run dev",
+    "server:build": "cd server && npm install",
+    "server:start": "cd server && node src/index.js"
   },
-  "devDependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "autoprefixer": "^10.4.20",
-    "jsdom": "^28.1.0",
-    "postcss": "^8.5.1",
-    "tailwindcss": "^3.4.17",
-    "vite": "^6.1.0",
-    "vitest": "^4.0.18"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zirvey/biomark-web.git"
   },
-  "dependencies": {
-    "date-fns": "^4.1.0"
-  }
+  "keywords": ["biomarket", "farmers", "organic"],
+  "author": "",
+  "license": "ISC"
 }

@@ -1,3 +1,0 @@
-## Qwen Added Memories
-- BioMarket проект: Бэкенд готов на 100%, ждём когда Railway починит инцидент (Hobby деплои на паузе с 25 февраля 2026). Railway Hobby план подключён ($5/месяц). После восстановления Railway нужно будет: 1) дождаться деплоя, 2) получить URL, 3) добавить VITE_API_URL в Vercel переменные, 4) протестировать API.
-- BioMarket проект: Бэкенд на Railway готов (100%), фронтенд на Vercel (85%). Критичный баг: авторизация разлогинивает сразу после входа (sessionStorage очищается). Нужно исправить с макбука: проверить handleSuccessfulLogin() в register.js, добавить логи, найти где данные теряются. Демо-учётные данные: admin@admin.com / admin@. Railway URL: biomark-web-production.up.railway.app, Vercel: biomark-web.vercel.app.

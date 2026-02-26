@@ -58,8 +58,7 @@ const createSubscriptionSchema = z.object({
 
 module.exports = {
   emailSchema,
-  czechPhoneSchema,
-  czechAddressSchema,
+  phoneSchema,
   registerSchema,
   loginSchema,
   updateProfileSchema,

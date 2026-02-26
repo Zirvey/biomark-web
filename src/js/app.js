@@ -16,6 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initializeApp() {
+    console.log('🚀 App initializing...');
+    console.log('📍 Current URL:', window.location.href);
+    console.log('📦 sessionStorage keys:', Object.keys(sessionStorage));
+    
+    // Проверка авторизации ПЕРЕД всем остальным
+    console.log('🔐 Checking auth before anything...');
+    const syncUser = authManager.getUserSync();
+    console.log('🔐 Sync user result:', syncUser);
+    
     // Инициализировать фильтрацию
     const allProducts = productManager.getAllProducts();
     filterManager.allProducts = allProducts;
@@ -25,9 +34,10 @@ async function initializeApp() {
     renderProducts(initialProducts);
 
     // Обновить UI авторизации (с проверкой что пользователь есть)
+    console.log('🔐 Getting user via authManager.getUser()...');
     const user = await authManager.getUser();
     const userRole = await authManager.getUserRole();
-    console.log('App initialized - User:', user, 'Role:', userRole);
+    console.log('🔐 App initialized - User:', user, 'Role:', userRole);
     updateAuthUI(user, userRole);
 
     // Обновить UI корзины с элементами
@@ -39,6 +49,8 @@ async function initializeApp() {
 
     // Прикрепить обработчики событий
     attachEventListeners();
+    
+    console.log('✅ App initialization complete');
 }
 
 // ============================================

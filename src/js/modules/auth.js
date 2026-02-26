@@ -55,8 +55,18 @@ export class AuthManager {
     getUserSync() {
         try {
             const user = sessionStorage.getItem('biomarket_token_data');
-            return user ? JSON.parse(user) : null;
-        } catch {
+            console.log('🔍 authManager.getUserSync() - Raw data:', user);
+            
+            if (!user) {
+                console.log('⚠️ authManager.getUserSync() - No user in sessionStorage');
+                return null;
+            }
+            
+            const parsed = JSON.parse(user);
+            console.log('✅ authManager.getUserSync() - Parsed user:', parsed);
+            return parsed;
+        } catch (error) {
+            console.error('❌ authManager.getUserSync() - Error:', error);
             return null;
         }
     }

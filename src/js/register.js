@@ -95,6 +95,10 @@ window.showFarmerRegister = function () {
  */
 function checkDemoCredentials(email, password) {
     // ⚠️ Демо-логин только для разработки!
+    console.log('🔍 checkDemoCredentials - ENABLE_DEMO_LOGIN:', ENABLE_DEMO_LOGIN);
+    console.log('🔍 checkDemoCredentials - Email:', email, 'Password:', password);
+    console.log('🔍 checkDemoCredentials - DEMO_CREDENTIALS:', DEMO_CREDENTIALS);
+    
     if (!ENABLE_DEMO_LOGIN) {
         console.warn('⚠️ Demo login is disabled. This is expected in production.');
         return null;
@@ -102,12 +106,15 @@ function checkDemoCredentials(email, password) {
 
     const emailLower = email.toLowerCase().trim();
     const passwordLower = password.toLowerCase();
+    
+    console.log('🔍 checkDemoCredentials - emailLower:', emailLower, 'passwordLower:', passwordLower);
 
     // Проверка на admin
     if (
         emailLower === DEMO_CREDENTIALS.ADMIN.email.toLowerCase() &&
         passwordLower === DEMO_CREDENTIALS.ADMIN.password.toLowerCase()
     ) {
+        console.log('✅ checkDemoCredentials - Admin match!');
         return {
             fullname: 'Иван Петров',
             email: DEMO_CREDENTIALS.ADMIN.email,
@@ -123,6 +130,7 @@ function checkDemoCredentials(email, password) {
         emailLower === DEMO_CREDENTIALS.FARMER.email.toLowerCase() &&
         passwordLower === DEMO_CREDENTIALS.FARMER.password.toLowerCase()
     ) {
+        console.log('✅ checkDemoCredentials - Farmer match!');
         return {
             fullname: 'Ян Новак',
             email: DEMO_CREDENTIALS.FARMER.email,
@@ -133,6 +141,8 @@ function checkDemoCredentials(email, password) {
             isDemo: true,
         };
     }
+    
+    console.log('❌ checkDemoCredentials - No match');
 
     return null;
 }
@@ -146,21 +156,32 @@ function handleSuccessfulLogin(user, redirectUrl) {
     // Используем те же ключи что и в api.js для консистентности
     const TOKEN_KEY = 'biomarket_token';
     const TOKEN_DATA_KEY = 'biomarket_token_data';
-    
+
     // Создаём mock токен
     const mockToken = 'mock-token-' + Date.now();
-    
+
     // Сохраняем токен и данные пользователя
     sessionStorage.setItem(TOKEN_KEY, mockToken);
     sessionStorage.setItem(TOKEN_DATA_KEY, JSON.stringify(user));
     sessionStorage.setItem('biomarket_user_role', user.role);
-    
+
     // Логирование для отладки
-    console.log('handleSuccessfulLogin - Saved to sessionStorage:', {
+    console.log('💾 handleSuccessfulLogin - Saved to sessionStorage:', {
         token: sessionStorage.getItem(TOKEN_KEY),
         user: sessionStorage.getItem(TOKEN_DATA_KEY),
-        role: sessionStorage.getItem('biomarket_user_role')
+        role: sessionStorage.getItem('biomarket_user_role'),
+        url: window.location.href
     });
+    
+    // Проверка через 100ms (перед редиректом)
+    setTimeout(() => {
+        console.log('🔍 handleSuccessfulLogin - CHECK BEFORE REDIRECT:', {
+            token: sessionStorage.getItem(TOKEN_KEY),
+            user: sessionStorage.getItem(TOKEN_DATA_KEY),
+            role: sessionStorage.getItem('biomarket_user_role'),
+            url: window.location.href
+        });
+    }, 100);
 
     return redirectUrl;
 }

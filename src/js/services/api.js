@@ -233,19 +233,31 @@ async function mockApiRequest(endpoint, config) {
         'user/profile', 'user/orders', 'user/subscription',
         'orders', 'subscriptions',
     ];
-    
+
     const isProtected = protectedEndpoints.some(ep => endpoint.startsWith(ep));
-    
+
     if (isProtected && !authToken) {
         throw createApiError('Unauthorized', 401, 'UNAUTHORIZED');
     }
-    
+
     // Валидация токена
     let userPayload = null;
     if (authToken) {
-        userPayload = validateMockToken(authToken);
-        if (userPayload?.error === 'Token expired') {
-            throw createApiError('Token expired', 401, 'TOKEN_EXPIRED');
+        // ✅ Принимать демо-токены (начинаются с 'mock-token-')
+        if (authToken.startsWith('mock-token-')) {
+            // Демо-токен - принимаем без проверки
+            userPayload = {
+                userId: 'demo-user',
+                email: 'demo@biomarket.cz',
+                role: 'buyer',
+                isDemo: true
+            };
+        } else {
+            // Обычная валидация JWT
+            userPayload = validateMockToken(authToken);
+            if (userPayload?.error === 'Token expired') {
+                throw createApiError('Token expired', 401, 'TOKEN_EXPIRED');
+            }
         }
     }
     
@@ -350,12 +362,27 @@ async function mockApiRequest(endpoint, config) {
         if (!userPayload) {
             throw createApiError('Unauthorized', 401, 'UNAUTHORIZED');
         }
-        
+
+        // ✅ Для демо-токена возвращаем демо-данные
+        if (userPayload.isDemo) {
+            return {
+                data: {
+                    id: 'demo-user',
+                    email: userPayload.email || 'demo@biomarket.cz',
+                    fullname: 'Демо Пользователь',
+                    phone: '+420 123 456 789',
+                    address: 'Прага, Чехия',
+                },
+                message: 'Success (demo mode)',
+                status: 200,
+            };
+        }
+
         const user = MOCK_DB.users.get(userPayload.email);
         if (!user) {
             throw createApiError('User not found', 404, 'USER_NOT_FOUND');
         }
-        
+
         return {
             data: {
                 id: user.id,
@@ -426,11 +453,20 @@ async function mockApiRequest(endpoint, config) {
         if (!userPayload) {
             throw createApiError('Unauthorized', 401, 'UNAUTHORIZED');
         }
-        
+
+        // ✅ Для демо-токена возвращаем пустой список
+        if (userPayload.isDemo) {
+            return {
+                data: [],
+                message: 'Success (demo mode - no orders)',
+                status: 200,
+            };
+        }
+
         const orders = Array.from(MOCK_DB.orders.values())
             .filter(order => order.userId === userPayload.userId)
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        
+
         return {
             data: orders,
             message: 'Success',
@@ -470,10 +506,19 @@ async function mockApiRequest(endpoint, config) {
         if (!userPayload) {
             throw createApiError('Unauthorized', 401, 'UNAUTHORIZED');
         }
-        
+
+        // ✅ Для демо-токена возвращаем null (нет подписки)
+        if (userPayload.isDemo) {
+            return {
+                data: null,
+                message: 'Success (demo mode - no subscription)',
+                status: 200,
+            };
+        }
+
         const subscription = Array.from(MOCK_DB.subscriptions.values())
             .find(sub => sub.userId === userPayload.userId);
-        
+
         return {
             data: subscription || null,
             message: 'Success',
@@ -486,11 +531,11 @@ async function mockApiRequest(endpoint, config) {
             throw createApiError('Unauthorized', 401, 'UNAUTHORIZED');
         }
 
-        const subData = JSON.parse(body);
+        const subData = body ? JSON.parse(body) : { plan: '1month' };
         const subscription = {
             id: Date.now().toString(),
             userId: userPayload.userId,
-            plan: subData.plan,
+            plan: subData.plan || '1month',
             status: 'active',
             startDate: new Date().toISOString(),
             endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),

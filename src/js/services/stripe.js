@@ -274,9 +274,18 @@ export const mockStripeManager = {
                 </div>
             `;
         }
+        return { on: () => {} }; // Mock event listener
     },
 
-    async confirmPayment() {
+    async createPaymentIntent(paymentData) {
+        // Mock Payment Intent
+        return {
+            client_secret: 'mock_client_secret_' + Date.now(),
+            id: 'mock_pi_' + Date.now()
+        };
+    },
+
+    async confirmPayment(options) {
         // Имитация успешного платежа
         await new Promise(resolve => setTimeout(resolve, 2000));
         return {

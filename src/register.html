@@ -625,7 +625,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const mode = urlParams.get('mode');
-            
+
             if (mode === 'register') {
                 switchToRegister();
             } else {
@@ -633,5 +633,8 @@
             }
         });
     </script>
+
+    <!-- Connect register.js for handleLogin -->
+    <script type="module" src="js/register.js"></script>
 </body>
 </html>

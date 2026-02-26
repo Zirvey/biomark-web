@@ -129,16 +129,18 @@ async function initializeStripe() {
         await stripeManager.initialize();
         cardElement = await stripeManager.createCardElement('card-element');
 
-        // Обработка ошибок Stripe
-        cardElement.on('change', (event) => {
-            const errorDisplay = document.getElementById('card-errors');
-            if (event.error) {
-                setTextContent(errorDisplay, event.error.message);
-                errorDisplay.classList.add('visible');
-            } else {
-                errorDisplay.classList.remove('visible');
-            }
-        });
+        // Обработка ошибок Stripe (только если cardElement существует)
+        if (cardElement && cardElement.on) {
+            cardElement.on('change', (event) => {
+                const errorDisplay = document.getElementById('card-errors');
+                if (event.error) {
+                    setTextContent(errorDisplay, event.error.message);
+                    errorDisplay.classList.add('visible');
+                } else {
+                    errorDisplay.classList.remove('visible');
+                }
+            });
+        }
     } catch (error) {
         console.error('Stripe initialization error:', error);
         showError('Не удалось загрузить форму оплаты');
@@ -421,3 +423,10 @@ window.logout = async function() {
         window.location.href = 'index.html';
     }
 };
+
+// ============================================
+// ЭКСПОРТ ДЛЯ HTML
+// ============================================
+
+// Сделать handlePayment доступной для HTML формы
+window.handlePayment = handlePayment;

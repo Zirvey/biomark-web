@@ -108,18 +108,21 @@ export const subscriptionService = {
      */
     async createSubscription(planId) {
         try {
+            console.log('createSubscription called with planId:', planId, typeof planId);
+            
             // Валидация плана
             if (!SUBSCRIPTION_PLANS[planId]) {
-                throw new Error('Некорректный план подписки');
+                console.error('Invalid planId:', planId);
+                throw new Error('Некорректный план подписки: ' + planId);
             }
-            
+
             const response = await api.request('subscriptions', {
                 method: 'POST',
                 body: JSON.stringify({
                     plan: planId,
                 }),
             });
-            
+
             return this.normalizeSubscription(response.data);
         } catch (error) {
             console.error('Create subscription error:', error);

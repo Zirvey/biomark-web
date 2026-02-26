@@ -7,8 +7,8 @@ rootDirectory = "server"
 # Build command
 buildCommand = "cd server && npm install && npx prisma generate"
 
-# Start command
-startCommand = "cd server && node src/index.js"
+# Start command (run migrations before starting server)
+startCommand = "cd server && npx prisma migrate deploy && node src/index.js"
 
 # Environment
 [build.env]

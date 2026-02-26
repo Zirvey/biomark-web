@@ -347,11 +347,12 @@ function showToastError(message) {
 window.handleRegister = async function (e) {
     e.preventDefault();
 
+    // ✅ Правильные ID полей из HTML
     const formData = {
-        fullname: document.getElementById('fullname').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        address: document.getElementById('address').value,
+        fullname: document.getElementById('register-name')?.value,
+        email: document.getElementById('register-email')?.value,
+        phone: document.getElementById('register-phone')?.value,
+        address: document.getElementById('register-farm')?.value, // Используем ферму как адрес
         role: 'buyer',
     };
 
@@ -396,11 +397,11 @@ window.handleRegister = async function (e) {
         }, 1500);
     } catch (error) {
         console.error('Registration error:', error);
-        
+
         // Восстановление кнопки
         btn.innerHTML = originalText;
         btn.disabled = false;
-        
+
         // Разные сообщения для разных ошибок
         let errorMessage = 'Не удалось зарегистрироваться. ';
         

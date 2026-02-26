@@ -85,12 +85,12 @@ export const subscriptionService = {
      */
     async getSubscription() {
         try {
-            const response = await api.request('user/subscription');
-            
+            const response = await api.request('subscriptions');
+
             if (!response.data) {
                 return null;
             }
-            
+
             return this.normalizeSubscription(response.data);
         } catch (error) {
             if (error.status === 404) {

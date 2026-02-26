@@ -63,8 +63,8 @@ export const orderService = {
      */
     async getOrders() {
         try {
-            const response = await api.request('user/orders');
-            
+            const response = await api.request('orders');
+
             // Санитизация и нормализация данных
             return response.data.map(order => this.normalizeOrder(order));
         } catch (error) {

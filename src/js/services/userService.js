@@ -37,9 +37,9 @@ export const userService = {
      */
     async getProfile() {
         try {
-            const response = await api.request('user/profile');
+            const response = await api.request('users/profile');
             const data = response.data;
-            
+
             // Санитизация данных (защита от XSS)
             return {
                 id: sanitize(data.id),
@@ -51,11 +51,11 @@ export const userService = {
             };
         } catch (error) {
             console.error('Get profile error:', error);
-            
+
             if (error.status === 404) {
                 return null;
             }
-            
+
             throw error;
         }
     },
@@ -72,14 +72,14 @@ export const userService = {
             if (validationError) {
                 throw new Error(validationError);
             }
-            
-            const response = await api.request('user/profile', {
+
+            const response = await api.request('users/profile', {
                 method: 'PUT',
                 body: JSON.stringify(data),
             });
-            
+
             const updatedData = response.data;
-            
+
             // Санитизация данных
             return {
                 id: sanitize(updatedData.id),
@@ -94,17 +94,17 @@ export const userService = {
             throw error;
         }
     },
-    
+
     /**
      * Удалить аккаунт пользователя
      * @returns {Promise<void>}
      */
     async deleteAccount() {
         try {
-            await api.request('user/profile', {
+            await api.request('users/profile', {
                 method: 'DELETE',
             });
-            
+
             console.log('Account deleted');
         } catch (error) {
             console.error('Delete account error:', error);

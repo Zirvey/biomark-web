@@ -65,6 +65,21 @@ router.post('/process', authMiddleware, async (req, res, next) => {
 });
 
 /**
+ * GET /api/payments/methods
+ * Get available payment methods
+ */
+router.get('/methods', (req, res) => {
+  res.json({
+    data: [
+      { id: 'card', type: 'card', name: 'Банковская карта', icon: '💳', available: true },
+      { id: 'bank', type: 'bank', name: 'Банковский перевод', icon: '🏦', available: true },
+      { id: 'googlepay', type: 'googlepay', name: 'Google Pay', icon: 'G', available: true },
+      { id: 'applepay', type: 'applepay', name: 'Apple Pay', icon: '', available: true },
+    ]
+  });
+});
+
+/**
  * POST /api/payments/webhook
  * Stripe webhook (PROD only)
  * MVP: Returns 200 OK

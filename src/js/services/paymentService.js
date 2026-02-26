@@ -155,7 +155,7 @@ export const paymentService = {
 
             // В real режиме запрашиваем с сервера
             const response = await api.request('payments/methods');
-            return response.data.map(method => ({
+            return (response.data?.data || []).map(method => ({
                 id: sanitize(method.id),
                 type: sanitize(method.type),
                 name: sanitize(method.name),

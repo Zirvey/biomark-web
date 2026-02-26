@@ -380,15 +380,56 @@ window.handleRegister = async function (e) {
 
     try {
         // ========================================
-        // REAL REGISTRATION (когда будет бэк)
+        // REAL REGISTRATION - API вызов
         // ========================================
-        // Здесь будет вызов:
-        // const result = await authService.register(formData);
-        // window.location.href = 'index.html';
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        const apiMode = import.meta.env.VITE_API_MODE || 'mock';
+        
+        if (apiMode === 'real') {
+            // Реальная регистрация через API
+            const response = await fetch(`${apiUrl}/api/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Registration failed');
+            }
+            
+            const result = await response.json();
+            
+            // ✅ Сохраняем в sessionStorage (правильные ключи!)
+            sessionStorage.setItem('biomarket_token', result.token);
+            sessionStorage.setItem('biomarket_token_data', JSON.stringify(result.user));
+            sessionStorage.setItem('biomarket_user_role', result.user.role);
+            
+            console.log('✅ Registration successful - saved to sessionStorage:', {
+                token: sessionStorage.getItem('biomarket_token'),
+                user: sessionStorage.getItem('biomarket_token_data'),
+                role: sessionStorage.getItem('biomarket_user_role')
+            });
+            
+            btn.innerHTML = '<span>✓</span><span>Регистрация успешна!</span>';
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+            return;
+        }
 
-        // Временно - просто сохраняем
-        localStorage.setItem('biomarket_user', JSON.stringify(formData));
-        localStorage.setItem('biomarket_user_role', 'buyer');
+        // ========================================
+        // MOCK REGISTRATION (локально)
+        // ========================================
+        const mockToken = 'mock-token-' + Date.now();
+        
+        // ✅ Сохраняем в sessionStorage (правильные ключи!)
+        sessionStorage.setItem('biomarket_token', mockToken);
+        sessionStorage.setItem('biomarket_token_data', JSON.stringify(formData));
+        sessionStorage.setItem('biomarket_user_role', 'buyer');
+        
+        console.log('✅ Mock registration - saved to sessionStorage');
 
         btn.innerHTML = '<span>✓</span><span>Регистрация успешна!</span>';
 

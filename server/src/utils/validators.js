@@ -7,27 +7,20 @@ const { z } = require('zod');
 // Email validation
 const emailSchema = z.string().email('Neplatný email');
 
-// Czech phone number (+420 XXX XXX XXX)
-const czechPhoneSchema = z.string()
-  .regex(/^\+420\s?\d{3}\s?\d{3}\s?\d{3}$/, 'Neplatné telefonní číslo')
+// Phone number - более гибкая валидация (MVP)
+const phoneSchema = z.string()
+  .min(9, 'Telefon musí mít alespoň 9 číslic')
+  .max(20, 'Telefon je příliš dlouhý')
   .optional()
   .or(z.literal(''));
 
-// Czech address format
-const czechAddressSchema = z.object({
-  street: z.string().min(3, 'Ulice musí mít alespoň 3 znaky'),
-  city: z.string().min(2, 'Město musí mít alespoň 2 znaky'),
-  zip: z.string().regex(/^\d{3} \d{2}$/, 'PSČ musí být ve formátu XXX XX'),
-  district: z.string().optional() // Praha 1, Holešovice, etc.
-}).optional();
-
-// Registration schema
+// Registration schema - упрощённая для MVP
 const registerSchema = z.object({
   email: emailSchema,
   password: z.string().min(6, 'Heslo musí mít alespoň 6 znaků'),
   fullname: z.string().min(2, 'Jméno musí mít alespoň 2 znaky'),
-  phone: czechPhoneSchema,
-  address: z.string().optional(),
+  phone: phoneSchema,
+  address: z.string().optional().or(z.literal('')),
   role: z.enum(['buyer', 'farmer']).default('buyer')
 });
 
@@ -40,7 +33,7 @@ const loginSchema = z.object({
 // Update profile schema
 const updateProfileSchema = z.object({
   fullname: z.string().min(2, 'Jméno musí mít alespoň 2 znaky').optional(),
-  phone: czechPhoneSchema,
+  phone: phoneSchema,
   address: z.string().min(5, 'Adresa musí mít alespoň 5 znaků').optional()
 });
 

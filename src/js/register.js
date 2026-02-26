@@ -353,6 +353,7 @@ window.handleRegister = async function (e) {
         email: document.getElementById('register-email')?.value,
         phone: document.getElementById('register-phone')?.value,
         address: document.getElementById('register-farm')?.value, // Используем ферму как адрес
+        password: document.getElementById('register-password')?.value || 'defaultpassword123', // Добавляем пароль
         role: 'buyer',
     };
 

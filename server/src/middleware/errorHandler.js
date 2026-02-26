@@ -6,7 +6,7 @@ module.exports = (err, req, res, next) => {
 
   // Prisma errors
   if (err.code?.startsWith('P')) {
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: 'Database error',
       message: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
@@ -14,12 +14,12 @@ module.exports = (err, req, res, next) => {
 
   // Zod validation errors
   if (err.name === 'ZodError') {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: 'Validation error',
-      details: err.errors.map(e => ({
+      details: Array.isArray(err.errors) ? err.errors.map(e => ({
         field: e.path.join('.'),
         message: e.message
-      }))
+      })) : []
     });
   }
 
@@ -29,7 +29,7 @@ module.exports = (err, req, res, next) => {
   }
 
   // Default error
-  res.status(err.status || 500).json({ 
+  res.status(err.status || 500).json({
     error: err.message || 'Internal server error',
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   });

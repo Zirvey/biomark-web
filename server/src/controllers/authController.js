@@ -8,8 +8,16 @@ const { PrismaClient } = require('@prisma/client');
 const { registerSchema, loginSchema } = require('../utils/validators');
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-change-in-prod';
+
+// 🔒 JWT_SECRET из environment variables (без fallback!)
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = '24h';
+
+// Проверка JWT_SECRET при старте
+if (!JWT_SECRET) {
+  console.error('❌ CRITICAL: JWT_SECRET is not set!');
+  throw new Error('JWT_SECRET must be set in environment variables');
+}
 
 /**
  * Register a new user

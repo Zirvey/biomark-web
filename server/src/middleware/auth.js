@@ -4,7 +4,20 @@
  */
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-change-in-prod';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+// 🔒 Проверка: JWT_SECRET должен быть установлен в production
+if (!JWT_SECRET) {
+  console.error('❌ CRITICAL: JWT_SECRET is not set in environment variables!');
+  console.error('🔐 Generate a secure secret: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
+
+if (JWT_SECRET.length < 32) {
+  console.error('❌ CRITICAL: JWT_SECRET must be at least 32 characters long!');
+  console.error('🔐 Generate a secure secret: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
 
 module.exports = (req, res, next) => {
   try {

@@ -17,11 +17,10 @@ import { setTextContent } from './utils/dom.js';
 // КОНСТАНТЫ
 // ============================================
 
-// 💰 Цены должны совпадать с subscriptionService.js
 const PLANS = {
-    '1month': { name: '1 месяц', period: '30 дней', price: 299, savings: 0 },
-    '3months': { name: '3 месяца', period: '90 дней', price: 799, savings: 98 }, // 299*3 - 799 = 98
-    '1year': { name: '1 год', period: '365 дней', price: 2499, savings: 1089 }, // 299*12 - 2499 = 1089
+    '1month': { name: '1 месяц', period: '30 дней', price: 590, savings: 0 },
+    '3months': { name: '3 месяца', period: '90 дней', price: 1500, savings: 270 },
+    '1year': { name: '1 год', period: '365 дней', price: 4900, savings: 2180 },
 };
 
 // Stripe manager (mock или real)

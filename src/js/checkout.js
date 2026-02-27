@@ -258,6 +258,11 @@ async function handlePayment(event) {
     const plan = PLANS[planId];
     const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
 
+    // 🔍 DEBUG: Логируем что отправляется
+    console.log('🔍 handlePayment - planId:', planId, typeof planId);
+    console.log('🔍 handlePayment - plan:', plan);
+    console.log('🔍 handlePayment - paymentMethod:', paymentMethod);
+
     if (!paymentMethod) {
         showError('Выберите способ оплаты');
         return;

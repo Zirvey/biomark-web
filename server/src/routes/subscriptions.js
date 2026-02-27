@@ -33,8 +33,14 @@ router.get('/', authMiddleware, async (req, res, next) => {
  */
 router.post('/', authMiddleware, async (req, res, next) => {
   try {
-    const { plan } = createSubscriptionSchema.parse(req.body);
+    // 🔍 DEBUG: Логируем что пришло
+    console.log('🔍 POST /api/subscriptions - req.body:', req.body);
     
+    const { plan } = createSubscriptionSchema.parse(req.body);
+
+    // 🔍 DEBUG: Логируем после валидации
+    console.log('✅ Validated plan:', plan, typeof plan);
+
     // Calculate end date based on plan
     const endDate = new Date();
     if (plan === '1month') {
@@ -44,7 +50,7 @@ router.post('/', authMiddleware, async (req, res, next) => {
     } else if (plan === '1year') {
       endDate.setFullYear(endDate.getFullYear() + 1);
     }
-    
+
     // Create subscription (MVP: auto-activate)
     const subscription = await prisma.subscription.create({
       data: {
@@ -55,12 +61,13 @@ router.post('/', authMiddleware, async (req, res, next) => {
         endDate
       }
     });
-    
+
     res.status(201).json({
       message: 'Subscription created successfully',
       subscription
     });
   } catch (error) {
+    console.error('❌ Subscription creation error:', error);
     next(error);
   }
 });

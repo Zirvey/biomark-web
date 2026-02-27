@@ -145,13 +145,18 @@ export function decryptData(encrypted) {
  */
 export async function apiRequest(endpoint, options = {}) {
     const { headers = {}, body, ...restOptions } = options;
-    
+
+    // 🔍 DEBUG: Логируем что отправляется
+    console.log('🔍 apiRequest - endpoint:', endpoint);
+    console.log('🔍 apiRequest - options:', options);
+    console.log('🔍 apiRequest - body:', body);
+
     // Добавляем токен авторизации если есть
     const token = getStoredToken();
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
-    
+
     // Добавляем Content-Type для JSON
     if (body && !(body instanceof FormData)) {
         headers['Content-Type'] = 'application/json';

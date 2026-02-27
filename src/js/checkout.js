@@ -371,6 +371,10 @@ async function handlePayment(event) {
 
 async function activateSubscription(planId, plan, paymentResponse) {
     try {
+        // 🔍 DEBUG: Логируем planId
+        console.log('🔍 activateSubscription - planId:', planId, typeof planId);
+        console.log('🔍 activateSubscription - plan:', plan);
+        
         // Создаём подписку через сервис
         const subscription = await subscriptionService.createSubscription(planId);
 
